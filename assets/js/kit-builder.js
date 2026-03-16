@@ -8,6 +8,7 @@ const _adminConfig = (typeof rmeKitBuilder !== 'undefined' && rmeKitBuilder.conf
   ? rmeKitBuilder.config
   : (() => { try { const raw = localStorage.getItem('rme-kit-builder-config'); return raw ? JSON.parse(raw) : null; } catch { return null; } })();
 
+
 const S = (typeof rmeKitBuilder !== 'undefined' && rmeKitBuilder.uploadsUrl) ? rmeKitBuilder.uploadsUrl : '/wp-content/uploads/';
 
 // ══════════════════════════════════════════════════════
@@ -542,7 +543,6 @@ const mobileProducts = {
     { key: 'bt01', name: 'BT-01 Mobile Bluetooth Speaker Mic', desc: 'Bluetooth speaker-microphone for mobile radios. Wireless audio with PTT for hands-free operation.', price: 149, id: 6717, compatRadios: ['d578'] },
     { key: 'cheatsheets', name: 'Radio Cheat Sheets', desc: 'Waterproof laminated quick-reference cards.', price: 19, id: 966 },
     { key: 'relocation', name: 'Antenna Jack Relocation Cable', desc: 'Right-angle PL-259 to SO-239 cable for repositioning the antenna jack.', price: 19, id: 7271 },
-    { key: 'manpack', name: 'Manpack Radio Bag', desc: 'Custom radio bag for portable/manpack operations. Fits mobile radios with battery for field-portable use.', price: 349, id: 856 },
   ],
 };
 
@@ -583,7 +583,6 @@ const hfProducts = {
     { key: 'digirig-ft891', name: 'Digirig with Interface Cables for FT-891', desc: 'Digital modes interface for the FT-891. Run FT8, JS8Call, Winlink, and other digital modes from your computer.', price: 89, id: 7272, radioMatch: 'ft891' },
     { key: 'digirig-g90', name: 'Digirig with Interface Cables for G90', desc: 'Digital modes interface for the G90. Run FT8, JS8Call, Winlink, and other digital modes from your computer.', price: 89, id: 7273, radioMatch: 'g90' },
     { key: 'relocation', name: 'Antenna Jack Relocation Cable', desc: 'Right-angle PL-259 to SO-239 cable.', price: 19, id: 7271 },
-    { key: 'manpack', name: 'Manpack Radio Bag', desc: 'Custom radio bag for portable/manpack HF operations.', price: 349, id: 856 },
     { key: 'cheatsheets', name: 'Radio Cheat Sheets', desc: 'Waterproof laminated quick-reference cards.', price: 19, id: 966 },
   ],
 };
@@ -1611,47 +1610,50 @@ function renderHfAntenna() {
 function renderHfCoax() {
   const c = document.getElementById('hf-step-content');
   const sel = hfState.selections;
-  if (!sel.coax) sel.coax = { grade: '400uf', length: 25 };
+  if (!sel.coax) sel.coax = { choice: '400uf', length: 25 };
 
-  const grade = sel.coax.grade;
-  const len = sel.coax.length;
+  const choice = sel.coax.choice;
+  const len = sel.coax.length || 25;
+  const isCustom = choice === '400uf' || choice === '240uf';
   const isOver50 = len > 50;
-  const pricePerFt = grade === '400uf' ? (isOver50 ? 3.50 : 5) : (isOver50 ? 2 : 3);
-  const coaxTotal = Math.round(len * pricePerFt * 100) / 100;
+  const pricePerFt = choice === '400uf' ? (isOver50 ? 3.50 : 5) : (isOver50 ? 2 : 3);
+  const coaxTotal = isCustom ? Math.round(len * pricePerFt * 100) / 100 : 0;
 
   c.innerHTML = `
-    <div class="section-head"><h2>Coax Cable</h2><p>Connect your radio to the antenna. For HF, lower-loss coax makes a bigger difference on longer runs.</p></div>
+    <div class="section-head"><h2>Coax Cable</h2><p>Connect your radio to the antenna. Choose a cable option or skip if you already have coax.</p></div>
     <div style="max-width:500px;margin:0 auto">
-      <label style="font-size:14px;color:var(--gold);display:block;margin-bottom:8px">Cable Grade</label>
-      <div class="nq-option ${grade === '400uf' ? 'selected' : ''}" onclick="hfState.selections.coax.grade='400uf';renderHfCoax()">
-        <div class="nq-check">${grade === '400uf' ? '✓' : ''}</div>
-        <div><div class="nq-label">⭐ 400 Ultra Flex — Recommended</div><div class="nq-detail">Premium low-loss. $5/ft (≤50ft) or $3.50/ft (>50ft).</div></div>
+      <div class="nq-option ${choice === '400uf' ? 'selected' : ''}" onclick="hfState.selections.coax.choice='400uf';renderHfCoax()">
+        <div class="oc-radio"></div>
+        <div style="flex:1"><div class="nq-label">⭐ 400 Ultra Flex — Recommended</div><div class="nq-detail">Premium low-loss coax. Custom length. $5/ft (≤50ft) or $3.50/ft (>50ft).</div></div>
       </div>
-      <div class="nq-option ${grade === '240uf' ? 'selected' : ''}" onclick="hfState.selections.coax.grade='240uf';renderHfCoax()">
-        <div class="nq-check">${grade === '240uf' ? '✓' : ''}</div>
-        <div><div class="nq-label">240 Ultra Flex — Budget-friendly</div><div class="nq-detail">Thinner, more flexible. $3/ft (≤50ft) or $2/ft (>50ft).</div></div>
+      <div class="nq-option ${choice === '240uf' ? 'selected' : ''}" onclick="hfState.selections.coax.choice='240uf';renderHfCoax()">
+        <div class="oc-radio"></div>
+        <div style="flex:1"><div class="nq-label">240 Ultra Flex — Budget-friendly</div><div class="nq-detail">Thinner, more flexible coax. Custom length. $3/ft (≤50ft) or $2/ft (>50ft).</div></div>
       </div>
-
-      <label style="font-size:14px;color:var(--gold);display:block;margin:20px 0 8px">Length (feet)</label>
-      <div style="display:flex;align-items:center;gap:12px">
-        <input type="range" id="hf-coax-slider" min="10" max="150" step="5" value="${len}" style="flex:1;accent-color:var(--gold)"
-          oninput="hfState.selections.coax.length=parseInt(this.value);document.getElementById('hf-coax-input').value=this.value;updateHfCoaxPrice()">
-        <input type="number" id="hf-coax-input" min="1" max="300" value="${len}"
-          style="width:60px;background:#111;border:1px solid var(--border);color:var(--gold);padding:6px;text-align:center;font-size:16px;font-weight:700"
-          oninput="const v=Math.max(1,parseInt(this.value)||1);hfState.selections.coax.length=v;document.getElementById('hf-coax-slider').value=Math.min(150,v);updateHfCoaxPrice()">
-        <span style="color:#888;font-size:13px">ft</span>
+      <div class="nq-option ${choice === 'rg316' ? 'selected' : ''}" onclick="hfState.selections.coax.choice='rg316';renderHfCoax()">
+        <div class="oc-radio"></div>
+        <div style="flex:1"><div class="nq-label">25ft RG-316 Coax with Choke — $79</div><div class="nq-detail">Thin, flexible pre-built cable with choke. Good for short runs and portable setups.</div></div>
       </div>
-      <div id="hf-coax-price" style="margin-top:16px;padding:12px;background:#1a1800;border:1px solid var(--gold-dim);text-align:center">
-        <div style="font-size:13px;color:#ddd">${len}ft @ $${pricePerFt}/ft</div>
-        <div style="font-size:20px;font-weight:700;color:var(--gold);margin-top:4px">$${coaxTotal.toFixed(2)}</div>
+      <div class="nq-option ${choice === 'none' ? 'selected' : ''}" onclick="hfState.selections.coax.choice='none';renderHfCoax()">
+        <div class="oc-radio"></div>
+        <div style="flex:1"><div class="nq-label">No Coax — I already have cable</div><div class="nq-detail">Skip coax and use what you already have.</div></div>
       </div>
 
-      <div style="margin-top:16px">
-        <div class="nq-option ${sel.prebuiltCoax ? 'selected' : ''}" onclick="hfState.selections.prebuiltCoax=!hfState.selections.prebuiltCoax;renderHfCoax()">
-          <div class="nq-check">${sel.prebuiltCoax ? '✓' : ''}</div>
-          <div><div class="nq-label">Also add: 25ft RG-316 Coax with Choke ($79)</div><div class="nq-detail">Thin, flexible coax with choke for portable/field use.</div></div>
+      ${isCustom ? `
+        <label style="font-size:14px;color:var(--gold);display:block;margin:20px 0 8px">Length (feet)</label>
+        <div style="display:flex;align-items:center;gap:12px">
+          <input type="range" id="hf-coax-slider" min="10" max="150" step="5" value="${len}" style="flex:1;accent-color:var(--gold)"
+            oninput="hfState.selections.coax.length=parseInt(this.value);document.getElementById('hf-coax-input').value=this.value;updateHfCoaxPrice()">
+          <input type="number" id="hf-coax-input" min="1" max="300" value="${len}"
+            style="width:60px;background:#111;border:1px solid var(--border);color:var(--gold);padding:6px;text-align:center;font-size:16px;font-weight:700"
+            oninput="const v=Math.max(1,parseInt(this.value)||1);hfState.selections.coax.length=v;document.getElementById('hf-coax-slider').value=Math.min(150,v);updateHfCoaxPrice()">
+          <span style="color:#888;font-size:13px">ft</span>
         </div>
-      </div>
+        <div id="hf-coax-price" style="margin-top:16px;padding:12px;background:#1a1800;border:1px solid var(--gold-dim);text-align:center">
+          <div style="font-size:13px;color:#ddd">${len}ft @ $${pricePerFt}/ft</div>
+          <div style="font-size:20px;font-weight:700;color:var(--gold);margin-top:4px">$${coaxTotal.toFixed(2)}</div>
+        </div>
+      ` : ''}
     </div>
   `;
 }
@@ -1737,15 +1739,16 @@ function renderHfReview() {
   }
 
   // Coax
-  if (sel.coax) {
-    const isOver50 = sel.coax.length > 50;
-    const pricePerFt = sel.coax.grade === '400uf' ? (isOver50 ? 3.50 : 5) : (isOver50 ? 2 : 3);
-    const coaxTotal = Math.round(sel.coax.length * pricePerFt * 100) / 100;
-    items.push({ name: `${sel.coax.length}ft ${sel.coax.grade === '400uf' ? '400' : '240'} Ultra Flex Coax`, price: coaxTotal });
-    total += coaxTotal;
-  }
-  if (sel.prebuiltCoax) {
-    items.push({ name: '25ft RG-316 Coax with Choke', price: 79, id: 7075 }); total += 79;
+  if (sel.coax && sel.coax.choice !== 'none') {
+    if (sel.coax.choice === 'rg316') {
+      items.push({ name: '25ft RG-316 Coax with Choke', price: 79, id: 7075 }); total += 79;
+    } else if (sel.coax.choice === '400uf' || sel.coax.choice === '240uf') {
+      const isOver50 = sel.coax.length > 50;
+      const pricePerFt = sel.coax.choice === '400uf' ? (isOver50 ? 3.50 : 5) : (isOver50 ? 2 : 3);
+      const coaxTotal = Math.round(sel.coax.length * pricePerFt * 100) / 100;
+      items.push({ name: `${sel.coax.length}ft ${sel.coax.choice === '400uf' ? '400' : '240'} Ultra Flex Coax`, price: coaxTotal });
+      total += coaxTotal;
+    }
   }
 
   // Power
@@ -2007,7 +2010,7 @@ function loadRadioProducts(radioKey) {
 
 function renderColorChoice() {
   const container = document.getElementById('color-options');
-  const S = 'https://staging10.radiomadeeasy.com/wp-content/uploads/';
+  // S already defined at top scope
   const colors = [
     { key: 'black', name: 'Black', desc: 'Classic black — the standard UV-PRO finish. Discreet, professional look.', img: S+'2025/09/20250904_100414-EDIT.jpg' },
     { key: 'tan', name: 'Tan / Coyote', desc: 'Desert tan finish — blends with earth tones and tactical gear. Same radio, different look.', img: S+'2025/09/20250904_100414-EDIT.jpg' },
@@ -2592,9 +2595,16 @@ function checkProximityWarnings() {
 const _stateMap = {Alabama:'AL',Alaska:'AK',Arizona:'AZ',Arkansas:'AR',California:'CA',Colorado:'CO',Connecticut:'CT',Delaware:'DE',Florida:'FL',Georgia:'GA',Hawaii:'HI',Idaho:'ID',Illinois:'IL',Indiana:'IN',Iowa:'IA',Kansas:'KS',Kentucky:'KY',Louisiana:'LA',Maine:'ME',Maryland:'MD',Massachusetts:'MA',Michigan:'MI',Minnesota:'MN',Mississippi:'MS',Missouri:'MO',Montana:'MT',Nebraska:'NE',Nevada:'NV','New Hampshire':'NH','New Jersey':'NJ','New Mexico':'NM','New York':'NY','North Carolina':'NC','North Dakota':'ND',Ohio:'OH',Oklahoma:'OK',Oregon:'OR',Pennsylvania:'PA','Rhode Island':'RI','South Carolina':'SC','South Dakota':'SD',Tennessee:'TN',Texas:'TX',Utah:'UT',Vermont:'VT',Virginia:'VA',Washington:'WA','West Virginia':'WV',Wisconsin:'WI',Wyoming:'WY'};
 function getStateAbbr(name) { return _stateMap[name] || null; }
 
+function reviewEditStep(stepName) {
+  const steps = getSteps();
+  const idx = steps.findIndex(s => s.name === stepName);
+  if (idx >= 0) goStep(idx);
+}
+
 function renderReview() {
   const list = document.getElementById('review-list');
   let items = [];
+  const editStyle = 'font-size:11px;color:var(--gold);cursor:pointer;text-transform:uppercase;letter-spacing:1px;margin-left:8px';
 
   // Base kit — no remove button
   const selRadio = radioLineup.find(r => r.key === selectedRadioKey) || radioLineup[0];
@@ -2608,6 +2618,9 @@ function renderReview() {
   `);
 
   // Antenna upgrades
+  if (selectedAntennas.size > 0 || selectedAddlAntennas.size > 0) {
+    items.push(`<div style="font-size:12px;color:var(--muted);padding:12px 0 4px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center"><span>ANTENNAS</span><span style="${editStyle}" onclick="reviewEditStep('Antennas')">Edit</span></div>`);
+  }
   selectedAntennas.forEach(key => {
     const ant = antennaUpgrades.find(a => a.key === key);
     if (ant) {
@@ -2667,6 +2680,9 @@ function renderReview() {
   }
 
   // Battery upgrades
+  if (selectedBatteries.size > 0) {
+    items.push(`<div style="font-size:12px;color:var(--muted);padding:12px 0 4px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center"><span>BATTERIES</span><span style="${editStyle}" onclick="reviewEditStep('Battery')">Edit</span></div>`);
+  }
   selectedBatteries.forEach((qty, key) => {
     const bat = batteryUpgrades.find(b => b.key === key);
     if (bat) {
@@ -2682,6 +2698,9 @@ function renderReview() {
   });
 
   // Accessories
+  if (selectedAccessories.size > 0) {
+    items.push(`<div style="font-size:12px;color:var(--muted);padding:12px 0 4px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center"><span>ACCESSORIES</span><span style="${editStyle}" onclick="reviewEditStep('Accessories')">Edit</span></div>`);
+  }
   selectedAccessories.forEach(key => {
     const a = accessories.find(x => x.key === key);
     if (a) {
@@ -2697,6 +2716,7 @@ function renderReview() {
   });
 
   // Programming
+  items.push(`<div style="font-size:12px;color:var(--muted);padding:12px 0 4px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center"><span>PROGRAMMING</span><span style="${editStyle}" onclick="reviewEditStep('Programming')">Edit</span></div>`);
   if (programmingChoice === 'standard') {
     const loc = progUseShipping ? 'shipping address' : (progZipPrimary || 'TBD');
     items.push(`
@@ -3102,7 +3122,43 @@ function goStep(n) {
   }
 }
 
-function nextStep() { goStep(currentStep + 1); }
+function nextStep() {
+  const steps = getSteps();
+  // Validate programming step before advancing to review
+  if (steps[currentStep] && steps[currentStep].id === 'step-4') {
+    if (!validateProgramming()) return;
+  }
+  goStep(currentStep + 1);
+}
+
+function validateProgramming() {
+  if (programmingChoice === 'none') return true;
+  if (programmingChoice === 'standard') {
+    if (!progUseShipping && !progZipPrimary.trim()) {
+      alert('Please enter a zip code or city for your programming location, or choose "Use my shipping address."');
+      return false;
+    }
+    return true;
+  }
+  if (programmingChoice === 'multi') {
+    if (!progZipPrimary.trim()) {
+      alert('Please enter a zip code or city for your primary location.');
+      return false;
+    }
+    const filledExtras = progZipsExtra.filter(z => z.trim());
+    if (filledExtras.length === 0) {
+      if (confirm('You selected Multi-Location Programming (+$10) but only entered one location.\n\nWould you like to switch to Standard Programming (included free) for a single location instead?')) {
+        programmingChoice = 'standard';
+        progUseShipping = false;
+        renderProgramming();
+        return false;
+      }
+      return false;
+    }
+    return true;
+  }
+  return true;
+}
 function prevStep() { goStep(currentStep - 1); }
 
 // ── Lightbox ────────────────────────────────────────
@@ -3720,7 +3776,6 @@ function rmeKbAddToCart(items) {
     alert('WooCommerce integration not available. Items collected: ' + items.length);
     return Promise.resolve();
   }
-  
   return fetch(rmeKitBuilder.ajaxUrl + '?action=rme_kb_add_to_cart&nonce=' + rmeKitBuilder.nonce, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -3734,7 +3789,6 @@ function rmeKbAddToCart(items) {
       if (errors.length > 0) {
         alert('Added ' + count + ' items to cart. Some items had issues: ' + errors.join(', '));
       } else {
-        // Redirect to cart
         window.location.href = data.data.cartUrl || rmeKitBuilder.cartUrl;
       }
     } else {
@@ -3748,17 +3802,12 @@ function rmeKbAddToCart(items) {
 }
 
 // ── Product Page Mode ──
-// If loaded on a WC product page with rmeKitBuilder.productPageMode = true,
-// auto-select the radio and jump straight to the wizard
 if (typeof rmeKitBuilder !== 'undefined' && rmeKitBuilder.productPageMode && rmeKitBuilder.productRadioKey) {
   document.addEventListener('DOMContentLoaded', function() {
-    // Hide needs phase, show wizard directly
-    const needsPhase = document.getElementById('needs-phase');
-    const selectorPhase = document.getElementById('selector-phase');
+    var needsPhase = document.getElementById('needs-phase');
+    var selectorPhase = document.getElementById('selector-phase');
     if (needsPhase) needsPhase.style.display = 'none';
     if (selectorPhase) selectorPhase.style.display = 'none';
-    
-    // Start with the specified radio
     if (typeof confirmRadioSelection === 'function') {
       confirmRadioSelection(rmeKitBuilder.productRadioKey);
     }
