@@ -1,0 +1,5 @@
+{
+  "productPageEnabled": true,
+  "siteUrl": "https://radiomadeeasy.com",
+  "notes": "This config is editable via WP Admin > Kit Builder. Export from staging, import to production."
+}

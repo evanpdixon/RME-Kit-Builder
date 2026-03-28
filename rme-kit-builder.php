@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'RME_KB_VERSION', '1.0.0' );
+define( 'RME_KB_VERSION', '1.8.2' );
 define( 'RME_KB_PATH', plugin_dir_path( __FILE__ ) );
 define( 'RME_KB_URL', plugin_dir_url( __FILE__ ) );
 
@@ -67,11 +67,14 @@ function rme_kb_enqueue_assets() {
         'nonce'      => wp_create_nonce( 'rme_kb_cart' ),
         'cartUrl'    => function_exists( 'wc_get_cart_url' ) ? wc_get_cart_url() : '',
         'uploadsUrl' => trailingslashit( $upload_dir['baseurl'] ),
+        'ymmUrl'     => RME_KB_URL . 'assets/data/ymm.json',
+        'mountsUrl'  => RME_KB_URL . 'assets/data/vehicle-mounts.json',
+        'pluginUrl'  => RME_KB_URL,
     ) );
 }
 
 /**
- * Default config — product catalog, radio lineup, etc.
+ * Default config - product catalog, radio lineup, etc.
  * This is what gets stored in wp_options and is editable via admin.
  */
 function rme_kb_default_config() {
