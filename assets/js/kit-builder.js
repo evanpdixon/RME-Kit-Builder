@@ -2599,7 +2599,7 @@ function startDirectScanner() {
 function startScannerFlow() {
   scrollToTop();
   hideAllPhases();
-  scannerState = { radioKey: null, selections: {}, cartItems: [], step: 0 };
+  scannerState = { radioKey: null, selections: { antennas: new Set(), accessories: new Set() }, cartItems: [], step: 0 };
   const phase = document.getElementById('scanner-phase');
   phase.style.display = 'block';
   renderScannerRadioChoice();
@@ -5096,8 +5096,10 @@ function rmeKbAddToCart(items) {
         window.location.href = data.data.cartUrl || rmeKitBuilder.cartUrl;
       }
     } else {
+      _rmeKbCartBusy = false;
       alert('Error adding to cart: ' + (data.data ? data.data.message : 'Unknown error'));
     }
+    if (count === 0) _rmeKbCartBusy = false; // reset if nothing was added (no redirect)
   })
   .catch(err => {
     _rmeKbCartBusy = false;
