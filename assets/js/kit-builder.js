@@ -2403,10 +2403,13 @@ function renderHfReview() {
     if (p) { items.push({ name: p.name, price: p.price, id: p.id }); total += p.price; }
   });
 
-  // Accessories
+  // Accessories (resolve variations for variable products like cheat sheets)
   (sel.accessories || []).forEach(key => {
     const a = hfProducts.accessories.find(x => x.key === key);
-    if (a) { items.push({ name: a.name, price: a.price, id: a.id }); total += a.price; }
+    if (a) {
+      const accId = resolveVariationId(a.id, { radioKey: hfState.radioKey });
+      items.push({ name: a.name, price: a.price, id: accId }); total += a.price;
+    }
   });
 
   hfState.cartItems = items;
@@ -2584,6 +2587,9 @@ const scannerProducts = {
     { key: 'magmount', name: 'Magnetic BNC Antenna Base', desc: 'Magnetic mount base with BNC connector. Place on any metal surface for improved antenna positioning.', price: 39, id: 521 },
     { key: 'stubby', name: 'BNC Stubby Antenna', desc: 'Compact BNC rubber duck antenna. Low-profile option for portable or indoor use.', price: 39, id: 816 },
     { key: 'signalstick', name: 'BNC Signal Stick Antenna', desc: 'Flexible whip BNC antenna with improved gain over stock. Great portable upgrade.', price: 25, id: 39, compatRadios: ['sds100', 'sdr-kit'] },
+    { key: 'sds100-battery', name: 'SDS100 Spare Battery with Charger', desc: 'Replacement battery and charger for extended field time. Swap batteries to keep scanning all day.', price: 89, id: 9452, compatRadios: ['sds100'] },
+    { key: 'usbc-adapter', name: 'Mini USB to USB-C Charging Adapter', desc: 'Charge your SDS100 via USB-C instead of the Mini USB port. Use any modern cable.', price: 9, id: 9453, compatRadios: ['sds100'] },
+    { key: 'ram-hanger', name: 'RAM Mount Compatible Scanner Hanger', desc: 'Attach your SDS100 to any RAM ball mount system. Great for vehicles, desks, or go-kits.', price: 19, id: 9454, compatRadios: ['sds100'] },
   ],
 };
 
@@ -2837,7 +2843,10 @@ function collectScannerCartItems() {
   const availableAcc = scannerProducts.accessories.filter(a => !a.compatRadios || a.compatRadios.includes(scannerState.radioKey));
   scannerState.selections.accessories.forEach(key => {
     const a = availableAcc.find(x => x.key === key);
-    if (a) items.push({ name: a.name, price: a.price, id: a.id });
+    if (a) {
+      const accId = resolveVariationId(a.id, { radioKey: scannerState.radioKey });
+      items.push({ name: a.name, price: a.price, id: accId });
+    }
   });
   return items;
 }
@@ -4177,7 +4186,10 @@ function collectHandheldCartItems() {
 
   selectedAddlAntennas.forEach(key => {
     const a = additionalAntennas.find(x => x.key === key);
-    if (a && !a.isAdapter) items.push({ name: a.name, price: a.price || 0, id: a.id });
+    if (a && !a.isAdapter) {
+      const addlId = resolveVariationId(a.id, { radioKey: selectedRadioKey });
+      items.push({ name: a.name, price: a.price || 0, id: addlId });
+    }
   });
 
   selectedBatteries.forEach((qty, key) => {

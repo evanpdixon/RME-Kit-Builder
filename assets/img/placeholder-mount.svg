@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200" fill="none">
+  <rect width="200" height="200" rx="12" fill="#0a0a0a"/>
+  <circle cx="100" cy="85" r="25" stroke="#fdd351" stroke-width="2" fill="none"/>
+  <circle cx="100" cy="85" r="8" fill="#fdd351"/>
+  <rect x="85" y="115" width="30" height="50" rx="4" stroke="#fdd351" stroke-width="2" fill="none"/>
+  <line x1="100" y1="110" x2="100" y2="115" stroke="#fdd351" stroke-width="2"/>
+  <text x="100" y="178" text-anchor="middle" fill="#666" font-family="Inter,sans-serif" font-size="11">Placeholder</text>
+</svg>
