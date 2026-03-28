@@ -1152,7 +1152,27 @@ function loadYmmData() {
   return fetch(url).then(r => r.json()).then(d => { _ymmData = d; return d; });
 }
 
+let _mountsData = null;
+function loadMountsData() {
+  if (_mountsData) return Promise.resolve(_mountsData);
+  const url = (typeof rmeKitBuilder !== 'undefined' && rmeKitBuilder.mountsUrl) || '/wp-content/plugins/rme-kit-builder/assets/data/vehicle-mounts.json';
+  return fetch(url).then(r => r.json()).then(d => { _mountsData = d; return d; }).catch(() => { _mountsData = { mounts: [], fallback: null }; return _mountsData; });
+}
+
+function findVehicleMounts(year, make, model) {
+  if (!_mountsData || !_mountsData.mounts) return [];
+  const y = parseInt(year);
+  return _mountsData.mounts.filter(m =>
+    m.fits.some(f =>
+      f.make.toLowerCase() === (make || '').toLowerCase() &&
+      (model || '').toLowerCase().includes(f.model.toLowerCase()) &&
+      y >= f.yearMin && y <= f.yearMax
+    )
+  );
+}
+
 function renderMobileVehicle() {
+  loadMountsData(); // preload mounts data for antenna step
   const c = document.getElementById('mobile-step-content');
   const v = mobileState.vehicle || { year: '', make: '', model: '' };
   const selStyle = 'background:#111;border:1px solid #2a2a2a;color:#e0e0e0;padding:10px;width:100%;font-size:14px;border-radius:4px;appearance:auto';
@@ -1292,23 +1312,36 @@ function logUnlistedVehicle(vehicleText) {
 function renderMobileAntenna() {
   const c = document.getElementById('mobile-step-content');
   const v = mobileState.vehicle || {};
-  const isTacoma = (v.make || '').toLowerCase().includes('tacoma') && parseInt(v.year) >= 2016;
   const sel = mobileState.selections;
   if (!sel.antennaMount) sel.antennaMount = null;
   if (!sel.antenna) sel.antenna = null;
 
-  // Build mount options based on vehicle
+  // Check vehicle-mounts.json for vehicle-specific fender mount recommendations
+  const matchedMounts = findVehicleMounts(v.year, v.make, v.model);
+  const hasFenderMount = matchedMounts.length > 0;
+  // The Tacoma fender mount is the only one currently in the WC catalog (ID 8224)
+  const isTacoma = matchedMounts.some(m => m.id === 'ncg-tacoma');
+
+  let mountNote = '';
+  if (hasFenderMount && !isTacoma) {
+    const fm = matchedMounts[0];
+    mountNote = `<div style="padding:12px;margin-bottom:12px;background:#1a1800;border:1px solid var(--gold-dim);border-radius:8px;font-size:13px;color:#ddd">
+      ⭐ <strong style="color:var(--gold)">Vehicle-specific option:</strong> The <strong>${fm.name}</strong> ($${fm.price}) is compatible with your ${v.year} ${v.make} ${v.model}. Contact us to add it to your kit.
+    </div>`;
+  }
+
   let mountOptions = [];
   if (isTacoma) {
     mountOptions.push({ key: 'fender-tacoma', highlight: true, label: 'Recommended: Tacoma Fender Mount ($29)', detail: 'Vehicle-specific NMO fender mount. Clean, permanent install for your Tacoma.' });
   }
-  mountOptions.push({ key: 'lipmount-nmo', highlight: !isTacoma, label: (isTacoma ? '' : 'Recommended: ') + 'Lip Mount NMO ($99)', detail: 'Most stable universal option. Mounts on trunk/hood lip without drilling.' });
+  mountOptions.push({ key: 'lipmount-nmo', highlight: !hasFenderMount, label: (hasFenderMount ? '' : '⭐ Recommended: ') + 'Lip Mount NMO ($99)', detail: 'Most stable universal option. Mounts on trunk/hood lip without drilling.' });
   mountOptions.push({ key: 'magmount-nmo', highlight: false, label: 'Magnetic Mount NMO ($39)', detail: 'Easy removal, best if you frequently remove the antenna. Less stable than permanent mounts.' });
   mountOptions.push({ key: 'roofrack', highlight: false, label: 'Roof Rack Mount ($44.95)', detail: 'Clamps to roof rack bars. Good when no flat surface is available.' });
 
   c.innerHTML = `
     <div class="section-head"><h2>Antenna & Mount</h2><p>Your mobile radio needs an external antenna for best performance. We'll help you pick the right mount for your vehicle.</p></div>
     <div style="max-width:600px;margin:0 auto">
+      ${mountNote}
       <label style="font-size:14px;color:var(--gold);display:block;margin-bottom:8px">Antenna Mount</label>
       ${mountOptions.map(m => `
         <div class="nq-option ${sel.antennaMount === m.key ? 'selected' : ''}" onclick="mobileState.selections.antennaMount='${m.key}';renderMobileAntenna()">

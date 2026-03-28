@@ -1,0 +1,270 @@
+{
+  "mounts": [
+    {
+      "id": "ncg-tacoma",
+      "name": "NCG Tacoma NMO Fender Mount",
+      "brand": "NCG/Comet",
+      "type": "fender",
+      "price": 29,
+      "wcProductId": null,
+      "fits": [
+        { "make": "Toyota", "model": "Tacoma", "yearMin": 2005, "yearMax": 2026 }
+      ],
+      "desc": "Vehicle-specific NMO fender bracket for a clean, permanent install. No drilling into body panels."
+    },
+    {
+      "id": "ncg-4runner",
+      "name": "NCG 4Runner NMO Fender Mount",
+      "brand": "NCG/Comet",
+      "type": "fender",
+      "price": 29,
+      "wcProductId": null,
+      "fits": [
+        { "make": "Toyota", "model": "4Runner", "yearMin": 2010, "yearMax": 2026 }
+      ],
+      "desc": "Bolt-on NMO fender bracket designed for 5th and 6th gen 4Runner."
+    },
+    {
+      "id": "ncg-tundra",
+      "name": "NCG Tundra NMO Fender Mount",
+      "brand": "NCG/Comet",
+      "type": "fender",
+      "price": 29,
+      "wcProductId": null,
+      "fits": [
+        { "make": "Toyota", "model": "Tundra", "yearMin": 2007, "yearMax": 2026 }
+      ],
+      "desc": "Vehicle-specific NMO fender bracket for Tundra. Bolts to existing fender holes."
+    },
+    {
+      "id": "ncg-f150",
+      "name": "NCG F-150 NMO Fender Mount",
+      "brand": "NCG/Comet",
+      "type": "fender",
+      "price": 29,
+      "wcProductId": null,
+      "fits": [
+        { "make": "Ford", "model": "F-150", "yearMin": 2009, "yearMax": 2026 }
+      ],
+      "desc": "Vehicle-specific NMO fender bracket for Ford F-150. No drilling required."
+    },
+    {
+      "id": "ncg-f250",
+      "name": "NCG F-250/F-350 NMO Fender Mount",
+      "brand": "NCG/Comet",
+      "type": "fender",
+      "price": 29,
+      "wcProductId": null,
+      "fits": [
+        { "make": "Ford", "model": "F-250", "yearMin": 2011, "yearMax": 2026 },
+        { "make": "Ford", "model": "F-350", "yearMin": 2011, "yearMax": 2026 }
+      ],
+      "desc": "Vehicle-specific NMO fender bracket for Super Duty trucks."
+    },
+    {
+      "id": "ncg-ranger",
+      "name": "NCG Ranger NMO Fender Mount",
+      "brand": "NCG/Comet",
+      "type": "fender",
+      "price": 29,
+      "wcProductId": null,
+      "fits": [
+        { "make": "Ford", "model": "Ranger", "yearMin": 2019, "yearMax": 2026 }
+      ],
+      "desc": "Vehicle-specific NMO fender bracket for current-gen Ford Ranger."
+    },
+    {
+      "id": "ncg-bronco",
+      "name": "NCG Bronco NMO Fender Mount",
+      "brand": "NCG/Comet",
+      "type": "fender",
+      "price": 29,
+      "wcProductId": null,
+      "fits": [
+        { "make": "Ford", "model": "Bronco", "yearMin": 2021, "yearMax": 2026 }
+      ],
+      "desc": "NMO fender bracket designed for the 6th gen Ford Bronco."
+    },
+    {
+      "id": "ncg-silverado",
+      "name": "NCG Silverado/Sierra NMO Fender Mount",
+      "brand": "NCG/Comet",
+      "type": "fender",
+      "price": 29,
+      "wcProductId": null,
+      "fits": [
+        { "make": "Chevrolet", "model": "Silverado", "yearMin": 2007, "yearMax": 2026 },
+        { "make": "GMC", "model": "Sierra", "yearMin": 2007, "yearMax": 2026 }
+      ],
+      "desc": "Vehicle-specific NMO fender bracket for GM full-size trucks."
+    },
+    {
+      "id": "ncg-colorado",
+      "name": "NCG Colorado/Canyon NMO Fender Mount",
+      "brand": "NCG/Comet",
+      "type": "fender",
+      "price": 29,
+      "wcProductId": null,
+      "fits": [
+        { "make": "Chevrolet", "model": "Colorado", "yearMin": 2015, "yearMax": 2026 },
+        { "make": "GMC", "model": "Canyon", "yearMin": 2015, "yearMax": 2026 }
+      ],
+      "desc": "NMO fender bracket for GM mid-size trucks."
+    },
+    {
+      "id": "ncg-ram",
+      "name": "NCG Ram 1500 NMO Fender Mount",
+      "brand": "NCG/Comet",
+      "type": "fender",
+      "price": 29,
+      "wcProductId": null,
+      "fits": [
+        { "make": "Ram", "model": "1500", "yearMin": 2009, "yearMax": 2026 }
+      ],
+      "desc": "Vehicle-specific NMO fender bracket for Ram 1500."
+    },
+    {
+      "id": "ncg-ram-hd",
+      "name": "NCG Ram 2500/3500 NMO Fender Mount",
+      "brand": "NCG/Comet",
+      "type": "fender",
+      "price": 29,
+      "wcProductId": null,
+      "fits": [
+        { "make": "Ram", "model": "2500", "yearMin": 2010, "yearMax": 2026 },
+        { "make": "Ram", "model": "3500", "yearMin": 2010, "yearMax": 2026 }
+      ],
+      "desc": "NMO fender bracket for Ram heavy duty trucks."
+    },
+    {
+      "id": "ncg-wrangler",
+      "name": "NCG Wrangler JK/JL NMO Mount",
+      "brand": "NCG/Comet",
+      "type": "fender",
+      "price": 32,
+      "wcProductId": null,
+      "fits": [
+        { "make": "Jeep", "model": "Wrangler", "yearMin": 2007, "yearMax": 2026 }
+      ],
+      "desc": "Bolt-on NMO mount for Jeep Wrangler JK (2007-2018) and JL (2018+)."
+    },
+    {
+      "id": "ncg-gladiator",
+      "name": "NCG Gladiator NMO Mount",
+      "brand": "NCG/Comet",
+      "type": "fender",
+      "price": 32,
+      "wcProductId": null,
+      "fits": [
+        { "make": "Jeep", "model": "Gladiator", "yearMin": 2020, "yearMax": 2026 }
+      ],
+      "desc": "Bolt-on NMO mount for Jeep Gladiator."
+    },
+    {
+      "id": "rugged-tacoma",
+      "name": "Rugged Radios Tacoma A-Pillar Mount",
+      "brand": "Rugged Radios",
+      "type": "a-pillar",
+      "price": 35,
+      "wcProductId": null,
+      "fits": [
+        { "make": "Toyota", "model": "Tacoma", "yearMin": 2016, "yearMax": 2026 }
+      ],
+      "desc": "A-pillar antenna mount bracket for 3rd gen+ Tacoma. Clean factory look."
+    },
+    {
+      "id": "rugged-4runner",
+      "name": "Rugged Radios 4Runner A-Pillar Mount",
+      "brand": "Rugged Radios",
+      "type": "a-pillar",
+      "price": 35,
+      "wcProductId": null,
+      "fits": [
+        { "make": "Toyota", "model": "4Runner", "yearMin": 2010, "yearMax": 2026 }
+      ],
+      "desc": "A-pillar antenna mount for 5th/6th gen 4Runner."
+    },
+    {
+      "id": "rugged-wrangler",
+      "name": "Rugged Radios Wrangler JL Hood Mount",
+      "brand": "Rugged Radios",
+      "type": "hood",
+      "price": 38,
+      "wcProductId": null,
+      "fits": [
+        { "make": "Jeep", "model": "Wrangler", "yearMin": 2018, "yearMax": 2026 }
+      ],
+      "desc": "Hood hinge antenna mount for JL Wrangler. No drilling."
+    },
+    {
+      "id": "rugged-bronco",
+      "name": "Rugged Radios Bronco Fender Mount",
+      "brand": "Rugged Radios",
+      "type": "fender",
+      "price": 35,
+      "wcProductId": null,
+      "fits": [
+        { "make": "Ford", "model": "Bronco", "yearMin": 2021, "yearMax": 2026 }
+      ],
+      "desc": "Fender antenna mount for 6th gen Ford Bronco."
+    },
+    {
+      "id": "walcott-f150",
+      "name": "Walcott F-150 Dome Stud Mount",
+      "brand": "Walcott Radio",
+      "type": "dome-stud",
+      "price": 40,
+      "wcProductId": null,
+      "fits": [
+        { "make": "Ford", "model": "F-150", "yearMin": 2015, "yearMax": 2026 }
+      ],
+      "desc": "Cab-mount dome stud bracket for Ford F-150. Fits factory mounting point."
+    },
+    {
+      "id": "walcott-superduty",
+      "name": "Walcott Super Duty Dome Stud Mount",
+      "brand": "Walcott Radio",
+      "type": "dome-stud",
+      "price": 40,
+      "wcProductId": null,
+      "fits": [
+        { "make": "Ford", "model": "F-250", "yearMin": 2011, "yearMax": 2026 },
+        { "make": "Ford", "model": "F-350", "yearMin": 2011, "yearMax": 2026 }
+      ],
+      "desc": "Dome stud cab mount bracket for Ford Super Duty trucks."
+    },
+    {
+      "id": "walcott-ram",
+      "name": "Walcott Ram Cab Mount",
+      "brand": "Walcott Radio",
+      "type": "dome-stud",
+      "price": 40,
+      "wcProductId": null,
+      "fits": [
+        { "make": "Ram", "model": "1500", "yearMin": 2009, "yearMax": 2026 },
+        { "make": "Ram", "model": "2500", "yearMin": 2010, "yearMax": 2026 },
+        { "make": "Ram", "model": "3500", "yearMin": 2010, "yearMax": 2026 }
+      ],
+      "desc": "Cab-mount dome stud bracket for Ram trucks."
+    },
+    {
+      "id": "walcott-silverado",
+      "name": "Walcott Silverado/Sierra Cab Mount",
+      "brand": "Walcott Radio",
+      "type": "dome-stud",
+      "price": 40,
+      "wcProductId": null,
+      "fits": [
+        { "make": "Chevrolet", "model": "Silverado", "yearMin": 2007, "yearMax": 2026 },
+        { "make": "GMC", "model": "Sierra", "yearMin": 2007, "yearMax": 2026 }
+      ],
+      "desc": "Dome stud cab mount for GM full-size trucks."
+    }
+  ],
+  "fallback": {
+    "key": "lipmount-nmo",
+    "name": "Lip Mount NMO",
+    "price": 99,
+    "desc": "Universal lip mount. Works on any vehicle with a trunk, hood, or hatch lip. Most stable universal option, no drilling required."
+  }
+}
