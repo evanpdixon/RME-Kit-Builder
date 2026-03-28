@@ -542,8 +542,8 @@ function renderKitPlan() {
             <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
               <div class="kpi-status ${kit.status}">${kit.status === 'complete' ? 'Done' : kit.status === 'active' ? 'Active' : 'Pending'}</div>
               ${kit.status === 'pending' ? `
-                <button onclick="duplicateKit(${i})" style="background:none;border:none;cursor:pointer;color:#666;padding:4px;line-height:0" title="Add another"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
-                <button onclick="removeKit(${i})" style="background:none;border:none;cursor:pointer;color:#666;padding:4px;line-height:0" title="Remove"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"/><path d="M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>
+                <button onclick="duplicateKit(${i})" style="background:none;border:none;cursor:pointer;color:#666;padding:10px;line-height:0;min-width:36px;min-height:36px;display:flex;align-items:center;justify-content:center" title="Add another"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+                <button onclick="removeKit(${i})" style="background:none;border:none;cursor:pointer;color:#666;padding:10px;line-height:0;min-width:36px;min-height:36px;display:flex;align-items:center;justify-content:center" title="Remove"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"/><path d="M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>
               ` : ''}
             </div>
           </div>
@@ -1066,7 +1066,7 @@ function renderMobileRadioChoice() {
           const isPrimary = r.key === primary;
           return `
           <div class="radio-pick ${mobileState.radioKey === r.key ? 'selected' : ''}" onclick="selectMobileRadio('${r.key}')"
-               style="flex:1;min-width:280px;max-width:360px;text-align:center;padding:24px 20px;${isPrimary ? 'border-color:var(--rme-gold)' : ''}">
+               style="flex:1;min-width:min(280px,100%);max-width:360px;text-align:center;padding:24px 20px;${isPrimary ? 'border-color:var(--rme-gold)' : ''}">
             ${badge ? `<div style="font-size:11px;padding:4px 10px;background:#1a1800;border:1px solid var(--rme-gold);color:var(--rme-gold);display:inline-block;margin-bottom:12px;border-radius:4px">${badge}</div>` : '<div style="height:27px"></div>'}
             <div class="rp-img" style="margin:0 auto 12px"><img src="${r.img || ''}" alt="${r.name}" onerror="this.parentElement.innerHTML='📻'"></div>
             <h4 style="color:var(--rme-gold);margin-bottom:4px">${r.name.replace(' Essentials Kit','').replace(' Mobile Radio Kit','')}</h4>
@@ -1113,7 +1113,7 @@ function renderMobileWizard() {
       ${steps.map((s, i) => `<div class="step-label ${i === mobileState.step ? 'active' : i < mobileState.step ? 'completed' : ''}" onclick="mobileState.step=${i};renderMobileWizard()">${s.name}</div>`).join('')}
     </div>
     <div id="mobile-step-content"></div>
-    <div style="display:flex;gap:10px;justify-content:center;margin-top:20px">
+    <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:20px">
       ${mobileState.step > 0 ? '<button class="btn-nav btn-back" onclick="mobileState.step--;renderMobileWizard();scrollToTop()">← Back</button>' : '<button class="btn-nav btn-back" onclick="mobileState.radioKey=null;renderMobileRadioChoice()">← Change Radio</button>'}
       <button class="btn-nav btn-next" onclick="advanceMobileStep()">
         ${mobileState.step < steps.length - 1 ? 'Next: ' + steps[mobileState.step + 1].name + ' →' : 'Save Kit & Continue →'}
@@ -1397,7 +1397,7 @@ function renderMobilePower() {
         <div style="font-weight:700;color:var(--gold);font-size:14px;white-space:nowrap">${sel.power.lifepo4Size === '20ah' ? '$228' : '$208'}</div>
       </div>
       ${sel.power.lifepo4 ? `
-      <div style="display:flex;gap:8px;margin:-4px 0 8px 36px">
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin:-4px 0 8px 16px">
         <div class="nq-option ${sel.power.lifepo4Size === '20ah' ? 'selected' : ''}" onclick="mobileState.selections.power.lifepo4Size='20ah';renderMobilePower()" style="flex:1;justify-content:center;padding:10px">
           <div><div class="nq-label" style="text-align:center">20Ah ($228)</div><div class="nq-detail" style="text-align:center">Recommended, longer runtime</div></div>
         </div>
@@ -1405,7 +1405,7 @@ function renderMobilePower() {
           <div><div class="nq-label" style="text-align:center">10Ah ($208)</div><div class="nq-detail" style="text-align:center">Lighter, compact</div></div>
         </div>
       </div>
-      <div class="nq-option ${sel.power.acCharger ? 'selected' : ''}" onclick="mobileState.selections.power.acCharger=!mobileState.selections.power.acCharger;renderMobilePower()" style="margin:-4px 0 8px 36px">
+      <div class="nq-option ${sel.power.acCharger ? 'selected' : ''}" onclick="mobileState.selections.power.acCharger=!mobileState.selections.power.acCharger;renderMobilePower()" style="margin:-4px 0 8px 16px">
         <div class="nq-check">${sel.power.acCharger ? '✓' : ''}</div>
         <div style="flex:1">
           <div class="nq-label">Add AC Wall Charger ($29)</div>
@@ -1658,7 +1658,7 @@ function renderBaseRadioChoice() {
           const isPrimary = r.key === primary;
           return `
           <div class="radio-pick ${baseState.radioKey === r.key ? 'selected' : ''}" onclick="selectBaseRadio('${r.key}')"
-               style="flex:1;min-width:280px;max-width:360px;text-align:center;padding:24px 20px;${isPrimary ? 'border-color:var(--rme-gold)' : ''}">
+               style="flex:1;min-width:min(280px,100%);max-width:360px;text-align:center;padding:24px 20px;${isPrimary ? 'border-color:var(--rme-gold)' : ''}">
             ${badge ? `<div style="font-size:11px;padding:4px 10px;background:#1a1800;border:1px solid var(--rme-gold);color:var(--rme-gold);display:inline-block;margin-bottom:12px;border-radius:4px">${badge}</div>` : '<div style="height:27px"></div>'}
             <div class="rp-img" style="margin:0 auto 12px"><img src="${r.img || ''}" alt="${r.name}" onerror="this.parentElement.innerHTML='📻'"></div>
             <h4 style="color:var(--rme-gold);margin-bottom:4px">${r.name.replace(' Essentials Kit','').replace(' Mobile Radio Kit','')}</h4>
@@ -1716,7 +1716,7 @@ function renderBaseWizard() {
       ${steps.map((s, i) => `<div class="step-label ${i === baseState.step ? 'active' : ''}" onclick="baseState.step=${i};renderBaseWizard()">${s.name}</div>`).join('')}
     </div>
     <div id="base-step-content"></div>
-    <div style="display:flex;gap:10px;justify-content:center;margin-top:20px">
+    <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:20px">
       ${baseState.step > 0 ? '<button class="btn-nav btn-back" onclick="baseState.step--;renderBaseWizard();scrollToTop()">← Back</button>' : '<button class="btn-nav btn-back" onclick="baseState.radioKey=null;renderBaseRadioChoice()">← Change Radio</button>'}
       <button class="btn-nav btn-next" onclick="advanceBaseStep()">
         ${baseState.step < steps.length - 1 ? 'Next: ' + steps[baseState.step + 1].name + ' →' : 'Save Kit & Continue →'}
@@ -2222,7 +2222,7 @@ function renderHfWizard() {
       ${steps.map((s, i) => `<div class="step-label ${i === hfState.step ? 'active' : ''}" onclick="hfState.step=${i};renderHfWizard()">${s.name}</div>`).join('')}
     </div>
     <div id="hf-step-content"></div>
-    <div style="display:flex;gap:10px;justify-content:center;margin-top:20px">
+    <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:20px">
       ${hfState.step > 0 ? '<button class="btn-nav btn-back" onclick="hfState.step--;renderHfWizard();scrollToTop()">← Back</button>' : '<button class="btn-nav btn-back" onclick="hfState.radioKey=null;renderHfRadioChoice()">← Change Radio</button>'}
       <button class="btn-nav btn-next" onclick="advanceHfStep()">
         ${hfState.step < steps.length - 1 ? 'Next: ' + steps[hfState.step + 1].name + ' →' : 'Save Kit & Continue →'}
@@ -2617,7 +2617,7 @@ function renderScannerRadioChoice() {
           const isSDR = r.requiresComputer;
           return `
           <div class="radio-pick" onclick="selectScannerRadio('${r.key}')"
-               style="flex:1;min-width:250px;max-width:320px;text-align:center;padding:24px 20px">
+               style="flex:1;min-width:min(250px,100%);max-width:320px;text-align:center;padding:24px 20px">
             <div class="rp-img" style="margin:0 auto 12px"><img src="${r.img || ''}" alt="${r.name}" onerror="this.parentElement.innerHTML='📡'"></div>
             <h4 style="color:var(--rme-gold);margin-bottom:4px">${r.name.replace(' Digital Scanner Base Station','').replace(' Handheld Digital Scanner','').replace(' Essentials Kit','')}</h4>
             <div style="font-size:13px;color:#c4a83a;margin-bottom:4px">${r.tagline}</div>
@@ -2681,7 +2681,7 @@ function renderScannerWizard() {
     <div class="step-labels">${steps.map((s, i) => `<div class="step-label ${i === scannerState.step ? 'active' : i < scannerState.step ? 'done' : ''}">${s.name}</div>`).join('')}</div>
     <div class="progress">${steps.map((s, i) => `<div class="progress-step ${i === scannerState.step ? 'active' : i < scannerState.step ? 'done' : ''}"></div>`).join('')}</div>
     <div id="scanner-step-content"></div>
-    <div style="display:flex;gap:12px;justify-content:center;margin-top:24px">
+    <div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:24px">
       ${scannerState.step > 0 ? '<button class="btn-nav btn-back" onclick="scannerState.step--;renderScannerWizard();scrollToTop()">← Back</button>' : '<button class="btn-nav btn-back" onclick="scannerState.radioKey=null;renderScannerRadioChoice()">← Change Scanner</button>'}
       ${scannerState.step < steps.length - 1 ? `<button class="btn-nav btn-next" onclick="scannerState.step++;renderScannerWizard();scrollToTop()">Next: ${steps[scannerState.step + 1].name} →</button>` : `<button class="btn-nav btn-next" onclick="completeScannerKit()">✓ Complete Kit</button>`}
     </div>
@@ -3682,7 +3682,7 @@ function reviewEditStep(stepName) {
 function renderReview() {
   const list = document.getElementById('review-list');
   let items = [];
-  const editStyle = 'font-size:11px;color:var(--gold);cursor:pointer;text-transform:uppercase;letter-spacing:1px;margin-left:8px';
+  const editStyle = 'font-size:12px;color:var(--gold);cursor:pointer;text-transform:uppercase;letter-spacing:1px;margin-left:8px;padding:8px 12px;border-radius:4px;min-height:36px;display:inline-flex;align-items:center';
 
   // Base kit -no remove button
   const selRadio = radioLineup.find(r => r.key === selectedRadioKey) || radioLineup[0];
@@ -4319,12 +4319,13 @@ let userNavigated = false;
 function scrollToTop() {
   // Blur active element to prevent focus-driven scroll restoration
   if (document.activeElement) document.activeElement.blur();
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   setTimeout(() => {
     // Scroll to page title if visible, otherwise kit builder container
     const title = document.querySelector('.rme-page-title');
     const target = title || document.getElementById('rme-kit-builder');
-    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, 200);
+    if (target) target.scrollIntoView({ behavior: prefersReduced ? 'auto' : 'smooth', block: 'start' });
+  }, prefersReduced ? 0 : 200);
 }
 
 function nextStep() {
