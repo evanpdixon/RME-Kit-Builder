@@ -830,9 +830,14 @@ const mobileProducts = {
   antennaMounts: [
     { key: 'lipmount-nmo', name: 'Comet CP-5NMO Antenna Lip Mount', desc: 'Permanent lip mount, the most stable option. Mounts on trunk/hood lip without drilling.', price: 99, id: 7013, mountType: 'permanent' },
     { key: 'lipmount-so239', name: 'Comet CP-5M Antenna Lip Mount (SO-239)', desc: 'Permanent lip mount with SO-239 connector.', price: 99, id: 7277, mountType: 'permanent' },
-    { key: 'fender-tacoma', name: 'Fender Antenna Mount (Toyota Tacoma 2016+)', desc: 'Vehicle-specific NMO fender mount for clean, permanent install.', price: 29, id: 8224, mountType: 'permanent', vehicleMatch: 'tacoma' },
+    { key: 'fender-tacoma', name: 'NCG Tacoma Fender Mount (TACANTNCG)', desc: 'No-drill NMO fender bracket for Toyota Tacoma 2016-2023. Uses existing fender bolts.', price: 29, id: 8224, mountType: 'permanent', vehicleMatch: 'tacoma', isFenderMount: true },
+    { key: 'fender-ford', name: 'NCG Ford Truck Fender Mount (FO3ANTNCG)', desc: 'No-drill NMO fender bracket for Ford F-150 (2015+), F-250/F-350 (2017+), Expedition (2018+).', price: 29, id: null, mountType: 'permanent', vehicleMatch: 'ford-truck', isFenderMount: true },
+    { key: 'fender-chevy', name: 'NCG Silverado/Sierra Fender Mount (CV3ANTNCG)', desc: 'No-drill NMO fender bracket for Chevy Silverado/GMC Sierra 1500 (2019-24), 2500/3500 (2020-23).', price: 29, id: null, mountType: 'permanent', vehicleMatch: 'chevy-truck', isFenderMount: true },
+    { key: 'fender-ram', name: 'NCG Ram Fender Mount (DG2ANTPF)', desc: 'No-drill NMO fender bracket for Ram 1500/2500/3500 (2009-2018). Driver side.', price: 29, id: null, mountType: 'permanent', vehicleMatch: 'ram-truck', isFenderMount: true },
+    { key: 'fender-ram-new', name: 'NCG Ram Fender Mount (DG3ANTNCG)', desc: 'No-drill NMO fender bracket for Ram 1500/2500/3500 (2019-2023). Driver side.', price: 29, id: null, mountType: 'permanent', vehicleMatch: 'ram-truck-new', isFenderMount: true },
+    { key: 'fender-colorado', name: 'NCG Colorado/Canyon Fender Mount (COANTNCG)', desc: 'No-drill NMO fender bracket for Chevy Colorado/GMC Canyon (2012-2022).', price: 29, id: null, mountType: 'permanent', vehicleMatch: 'colorado', isFenderMount: true },
     { key: 'magmount-nmo', name: 'Comet Mag Mount NMO', desc: 'Flat magnetic mount for vehicle roofs. Easy to remove, best if you need to take the antenna off regularly.', price: 39, id: 6940, mountType: 'temporary' },
-    { key: 'roofrack', name: 'Comet Adjustable Roof Rack Mount', desc: 'Clamps to roof rack bars. Good option when no flat metal surface is available.', price: 44.95, id: 7198, mountType: 'permanent' },
+    { key: 'roofrack', name: 'Comet RS-660U Roof Rack Mount', desc: 'Clamps to roof rack bars (up to 2.25" x 2"). Good option when no flat metal surface is available.', price: 59, id: 7198, mountType: 'permanent' },
     { key: 'ditchlight', name: 'Ditch Light Antenna Mount Extension', desc: 'Adds antenna mount to existing ditch light mount.', price: 29, id: 7602, mountType: 'permanent' },
   ],
   vehicleAntennas: [
@@ -860,6 +865,7 @@ const mobileProducts = {
     { key: 'bs22', name: 'BS-22 Wireless Speakermic', desc: 'Bluetooth wireless speaker-microphone. Clips to gear, pairs via Bluetooth.', price: 59, id: 8491, compatRadios: ['uv50pro'] },
     { key: 'bt01', name: 'BT-01 Mobile Bluetooth Speaker Mic', desc: 'Bluetooth speaker-microphone for mobile radios. Wireless audio with PTT for hands-free operation.', price: 149, id: 6717, compatRadios: ['d578'] },
     { key: 'relocation', name: 'Antenna Jack Relocation Cable', desc: 'Right-angle PL-259 to SO-239 cable for repositioning the antenna jack.', price: 19, id: 7271 },
+    { key: 'so239-pigtail', name: 'SO-239 Antenna Pigtail Adapter', desc: 'Adapter pigtail for connecting SO-239 accessories to your mobile radio.', price: 12, id: null },
   ],
 };
 
@@ -1319,33 +1325,27 @@ function renderMobileAntenna() {
 
   // Check vehicle-mounts.json for vehicle-specific fender mount recommendations
   const matchedMounts = findVehicleMounts(v.year, v.make, v.model);
-  const hasFenderMount = matchedMounts.length > 0;
-  // The Tacoma fender mount is the only one currently in the WC catalog (ID 8224)
-  const isTacoma = matchedMounts.some(m => m.id === 'ncg-tacoma');
-
-  let mountNote = '';
-  if (hasFenderMount && !isTacoma) {
-    const fm = matchedMounts[0];
-    mountNote = `<div style="padding:12px;margin-bottom:12px;background:#1a1800;border:1px solid var(--gold-dim);border-radius:8px;font-size:13px;color:#ddd">
-      ⭐ <strong style="color:var(--gold)">Vehicle-specific option:</strong> The <strong>${fm.name}</strong> ($${fm.price}) is compatible with your ${v.year} ${v.make} ${v.model}. Contact us to add it to your kit.
-    </div>`;
-  }
+  const fenderMount = matchedMounts.find(m => m.type === 'fender');
+  const hasFenderMount = !!fenderMount;
 
   let mountOptions = [];
-  if (isTacoma) {
-    mountOptions.push({ key: 'fender-tacoma', highlight: true, label: 'Recommended: Tacoma Fender Mount ($29)', detail: 'Vehicle-specific NMO fender mount. Clean, permanent install for your Tacoma.' });
+  if (hasFenderMount) {
+    mountOptions.push({
+      key: 'fender-matched', highlight: true, fenderMountData: fenderMount,
+      label: `⭐ Recommended: ${fenderMount.name} ($${fenderMount.price})`,
+      detail: `${fenderMount.desc} Pair with NMO coax cable ($49) for a complete install — $78 total.`
+    });
   }
-  mountOptions.push({ key: 'lipmount-nmo', highlight: !hasFenderMount, label: (hasFenderMount ? '' : '⭐ Recommended: ') + 'Lip Mount NMO ($99)', detail: 'Most stable universal option. Mounts on trunk/hood lip without drilling.' });
+  mountOptions.push({ key: 'lipmount-nmo', highlight: !hasFenderMount, label: (hasFenderMount ? '' : '⭐ Recommended: ') + 'Lip Mount NMO ($99)', detail: 'Most stable universal option. Mounts on trunk/hood lip without drilling. Includes 16ft coax.' });
   mountOptions.push({ key: 'magmount-nmo', highlight: false, label: 'Magnetic Mount NMO ($39)', detail: 'Easy removal, best if you frequently remove the antenna. Less stable than permanent mounts.' });
-  mountOptions.push({ key: 'roofrack', highlight: false, label: 'Roof Rack Mount ($44.95)', detail: 'Clamps to roof rack bars. Good when no flat surface is available.' });
+  mountOptions.push({ key: 'roofrack', highlight: false, label: 'Roof Rack Mount ($59)', detail: 'Comet RS-660U. Clamps to roof rack bars (up to 2.25" x 2").' });
 
   c.innerHTML = `
     <div class="section-head"><h2>Antenna & Mount</h2><p>Your mobile radio needs an external antenna for best performance. We'll help you pick the right mount for your vehicle.</p></div>
     <div style="max-width:600px;margin:0 auto">
-      ${mountNote}
       <label style="font-size:14px;color:var(--gold);display:block;margin-bottom:8px">Antenna Mount</label>
       ${mountOptions.map(m => `
-        <div class="nq-option ${sel.antennaMount === m.key ? 'selected' : ''}" onclick="mobileState.selections.antennaMount='${m.key}';renderMobileAntenna()">
+        <div class="nq-option ${sel.antennaMount === m.key ? 'selected' : ''}" onclick="mobileState.selections.antennaMount='${m.key}';${m.fenderMountData ? `mobileState.selections.fenderMountData=${JSON.stringify(m.fenderMountData)};` : 'mobileState.selections.fenderMountData=null;'}renderMobileAntenna()">
           <div class="nq-check">${sel.antennaMount === m.key ? '✓' : ''}</div>
           <div>
             <div class="nq-label">${m.highlight ? '⭐ ' : ''}${m.label}</div>
@@ -1541,8 +1541,16 @@ function renderMobileReview() {
 
   // Antenna mount
   if (sel.antennaMount) {
-    const m = mobileProducts.antennaMounts.find(a => a.key === sel.antennaMount);
-    if (m) { items.push({ name: m.name, price: m.price, id: m.id }); total += m.price; }
+    if (sel.antennaMount === 'fender-matched' && sel.fenderMountData) {
+      // Fender mount from vehicle-mounts.json + bundled NMO coax
+      const fm = sel.fenderMountData;
+      items.push({ name: fm.name, price: fm.price, id: fm.wcProductId }); total += fm.price;
+      const coax = mobileProducts.nmoCoax.find(c => c.key === 'nmo-coax');
+      if (coax) { items.push({ name: coax.name + ' (bundle)', price: coax.price, id: coax.id }); total += coax.price; }
+    } else {
+      const m = mobileProducts.antennaMounts.find(a => a.key === sel.antennaMount);
+      if (m) { items.push({ name: m.name, price: m.price, id: m.id }); total += m.price; }
+    }
   }
 
   // Antenna
@@ -2590,6 +2598,7 @@ const scannerProducts = {
     { key: 'sds100-battery', name: 'SDS100 Spare Battery with Charger', desc: 'Replacement battery and charger for extended field time. Swap batteries to keep scanning all day.', price: 89, id: 9452, compatRadios: ['sds100'] },
     { key: 'usbc-adapter', name: 'Mini USB to USB-C Charging Adapter', desc: 'Charge your SDS100 via USB-C instead of the Mini USB port. Use any modern cable.', price: 9, id: 9453, compatRadios: ['sds100'] },
     { key: 'ram-hanger', name: 'RAM Mount Compatible Scanner Hanger', desc: 'Attach your SDS100 to any RAM ball mount system. Great for vehicles, desks, or go-kits.', price: 19, id: 9454, compatRadios: ['sds100'] },
+    { key: 'so239-pigtail', name: 'SO-239 Antenna Pigtail Adapter', desc: 'Connect your scanner to an external SO-239 antenna for better reception.', price: 12, id: null },
   ],
 };
 
@@ -3004,6 +3013,8 @@ const radioProducts = {
       { key: 'exo', name: 'Exoskeleton', desc: 'Hard protective shell that prevents accidental PTT button presses and absorbs drops. Essential for field use.', price: 29, img: S+'2022/07/4A7A3860_white_square.png', id: 38 },
       { key: 'saddle', name: 'Kenwood Plug Saddle', desc: 'Rubber port protector that keeps moisture and debris out of the accessory jack when not in use.', price: 9, img: S+'2024/02/4A7A3864-White.png', id: 3701 },
       { key: 'monocable', name: 'Speakermic to Earpro Cable', desc: '3.5mm mono cable connecting your speakermic to electronic ear protection. Hear radio traffic through your earpro.', price: 9, img: S+'2023/07/20230703_103456.jpg', id: 1438 },
+      { key: 'so239-pigtail', name: 'SO-239 Antenna Pigtail Adapter', desc: 'Connects your handheld radio to an external SO-239 antenna. Essential for vehicle or base station antenna use with a handheld.', price: 12, id: null },
+      { key: 'battery-elim', name: '12V Battery Eliminator', desc: 'Run your UV-5R from a 12V source (vehicle, battery pack) without draining the internal battery. Replaces the battery pack with a 12V DC input.', price: 25, id: 455 },
     ],
   },
   'uv5r-mini': {
@@ -3019,6 +3030,7 @@ const radioProducts = {
       { key: 'progcable', name: 'USB Programming Cable', desc: 'Program custom frequencies via CHIRP software on your computer.', price: 25, img: S+'2024/08/uv5r-programming-cable.jpg', id: 4838 },
       { key: 'saddle', name: 'Kenwood Plug Saddle', desc: 'Rubber port protector that keeps moisture and debris out of the accessory jack when not in use.', price: 9, img: S+'2024/02/4A7A3864-White.png', id: 3701 },
       { key: 'monocable', name: 'Speakermic to Earpro Cable', desc: '3.5mm mono cable connecting your speakermic to electronic ear protection.', price: 9, img: S+'2023/07/20230703_103456.jpg', id: 1438 },
+      { key: 'so239-pigtail', name: 'SO-239 Antenna Pigtail Adapter', desc: 'Connects your handheld radio to an external SO-239 antenna. Essential for vehicle or base station antenna use with a handheld.', price: 12, id: null },
     ],
   },
   'uv-pro': {
@@ -3033,6 +3045,7 @@ const radioProducts = {
       { key: 'kplug', name: 'K-Plug Adapter', desc: 'Adapter that lets you use standard Kenwood-plug accessories (speakermics, eartubes, headsets) with your UV-PRO.', price: 25, img: S+'2025/11/1000008462.jpg', id: 8268 },
       { key: 'eartube', name: 'Acoustic Eartube Headset', desc: 'Covert-style earpiece with push-to-talk. Requires K-Plug Adapter for the UV-PRO.', price: 19, img: S+'2023/07/20230530_1405362.jpg', id: 1431 },
       { key: 'monocable', name: 'Speakermic to Earpro Cable', desc: '3.5mm mono cable connecting your speakermic to electronic ear protection.', price: 9, img: S+'2023/07/20230703_103456.jpg', id: 1438 },
+      { key: 'so239-pigtail', name: 'SO-239 Antenna Pigtail Adapter', desc: 'Connects your handheld radio to an external SO-239 antenna. Essential for vehicle or base station antenna use with a handheld.', price: 12, id: null },
     ],
   },
   'dmr-6x2': {
@@ -3048,6 +3061,8 @@ const radioProducts = {
       { key: 'progcable', name: 'Spare DMR 6X2 PRO Programming Cable', desc: 'Additional spare USB programming cable. One is already included with your kit. This is a backup for a second location or travel bag.', price: 12, img: S+'2025/12/1000009966.jpg', id: 8711 },
       { key: 'saddle', name: 'Kenwood Plug Saddle', desc: 'Rubber port protector that keeps moisture and debris out of the accessory jack when not in use.', price: 9, img: S+'2024/02/4A7A3864-White.png', id: 3701 },
       { key: 'monocable', name: 'Speakermic to Earpro Cable', desc: '3.5mm mono cable connecting your speakermic to electronic ear protection.', price: 9, img: S+'2023/07/20230703_103456.jpg', id: 1438 },
+      { key: 'so239-pigtail', name: 'SO-239 Antenna Pigtail Adapter', desc: 'Connects your handheld radio to an external SO-239 antenna. Essential for vehicle or base station antenna use with a handheld.', price: 12, id: null },
+      { key: 'battery-elim', name: '12V Battery Eliminator', desc: 'Run your DMR 6X2 PRO from a 12V source (vehicle, battery pack) without draining the internal battery. Replaces the battery pack with a 12V DC input.', price: 29, id: 7344 },
     ],
   },
   'da-7x2': {
@@ -3063,6 +3078,8 @@ const radioProducts = {
       { key: 'progcable', name: 'Spare DA-7X2 Programming Cable', desc: 'Additional spare USB programming cable. One is already included with your kit. This is a backup for a second location or travel bag.', price: 12, img: S+'2025/12/1000009966.jpg', id: 8711 },
       { key: 'saddle', name: 'Kenwood Plug Saddle', desc: 'Rubber port protector that keeps moisture and debris out of the accessory jack when not in use.', price: 9, img: S+'2024/02/4A7A3864-White.png', id: 3701 },
       { key: 'monocable', name: 'Speakermic to Earpro Cable', desc: '3.5mm mono cable connecting your speakermic to electronic ear protection.', price: 9, img: S+'2023/07/20230703_103456.jpg', id: 1438 },
+      { key: 'so239-pigtail', name: 'SO-239 Antenna Pigtail Adapter', desc: 'Connects your handheld radio to an external SO-239 antenna. Essential for vehicle or base station antenna use with a handheld.', price: 12, id: null },
+      { key: 'battery-elim', name: '12V Battery Eliminator', desc: 'Run your DA-7X2 from a 12V source (vehicle, battery pack) without draining the internal battery. Replaces the battery pack with a 12V DC input.', price: 29, id: 7344 },
     ],
   },
 };

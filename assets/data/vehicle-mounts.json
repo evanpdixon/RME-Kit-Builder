@@ -4,13 +4,14 @@
       "id": "ncg-tacoma",
       "name": "NCG Tacoma NMO Fender Mount",
       "brand": "NCG/Comet",
+      "model": "TACANTNCG",
       "type": "fender",
       "price": 29,
-      "wcProductId": null,
+      "wcProductId": 8224,
       "fits": [
-        { "make": "Toyota", "model": "Tacoma", "yearMin": 2005, "yearMax": 2026 }
+        { "make": "Toyota", "model": "Tacoma", "yearMin": 2016, "yearMax": 2023 }
       ],
-      "desc": "Vehicle-specific NMO fender bracket for a clean, permanent install. No drilling into body panels."
+      "desc": "No-drill NMO fender bracket. Uses existing fender bolts. Driver side only."
     },
     {
       "id": "ncg-4runner",
@@ -40,26 +41,29 @@
       "id": "ncg-f150",
       "name": "NCG F-150 NMO Fender Mount",
       "brand": "NCG/Comet",
+      "model": "FO3ANTNCG",
       "type": "fender",
       "price": 29,
       "wcProductId": null,
       "fits": [
-        { "make": "Ford", "model": "F-150", "yearMin": 2009, "yearMax": 2026 }
+        { "make": "Ford", "model": "F-150", "yearMin": 2015, "yearMax": 2026 },
+        { "make": "Ford", "model": "Expedition", "yearMin": 2018, "yearMax": 2026 }
       ],
-      "desc": "Vehicle-specific NMO fender bracket for Ford F-150. No drilling required."
+      "desc": "No-drill NMO fender bracket. Fits through gap between fender and hood. Driver side only."
     },
     {
       "id": "ncg-f250",
       "name": "NCG F-250/F-350 NMO Fender Mount",
       "brand": "NCG/Comet",
+      "model": "FO3ANTNCG",
       "type": "fender",
       "price": 29,
       "wcProductId": null,
       "fits": [
-        { "make": "Ford", "model": "F-250", "yearMin": 2011, "yearMax": 2026 },
-        { "make": "Ford", "model": "F-350", "yearMin": 2011, "yearMax": 2026 }
+        { "make": "Ford", "model": "F-250", "yearMin": 2017, "yearMax": 2026 },
+        { "make": "Ford", "model": "F-350", "yearMin": 2017, "yearMax": 2026 }
       ],
-      "desc": "Vehicle-specific NMO fender bracket for Super Duty trucks."
+      "desc": "No-drill NMO fender bracket. Same bracket as F-150 (FO3ANTNCG). Driver side only."
     },
     {
       "id": "ncg-ranger",
@@ -89,52 +93,75 @@
       "id": "ncg-silverado",
       "name": "NCG Silverado/Sierra NMO Fender Mount",
       "brand": "NCG/Comet",
+      "model": "CV3ANTNCG",
       "type": "fender",
       "price": 29,
       "wcProductId": null,
       "fits": [
-        { "make": "Chevrolet", "model": "Silverado", "yearMin": 2007, "yearMax": 2026 },
-        { "make": "GMC", "model": "Sierra", "yearMin": 2007, "yearMax": 2026 }
+        { "make": "Chevrolet", "model": "Silverado 1500", "yearMin": 2019, "yearMax": 2024 },
+        { "make": "Chevrolet", "model": "Silverado 2500", "yearMin": 2020, "yearMax": 2023 },
+        { "make": "Chevrolet", "model": "Silverado 3500", "yearMin": 2020, "yearMax": 2023 },
+        { "make": "GMC", "model": "Sierra 1500", "yearMin": 2019, "yearMax": 2024 },
+        { "make": "GMC", "model": "Sierra 2500", "yearMin": 2020, "yearMax": 2023 },
+        { "make": "GMC", "model": "Sierra 3500", "yearMin": 2020, "yearMax": 2023 }
       ],
-      "desc": "Vehicle-specific NMO fender bracket for GM full-size trucks."
+      "desc": "No-drill NMO fender bracket. Fits through gap between fender and hood. Driver side only."
     },
     {
       "id": "ncg-colorado",
       "name": "NCG Colorado/Canyon NMO Fender Mount",
       "brand": "NCG/Comet",
+      "model": "COANTNCG",
       "type": "fender",
       "price": 29,
       "wcProductId": null,
       "fits": [
-        { "make": "Chevrolet", "model": "Colorado", "yearMin": 2015, "yearMax": 2026 },
-        { "make": "GMC", "model": "Canyon", "yearMin": 2015, "yearMax": 2026 }
+        { "make": "Chevrolet", "model": "Colorado", "yearMin": 2012, "yearMax": 2022 },
+        { "make": "GMC", "model": "Canyon", "yearMin": 2015, "yearMax": 2022 }
       ],
-      "desc": "NMO fender bracket for GM mid-size trucks."
+      "desc": "No-drill NMO fender bracket for GM mid-size trucks. Driver side only."
     },
     {
       "id": "ncg-ram",
       "name": "NCG Ram 1500 NMO Fender Mount",
       "brand": "NCG/Comet",
+      "model": "DG2ANTPF",
       "type": "fender",
       "price": 29,
       "wcProductId": null,
       "fits": [
-        { "make": "Ram", "model": "1500", "yearMin": 2009, "yearMax": 2026 }
+        { "make": "Ram", "model": "1500", "yearMin": 2009, "yearMax": 2018 }
       ],
-      "desc": "Vehicle-specific NMO fender bracket for Ram 1500."
+      "desc": "No-drill NMO fender bracket for Ram 1500 (2009-2018). Driver side only."
     },
     {
       "id": "ncg-ram-hd",
       "name": "NCG Ram 2500/3500 NMO Fender Mount",
       "brand": "NCG/Comet",
+      "model": "DG2ANTPF",
       "type": "fender",
       "price": 29,
       "wcProductId": null,
       "fits": [
-        { "make": "Ram", "model": "2500", "yearMin": 2010, "yearMax": 2026 },
-        { "make": "Ram", "model": "3500", "yearMin": 2010, "yearMax": 2026 }
+        { "make": "Ram", "model": "2500", "yearMin": 2010, "yearMax": 2018 },
+        { "make": "Ram", "model": "3500", "yearMin": 2010, "yearMax": 2018 }
       ],
-      "desc": "NMO fender bracket for Ram heavy duty trucks."
+      "desc": "No-drill NMO fender bracket for Ram HD (2010-2018). Same bracket as Ram 1500 (DG2ANTPF). Driver side only."
+    },
+    {
+      "id": "ncg-ram-new",
+      "name": "NCG Ram NMO Fender Mount (2019+)",
+      "brand": "NCG/Comet",
+      "model": "DG3ANTNCG",
+      "type": "fender",
+      "price": 29,
+      "wcProductId": null,
+      "fits": [
+        { "make": "Ram", "model": "1500", "yearMin": 2019, "yearMax": 2023 },
+        { "make": "Ram", "model": "2500", "yearMin": 2019, "yearMax": 2023 },
+        { "make": "Ram", "model": "3500", "yearMin": 2019, "yearMax": 2023 }
+      ],
+      "desc": "No-drill NMO fender bracket for Ram trucks (2019-2023). Driver side only."
     },
     {
       "id": "ncg-wrangler",
@@ -161,52 +188,192 @@
       "desc": "Bolt-on NMO mount for Jeep Gladiator."
     },
     {
-      "id": "rugged-tacoma",
-      "name": "Rugged Radios Tacoma A-Pillar Mount",
+      "id": "rugged-tacoma-apillar",
+      "name": "Rugged Radios Toyota A-Pillar Antenna Mount",
       "brand": "Rugged Radios",
+      "model": "MT-ANT-APILLAR-TOY",
+      "msrp": 42.50,
       "type": "a-pillar",
-      "price": 35,
+      "price": 49,
+      "wcProductId": null,
+      "fits": [
+        { "make": "Toyota", "model": "Tacoma", "yearMin": 2005, "yearMax": 2026 },
+        { "make": "Toyota", "model": "4Runner", "yearMin": 2010, "yearMax": 2026 },
+        { "make": "Toyota", "model": "Tundra", "yearMin": 2007, "yearMax": 2021 },
+        { "make": "Lexus", "model": "GX", "yearMin": 2010, "yearMax": 2026 }
+      ],
+      "desc": "Bolt-on A-pillar antenna mount for Toyota trucks/SUVs. No drilling. High-strength steel with powder coat."
+    },
+    {
+      "id": "rugged-tundra-new",
+      "name": "Rugged Radios Tundra A-Pillar Antenna Mount (2022+)",
+      "brand": "Rugged Radios",
+      "model": "MT-ANT-APILLAR-TUN22",
+      "msrp": 42.50,
+      "type": "a-pillar",
+      "price": 49,
+      "wcProductId": null,
+      "fits": [
+        { "make": "Toyota", "model": "Tundra", "yearMin": 2022, "yearMax": 2026 }
+      ],
+      "desc": "Bolt-on A-pillar antenna mount for 2022+ Toyota Tundra. No drilling. High-strength steel with powder coat."
+    },
+    {
+      "id": "rugged-tacoma-cowl",
+      "name": "Rugged Radios Tacoma Hood/Cowl Antenna Mount",
+      "brand": "Rugged Radios",
+      "model": "MT-ANT-TAC16",
+      "msrp": 29.75,
+      "type": "cowl",
+      "price": 39,
       "wcProductId": null,
       "fits": [
         { "make": "Toyota", "model": "Tacoma", "yearMin": 2016, "yearMax": 2026 }
       ],
-      "desc": "A-pillar antenna mount bracket for 3rd gen+ Tacoma. Clean factory look."
+      "desc": "Hood/cowl bolt-on antenna mount for 3rd gen+ Tacoma. Clean factory look."
     },
     {
-      "id": "rugged-4runner",
-      "name": "Rugged Radios 4Runner A-Pillar Mount",
+      "id": "rugged-tacoma-1stgen",
+      "name": "Rugged Radios Tacoma A-Pillar Mount (1st Gen)",
       "brand": "Rugged Radios",
+      "model": "MT-ANT-APILLAR-TAC1",
+      "msrp": 42.50,
       "type": "a-pillar",
-      "price": 35,
+      "price": 49,
       "wcProductId": null,
       "fits": [
-        { "make": "Toyota", "model": "4Runner", "yearMin": 2010, "yearMax": 2026 }
+        { "make": "Toyota", "model": "Tacoma", "yearMin": 1995, "yearMax": 2004 }
       ],
-      "desc": "A-pillar antenna mount for 5th/6th gen 4Runner."
+      "desc": "Bolt-on A-pillar antenna mount for 1st gen Tacoma (1995-2004)."
+    },
+    {
+      "id": "rugged-fj",
+      "name": "Rugged Radios FJ Cruiser Cowl Antenna Mount",
+      "brand": "Rugged Radios",
+      "model": "MT-ANT-FJ",
+      "msrp": 29.75,
+      "type": "cowl",
+      "price": 39,
+      "wcProductId": null,
+      "fits": [
+        { "make": "Toyota", "model": "FJ Cruiser", "yearMin": 2007, "yearMax": 2014 }
+      ],
+      "desc": "Cowl bolt-on antenna mount for Toyota FJ Cruiser. No drilling."
     },
     {
       "id": "rugged-wrangler",
-      "name": "Rugged Radios Wrangler JL Hood Mount",
+      "name": "Rugged Radios Jeep Wrangler/Gladiator A-Pillar Mount",
       "brand": "Rugged Radios",
-      "type": "hood",
-      "price": 38,
+      "model": "MT-ANT-APILLAR-JEEP",
+      "msrp": 17.00,
+      "type": "a-pillar",
+      "price": 25,
       "wcProductId": null,
       "fits": [
-        { "make": "Jeep", "model": "Wrangler", "yearMin": 2018, "yearMax": 2026 }
+        { "make": "Jeep", "model": "Wrangler TJ", "yearMin": 1997, "yearMax": 2006 },
+        { "make": "Jeep", "model": "Wrangler JK", "yearMin": 2007, "yearMax": 2018 },
+        { "make": "Jeep", "model": "Wrangler JL", "yearMin": 2018, "yearMax": 2026 },
+        { "make": "Jeep", "model": "Gladiator", "yearMin": 2020, "yearMax": 2026 }
       ],
-      "desc": "Hood hinge antenna mount for JL Wrangler. No drilling."
+      "desc": "Bolt-on A-pillar antenna mount for all Jeep Wrangler generations and Gladiator JT."
     },
     {
       "id": "rugged-bronco",
-      "name": "Rugged Radios Bronco Fender Mount",
+      "name": "Rugged Radios Ford Bronco Mirror Antenna Mount",
       "brand": "Rugged Radios",
-      "type": "fender",
-      "price": 35,
+      "model": "MT-ANT-BRONCO",
+      "msrp": 46.75,
+      "type": "mirror",
+      "price": 55,
       "wcProductId": null,
       "fits": [
         { "make": "Ford", "model": "Bronco", "yearMin": 2021, "yearMax": 2026 }
       ],
-      "desc": "Fender antenna mount for 6th gen Ford Bronco."
+      "desc": "Side mirror antenna mount for 2021+ Ford Bronco. Billet aluminum. Requires drilling."
+    },
+    {
+      "id": "rugged-crosstrek",
+      "name": "Rugged Radios Subaru Crosstrek Antenna Mount",
+      "brand": "Rugged Radios",
+      "model": "MT-ANT-CROSSTREK",
+      "msrp": 29.75,
+      "type": "bolt-on",
+      "price": 39,
+      "wcProductId": null,
+      "fits": [
+        { "make": "Subaru", "model": "Crosstrek", "yearMin": 2018, "yearMax": 2026 }
+      ],
+      "desc": "Bolt-on antenna mount for Subaru Crosstrek. Driver or passenger side. Only mount on the market for this vehicle."
+    },
+    {
+      "id": "rugged-ranger",
+      "name": "Rugged Radios Ford Ranger A-Pillar Mount",
+      "brand": "Rugged Radios",
+      "model": "MT-ANT-APILLAR-RANGER",
+      "msrp": 29.75,
+      "type": "a-pillar",
+      "price": 39,
+      "wcProductId": null,
+      "fits": [
+        { "make": "Ford", "model": "Ranger", "yearMin": 2019, "yearMax": 2026 }
+      ],
+      "desc": "Bolt-on A-pillar antenna mount for Ford Ranger."
+    },
+    {
+      "id": "rugged-transit",
+      "name": "Rugged Radios Ford Transit A-Pillar Mount",
+      "brand": "Rugged Radios",
+      "model": "MT-ANT-APILLAR-TRANSIT",
+      "msrp": 29.75,
+      "type": "a-pillar",
+      "price": 39,
+      "wcProductId": null,
+      "fits": [
+        { "make": "Ford", "model": "Transit", "yearMin": 2015, "yearMax": 2026 }
+      ],
+      "desc": "Bolt-on A-pillar antenna mount for Ford Transit vans."
+    },
+    {
+      "id": "rugged-sprinter-new",
+      "name": "Rugged Radios Sprinter Hood Mount (2019+)",
+      "brand": "Rugged Radios",
+      "model": "MT-ANT-SPRINTER19",
+      "msrp": 29.75,
+      "type": "hood",
+      "price": 39,
+      "wcProductId": null,
+      "fits": [
+        { "make": "Mercedes-Benz", "model": "Sprinter", "yearMin": 2019, "yearMax": 2026 }
+      ],
+      "desc": "Hood bolt-on antenna mount for 2019+ Mercedes Sprinter vans."
+    },
+    {
+      "id": "rugged-sprinter-old",
+      "name": "Rugged Radios Sprinter Hood Mount (2007-2018)",
+      "brand": "Rugged Radios",
+      "model": "MT-ANT-SPRINTER07",
+      "msrp": 29.75,
+      "type": "hood",
+      "price": 39,
+      "wcProductId": null,
+      "fits": [
+        { "make": "Mercedes-Benz", "model": "Sprinter", "yearMin": 2007, "yearMax": 2018 }
+      ],
+      "desc": "Hood bolt-on antenna mount for 2007-2018 Mercedes Sprinter vans."
+    },
+    {
+      "id": "rugged-raptor-1stgen",
+      "name": "Rugged Radios 1st Gen Raptor A-Pillar Mount",
+      "brand": "Rugged Radios",
+      "model": "MT-ANT-APILLAR-RAP1",
+      "msrp": 29.75,
+      "type": "a-pillar",
+      "price": 39,
+      "wcProductId": null,
+      "fits": [
+        { "make": "Ford", "model": "Raptor", "yearMin": 2010, "yearMax": 2014 }
+      ],
+      "desc": "Bolt-on A-pillar antenna mount for 1st gen Ford Raptor."
     },
     {
       "id": "walcott-f150",
