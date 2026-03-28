@@ -387,6 +387,7 @@ function backToNeedsLanding() {
   mobileState = { radioKey: null, vehicle: { year: '', make: '', model: '' }, selections: {}, cartItems: [], step: 0 };
   baseState = { radioKey: null, antennaPath: null, selections: {}, cartItems: [], step: 0 };
   hfState = { radioKey: null, selections: {}, cartItems: [], step: 0 };
+  scannerState = { radioKey: null, selections: {}, cartItems: [], step: 0 };
   wantsItinerantLicense = false;
   _rmeKbCartBusy = false;
   // Hide all phases, show landing
@@ -4078,7 +4079,7 @@ const variationMap = {
   // UV-PRO Battery: parent 8312
   8312: { black: 8313, tan: 8314 },
   // Cheat Sheets: parent 966
-  966: { 'uv5r': 9111, 'uv5r-mini': 9111, 'dmr-6x2': 9112, 'da-7x2': 9112, 'uv-pro': 9113 },
+  966: { _default: 9111, 'uv5r': 9111, 'uv5r-mini': 9111, 'dmr-6x2': 9112, 'da-7x2': 9112, 'uv-pro': 9113 },
   // BNC MOLLE Antenna Mount: parent 8717 — 8718=bracket only, 8719=BNC coax, 8720=TNC coax, 9448=PL-259 to BNC (mobile)
   8717: { _default: 8719, 'uv50pro': 9448, 'd578': 9448 },
 };
@@ -4107,7 +4108,11 @@ function collectHandheldCartItems() {
 
   selectedAntennas.forEach(key => {
     const a = antennaUpgrades.find(x => x.key === key);
-    if (a) items.push({ name: a.name, price: a.price, id: a.id });
+    if (a) {
+      // Antenna upgrades use ids[] array: [antennaProductId, adapterId]. Use first element for the antenna itself.
+      const antennaId = a.ids ? a.ids[0] : a.id;
+      items.push({ name: a.name, price: a.price, id: antennaId });
+    }
   });
 
   const hasUpgrade = selectedAntennas.size > 0;
