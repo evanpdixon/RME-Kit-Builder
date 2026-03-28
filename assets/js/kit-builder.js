@@ -387,7 +387,7 @@ function backToNeedsLanding() {
   mobileState = { radioKey: null, vehicle: { year: '', make: '', model: '' }, selections: {}, cartItems: [], step: 0 };
   baseState = { radioKey: null, antennaPath: null, selections: {}, cartItems: [], step: 0 };
   hfState = { radioKey: null, selections: {}, cartItems: [], step: 0 };
-  scannerState = { radioKey: null, selections: {}, cartItems: [], step: 0 };
+  scannerState = { radioKey: null, selections: { antennas: new Set(), accessories: new Set() }, cartItems: [], step: 0 };
   wantsItinerantLicense = false;
   _rmeKbCartBusy = false;
   // Hide all phases, show landing
@@ -2563,6 +2563,15 @@ const scannerRadioLineup = [
     formFactor: 'accessory',
     requiresComputer: true,
   },
+  {
+    key: 'sds150', name: 'Uniden SDS150 Digital Scanner Base Station', price: 1049, id: 8978,
+    img: S+'2026/01/1000011075.png',
+    tagline: 'Premium base station scanner with touchscreen',
+    pitch: 'Uniden\'s flagship scanner with a full-color touchscreen, advanced digital decoding, and premium audio. All the capabilities of the SDS200 with a next-generation interface. Arrives pre-programmed for your area.',
+    features: ['P25 Phase I & II, DMR, EDACS, NXDN', 'Full-color touchscreen interface', 'Close Call: detect nearby signals instantly', 'Scan by zip code or GPS location', 'Premium audio with built-in speaker'],
+    includes: ['SDS150 Scanner', 'BNC Antenna', 'USB Programming Cable', 'AC Power Adapter', 'microSD Card'],
+    formFactor: 'base',
+  },
 ];
 
 const scannerProducts = {
@@ -2572,10 +2581,13 @@ const scannerProducts = {
   ],
   accessories: [
     { key: 'cheatsheets', name: 'Radio Cheat Sheets', desc: 'Waterproof laminated quick-reference cards.', price: 19, id: 966 },
+    { key: 'magmount', name: 'Magnetic BNC Antenna Base', desc: 'Magnetic mount base with BNC connector. Place on any metal surface for improved antenna positioning.', price: 39, id: 521 },
+    { key: 'stubby', name: 'BNC Stubby Antenna', desc: 'Compact BNC rubber duck antenna. Low-profile option for portable or indoor use.', price: 39, id: 816 },
+    { key: 'signalstick', name: 'BNC Signal Stick Antenna', desc: 'Flexible whip BNC antenna with improved gain over stock. Great portable upgrade.', price: 25, id: 39, compatRadios: ['sds100', 'sdr-kit'] },
   ],
 };
 
-let scannerState = { radioKey: null, selections: {}, cartItems: [], step: 0 };
+let scannerState = { radioKey: null, selections: { antennas: new Set(), accessories: new Set() }, cartItems: [], step: 0 };
 
 function startDirectScanner() {
   // Direct entry from landing page — bypass needs assessment, go straight to scanner choice
@@ -2627,7 +2639,7 @@ function renderScannerRadioChoice() {
 function selectScannerRadio(key) {
   if (kitSession.kits[kitSession.currentKitIndex]) kitSession.kits[kitSession.currentKitIndex].radioKey = key;
   scannerState.radioKey = key;
-  scannerState.selections = { antennas: new Set() };
+  scannerState.selections = { antennas: new Set(), accessories: new Set() };
   scannerState.step = 0;
   renderScannerWizard();
   scrollToTop();
@@ -2637,6 +2649,7 @@ function getScannerSteps() {
   const radio = scannerRadioLineup.find(r => r.key === scannerState.radioKey);
   const steps = [
     { name: 'Antenna', render: renderScannerAntenna },
+    { name: 'Accessories', render: renderScannerAccessories },
     { name: 'Programming', render: renderScannerProgramming },
     { name: 'Review', render: renderScannerReview },
   ];
@@ -2712,6 +2725,31 @@ function renderScannerAntenna() {
   `;
 }
 
+function renderScannerAccessories() {
+  const c = document.getElementById('scanner-step-content');
+  const sel = scannerState.selections;
+  const radio = scannerRadioLineup.find(r => r.key === scannerState.radioKey);
+  // Filter accessories by compatRadios if present
+  const available = scannerProducts.accessories.filter(a => !a.compatRadios || a.compatRadios.includes(scannerState.radioKey));
+
+  c.innerHTML = `
+    <div class="section-head"><h2>Accessories</h2>
+      <p>Optional add-ons for your ${radio ? radio.name : 'scanner'}. All items are optional.</p>
+    </div>
+    <div style="max-width:600px;margin:0 auto">
+      ${available.length === 0 ? '<p style="color:var(--muted);text-align:center">No additional accessories available for this product.</p>' : available.map(a => `
+        <div class="nq-option ${sel.accessories.has(a.key) ? 'selected' : ''}" onclick="scannerState.selections.accessories.has('${a.key}')?scannerState.selections.accessories.delete('${a.key}'):scannerState.selections.accessories.add('${a.key}');renderScannerAccessories()">
+          <div class="nq-check">${sel.accessories.has(a.key) ? '✓' : ''}</div>
+          <div>
+            <div class="nq-label">${a.name} ($${a.price})</div>
+            <div class="nq-detail">${a.desc}</div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
 function renderScannerProgramming() {
   const c = document.getElementById('scanner-step-content');
   const sel = scannerState.selections;
@@ -2762,6 +2800,16 @@ function renderScannerReview() {
     }
   });
 
+  // Accessories
+  const availableAcc = scannerProducts.accessories.filter(a => !a.compatRadios || a.compatRadios.includes(scannerState.radioKey));
+  scannerState.selections.accessories.forEach(key => {
+    const a = availableAcc.find(x => x.key === key);
+    if (a) {
+      total += a.price;
+      items.push(`<div style="display:flex;justify-content:space-between;padding:6px 0"><span style="color:#ddd">${a.name}</span><span style="color:var(--muted)">+$${a.price}</span></div>`);
+    }
+  });
+
   if (!radio.requiresComputer) {
     items.push(`<div style="display:flex;justify-content:space-between;padding:6px 0"><span style="color:#ddd">Custom Programming</span><span style="color:var(--green)">Included</span></div>`);
   }
@@ -2784,6 +2832,11 @@ function collectScannerCartItems() {
   const items = [{ name: radio.name, price: radio.price, id: radio.id }];
   scannerState.selections.antennas.forEach(key => {
     const a = scannerProducts.antennas.find(x => x.key === key);
+    if (a) items.push({ name: a.name, price: a.price, id: a.id });
+  });
+  const availableAcc = scannerProducts.accessories.filter(a => !a.compatRadios || a.compatRadios.includes(scannerState.radioKey));
+  scannerState.selections.accessories.forEach(key => {
+    const a = availableAcc.find(x => x.key === key);
     if (a) items.push({ name: a.name, price: a.price, id: a.id });
   });
   return items;
