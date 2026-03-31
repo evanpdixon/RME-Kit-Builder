@@ -109,8 +109,131 @@ let kitSession = {
   categories: [],   // e.g. [{type:'handheld',qty:3},{type:'mobile',qty:2},{type:'base',qty:1},{type:'hf',qty:1}]
   kits: [],          // built kits with selections
   currentKitIndex: 0,
-  preferences: []    // carry-forward from needs assessment (e.g. 'digital','waterproof')
+  preferences: [],   // carry-forward from needs assessment (e.g. 'digital','waterproof')
+  email: '',
+  name: ''
 };
+
+// ── Email Capture & Lead Tracking ──────────────────────────────────────────
+
+function captureEmailAndStart() {
+  const email = document.getElementById('kb-lead-email').value.trim();
+  const name = document.getElementById('kb-lead-name').value.trim();
+
+  if (email && !email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+    document.getElementById('kb-lead-email').style.borderColor = '#d4504c';
+    document.getElementById('kb-lead-email').focus();
+    return;
+  }
+
+  kitSession.email = email;
+  kitSession.name = name;
+
+  if (email) {
+    fetch(rmeKitBuilder.ajaxUrl + '?action=rme_kb_capture_email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, name, nonce: rmeKitBuilder.nonce })
+    }).catch(() => {});
+  }
+
+  document.getElementById('email-capture-phase').style.display = 'none';
+  document.getElementById('needs-phase').style.display = '';
+  initConsultationFeatures();
+}
+
+function skipEmailCapture() {
+  kitSession.email = '';
+  kitSession.name = '';
+  document.getElementById('email-capture-phase').style.display = 'none';
+  document.getElementById('needs-phase').style.display = '';
+  initConsultationFeatures();
+}
+
+function trackSessionProgress(stepName) {
+  if (!kitSession.email) return;
+  fetch(rmeKitBuilder.ajaxUrl + '?action=rme_kb_update_session', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      email: kitSession.email,
+      lastStep: stepName,
+      session: { categories: kitSession.categories, currentKitIndex: kitSession.currentKitIndex },
+      nonce: rmeKitBuilder.nonce
+    })
+  }).catch(() => {});
+}
+
+function markLeadCompleted() {
+  if (!kitSession.email) return;
+  fetch(rmeKitBuilder.ajaxUrl + '?action=rme_kb_mark_completed', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: kitSession.email, nonce: rmeKitBuilder.nonce })
+  }).catch(() => {});
+}
+
+// ── Consultation Escape Hatch ──────────────────────────────────────────────
+
+let _consultBannerShown = false;
+let _inactivityTimer = null;
+let _backCount = 0;
+
+function getCalendlyUrl() {
+  let url = (typeof rmeKitBuilder !== 'undefined' && rmeKitBuilder.calendlyUrl)
+    ? rmeKitBuilder.calendlyUrl
+    : 'https://calendly.com/radiomadeeasy/radio-consultation';
+  if (kitSession.email) url += '?email=' + encodeURIComponent(kitSession.email);
+  if (kitSession.name) url += (url.includes('?') ? '&' : '?') + 'name=' + encodeURIComponent(kitSession.name);
+  return url;
+}
+
+function initConsultationFeatures() {
+  const footer = document.getElementById('consultation-footer');
+  const link = document.getElementById('consultation-link');
+  const bannerLink = document.getElementById('banner-consult-link');
+  if (footer) { footer.style.display = 'block'; }
+  if (link) link.href = getCalendlyUrl();
+  if (bannerLink) bannerLink.href = getCalendlyUrl();
+  resetInactivityTimer();
+}
+
+function resetInactivityTimer() {
+  clearTimeout(_inactivityTimer);
+  if (_consultBannerShown) return;
+  _inactivityTimer = setTimeout(() => {
+    showConsultBanner();
+  }, 60000); // 60 seconds
+}
+
+function showConsultBanner() {
+  if (_consultBannerShown) return;
+  _consultBannerShown = true;
+  const banner = document.getElementById('consultation-banner');
+  const bannerLink = document.getElementById('banner-consult-link');
+  if (bannerLink) bannerLink.href = getCalendlyUrl();
+  if (banner) {
+    banner.style.display = 'block';
+    banner.style.animation = 'rme-kb-slideUp 0.3s ease';
+  }
+}
+
+function dismissConsultBanner() {
+  const banner = document.getElementById('consultation-banner');
+  if (banner) banner.style.display = 'none';
+}
+
+function trackBackNavigation() {
+  _backCount++;
+  if (_backCount >= 3 && !_consultBannerShown) {
+    showConsultBanner();
+  }
+}
+
+// Listen for user activity to reset inactivity timer
+document.addEventListener('click', resetInactivityTimer);
+document.addEventListener('keydown', resetInactivityTimer);
+document.addEventListener('scroll', resetInactivityTimer);
 
 // Needs assessment questions
 const needsQuestions = [
@@ -176,7 +299,9 @@ let needsStep = 0;
 
 function startNeedsAssessment() {
   rmeDebug('START', 'Needs Assessment (guided)');
-  kitSession = { needsAnswers: {}, categories: [], kits: [], currentKitIndex: 0, preferences: [] };
+  const savedEmail = kitSession.email, savedName = kitSession.name;
+  kitSession = { needsAnswers: {}, categories: [], kits: [], currentKitIndex: 0, preferences: [], email: savedEmail, name: savedName };
+  trackSessionProgress('needs-assessment');
   needsStep = 0;
   document.getElementById('needs-landing').style.display = 'none';
   document.getElementById('needs-container').style.display = 'block';
@@ -186,7 +311,9 @@ function startNeedsAssessment() {
 
 function showCategoryPicker() {
   rmeDebug('START', 'Category Picker (direct)');
-  kitSession = { needsAnswers: {}, categories: [], kits: [], currentKitIndex: 0, preferences: [] };
+  const savedEmail = kitSession.email, savedName = kitSession.name;
+  kitSession = { needsAnswers: {}, categories: [], kits: [], currentKitIndex: 0, preferences: [], email: savedEmail, name: savedName };
+  trackSessionProgress('category-picker');
   document.getElementById('needs-landing').style.display = 'none';
   document.getElementById('needs-container').style.display = 'block';
   renderCategoryPicker();
@@ -194,6 +321,7 @@ function showCategoryPicker() {
 
 function needsGoBack() {
   rmeDebug('BACK', `From needs step ${needsStep}`);
+  trackBackNavigation();
   needsStep--;
   while (needsStep > 0) {
     const q = needsQuestions[needsStep];
@@ -5121,8 +5249,9 @@ function rmeKbAddToCart(items) {
       if (errors.length > 0) {
         alert('Added ' + count + ' items to cart. Some items had issues: ' + errors.join(', '));
       }
-      // Always redirect to cart (even with partial errors, items were added)
+      // Mark lead completed before redirect
       if (count > 0) {
+        markLeadCompleted();
         window.location.href = data.data.cartUrl || rmeKitBuilder.cartUrl;
       }
     } else {

@@ -1,8 +1,24 @@
 <?php if ( ! defined( 'ABSPATH' ) ) exit; ?>
 <div id="rme-kit-builder">
 
+  <!-- EMAIL CAPTURE (shown first) -->
+  <div id="email-capture-phase" class="needs-phase">
+    <div class="needs-landing" style="text-align:center">
+      <h2>Let's Build Your Perfect Radio Kit</h2>
+      <p>Every Radio Made Easy kit ships pre-programmed and ready to use. Enter your email to get started — we'll save your progress and send helpful follow-ups if you need more time.</p>
+      <div style="max-width:380px;margin:28px auto 0;">
+        <input type="text" id="kb-lead-name" placeholder="Your name (optional)" style="width:100%;padding:14px 16px;margin-bottom:10px;background:var(--rme-surface,#1a1a1a);border:1px solid var(--rme-border,#333);border-radius:10px;color:var(--rme-text,#e0e0e0);font-size:15px;font-family:inherit;outline:none;">
+        <input type="email" id="kb-lead-email" placeholder="Your email address" style="width:100%;padding:14px 16px;margin-bottom:16px;background:var(--rme-surface,#1a1a1a);border:1px solid var(--rme-border,#333);border-radius:10px;color:var(--rme-text,#e0e0e0);font-size:15px;font-family:inherit;outline:none;">
+        <button onclick="captureEmailAndStart()" style="width:100%;padding:16px;border-radius:12px;border:none;background:var(--rme-gold,#d4a843);color:#0c0c0c;font-size:16px;font-weight:600;cursor:pointer;font-family:inherit;transition:opacity 0.15s;" id="kb-start-btn">Get Started</button>
+        <div style="margin-top:14px;">
+          <a href="#" onclick="skipEmailCapture();return false;" style="color:var(--rme-muted,#888);font-size:13px;text-decoration:none;">Skip for now</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- NEEDS ASSESSMENT PHASE -->
-  <div id="needs-phase" class="needs-phase">
+  <div id="needs-phase" class="needs-phase" style="display:none">
     <div id="needs-landing" class="needs-landing">
       <h2>What Radios Do You Need?</h2>
       <p>Handhelds, vehicle mobiles, base stations, HF — or a combination. Every Radio Made Easy kit ships pre-programmed and ready to use. Let's figure out the right setup for you.</p>
@@ -173,6 +189,23 @@
       <button class="modal-btn-cancel" onclick="adapterWarnRemoveAll()">Remove adapter and all BNC antennas</button>
       <button class="modal-btn-cancel" onclick="adapterWarnRemoveOnly()" style="font-size:12px">Remove adapter only — I'll supply my own</button>
     </div>
+  </div>
+</div>
+
+<!-- CONSULTATION FOOTER (shown during wizard) -->
+<div id="consultation-footer" style="display:none;position:fixed;bottom:0;left:0;right:0;background:rgba(26,26,26,0.95);backdrop-filter:blur(8px);border-top:1px solid #333;padding:10px 16px;z-index:9998;text-align:center;">
+  <a href="#" id="consultation-link" target="_blank" style="color:var(--rme-muted,#888);font-size:13px;text-decoration:none;">
+    Not sure what to pick? <span style="color:var(--rme-gold,#d4a843);text-decoration:underline;">Book a consultation</span>
+  </a>
+</div>
+
+<!-- CONSULTATION BANNER (triggered by inactivity) -->
+<div id="consultation-banner" style="display:none;position:fixed;bottom:60px;left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:480px;background:#1a1a1a;border:1px solid var(--rme-gold,#d4a843);border-radius:16px;padding:24px;z-index:9999;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,0.6);">
+  <div style="font-size:15px;font-weight:600;color:var(--rme-text,#e0e0e0);margin-bottom:8px;">Not sure which option to pick?</div>
+  <div style="font-size:13px;color:var(--rme-muted,#888);margin-bottom:20px;line-height:1.5;">Our team can help you build the perfect radio kit. No obligation.</div>
+  <div style="display:flex;gap:10px;justify-content:center;">
+    <a href="#" id="banner-consult-link" target="_blank" style="padding:12px 24px;border-radius:10px;background:var(--rme-gold,#d4a843);color:#0c0c0c;font-size:14px;font-weight:600;text-decoration:none;">Book a Consultation</a>
+    <button onclick="dismissConsultBanner()" style="padding:12px 24px;border-radius:10px;border:1px solid #333;background:transparent;color:var(--rme-muted,#888);font-size:14px;cursor:pointer;font-family:inherit;">Keep Building</button>
   </div>
 </div>
 

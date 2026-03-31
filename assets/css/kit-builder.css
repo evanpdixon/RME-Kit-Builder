@@ -558,3 +558,4 @@
   #rme-kit-builder .btn-nav,
   .rme-kb-bottom-bar .btn-nav { padding: 10px 14px; font-size: 12px; letter-spacing: 1px; }
 }
+@keyframes rme-kb-slideUp { from { transform: translate(-50%, 100%); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }

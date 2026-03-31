@@ -26,6 +26,9 @@ require_once RME_KB_PATH . 'includes/cart.php';
 // Load WooCommerce product page integration
 require_once RME_KB_PATH . 'includes/product-page.php';
 
+// Load email capture & follow-up system
+require_once RME_KB_PATH . 'includes/email-followup.php';
+
 /**
  * Register the [rme_kit_builder] shortcode.
  */
@@ -62,14 +65,15 @@ function rme_kb_enqueue_assets() {
     $config = get_option( 'rme_kb_config', rme_kb_default_config() );
     $upload_dir = wp_upload_dir();
     wp_localize_script( 'rme-kit-builder', 'rmeKitBuilder', array(
-        'config'     => $config,
-        'ajaxUrl'    => admin_url( 'admin-ajax.php' ),
-        'nonce'      => wp_create_nonce( 'rme_kb_cart' ),
-        'cartUrl'    => function_exists( 'wc_get_cart_url' ) ? wc_get_cart_url() : '',
-        'uploadsUrl' => trailingslashit( $upload_dir['baseurl'] ),
-        'ymmUrl'     => RME_KB_URL . 'assets/data/ymm.json',
-        'mountsUrl'  => RME_KB_URL . 'assets/data/vehicle-mounts.json',
-        'pluginUrl'  => RME_KB_URL,
+        'config'       => $config,
+        'ajaxUrl'      => admin_url( 'admin-ajax.php' ),
+        'nonce'        => wp_create_nonce( 'rme_kb_cart' ),
+        'cartUrl'      => function_exists( 'wc_get_cart_url' ) ? wc_get_cart_url() : '',
+        'uploadsUrl'   => trailingslashit( $upload_dir['baseurl'] ),
+        'ymmUrl'       => RME_KB_URL . 'assets/data/ymm.json',
+        'mountsUrl'    => RME_KB_URL . 'assets/data/vehicle-mounts.json',
+        'pluginUrl'    => RME_KB_URL,
+        'calendlyUrl'  => $config['calendlyUrl'] ?? 'https://calendly.com/radiomadeeasy/radio-consultation',
     ) );
 }
 
@@ -96,5 +100,8 @@ function rme_kb_activate() {
     if ( ! get_option( 'rme_kb_config' ) ) {
         update_option( 'rme_kb_config', rme_kb_default_config(), false );
     }
+    rme_kb_create_leads_table();
 }
 register_activation_hook( __FILE__, 'rme_kb_activate' );
+
+register_deactivation_hook( __FILE__, 'rme_kb_deactivate_cron' );
