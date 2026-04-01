@@ -73,8 +73,8 @@
   <!-- WIZARD PHASE (hidden until radio selected) -->
   <div id="wizard-phase" style="display:none">
     <div class="hero">
-      <div class="hero-img" style="cursor:zoom-in" id="hero-img-container">
-        <div style="color:#444;font-size:13px;text-align:center">Radio Kit</div>
+      <div class="hero-img" style="cursor:zoom-in" id="hero-img-container" onclick="if(this.querySelector('img')&&this.querySelector('img').src)openLightbox(this.querySelector('img').src,document.getElementById('hero-title').textContent)">
+        <img src="" alt="Radio Kit" style="display:none">
       </div>
       <div class="hero-info">
         <h1 id="hero-title">Kit</h1>
