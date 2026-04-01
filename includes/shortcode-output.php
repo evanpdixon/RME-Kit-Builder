@@ -149,6 +149,12 @@
     </div>
   </div><!-- /wizard-phase -->
 
+  <!-- Dynamic flow phases (populated by JS for non-handheld categories) -->
+  <div id="mobile-phase" style="display:none"></div>
+  <div id="base-phase" style="display:none"></div>
+  <div id="hf-phase" style="display:none"></div>
+  <div id="scanner-phase" style="display:none"></div>
+
 </div><!-- /rme-kit-builder -->
 
 <!-- Sticky bottom bar -->
