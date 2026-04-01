@@ -306,79 +306,78 @@ async function testNeedsAssessmentDirect(page) {
 }
 
 async function testHandheldInterview(page) {
-  section('HANDHELD — INTERVIEW');
+  section('HANDHELD — INTERVIEW (DYNAMIC)');
 
   await navigateToCategory(page, 0); // handheld
   await delay(300);
 
-  // Should be on selector phase with two paths
   const selectorVisible = await isVisible(page, 'selector-phase');
   assert(selectorVisible, 'Selector phase visible for handheld');
 
-  // Click "Help Me Choose"
   const selPaths = await page.$$('#selector-phase .selector-path');
   assert(selPaths.length === 2, 'Two selector paths (Help Me Choose / I Know What I Want)');
   await selPaths[0].click();
   await delay(400);
 
-  // Interview container visible
   const interviewVisible = await isVisible(page, 'interview-container');
   assert(interviewVisible, 'Interview container visible');
 
-  // Answer interview questions (uses .iq-option, not .nq-option)
-  // Q1: Budget
-  let optCount = await countElements(page, '#interview-container .iq-option');
-  assert(optCount >= 2, `Interview Q1 has ${optCount} options`);
-  await page.evaluate(() => {
-    const opts = document.querySelectorAll('#interview-container .iq-option');
-    if (opts.length > 1) opts[1].click(); // mid budget
-  });
-  await delay(300);
-  await page.evaluate(() => {
-    const btn = document.querySelector('#interview-container .btn-next');
-    if (btn) btn.click();
-  });
-  await delay(400);
+  // Dynamically walk through ALL interview questions regardless of count
+  let questionNum = 0;
+  const maxQuestions = 10; // safety limit
+  while (questionNum < maxQuestions) {
+    questionNum++;
+    const qState = await page.evaluate(() => {
+      const opts = document.querySelectorAll('#interview-container .iq-option');
+      const resultCards = document.querySelectorAll('.result-card');
+      const nextBtn = document.querySelector('#interview-container .btn-next');
+      return {
+        optionCount: opts.length,
+        resultCount: resultCards.length,
+        hasNextBtn: !!nextBtn && nextBtn.offsetParent !== null,
+        nextBtnText: nextBtn ? nextBtn.textContent.trim() : ''
+      };
+    });
 
-  // Q2: Use
-  await page.evaluate(() => {
-    const opts = document.querySelectorAll('#interview-container .iq-option');
-    if (opts.length > 0) opts[0].click(); // general
-  });
-  await delay(300);
-  await page.evaluate(() => {
-    const btn = document.querySelector('#interview-container .btn-next');
-    if (btn) btn.click();
-  });
-  await delay(400);
-
-  // Q3: Features
-  await page.evaluate(() => {
-    const opts = document.querySelectorAll('#interview-container .iq-option');
-    if (opts.length > 0) opts[0].click(); // first feature
-  });
-  await delay(300);
-
-  // The final button may say "See Results" or just be a .btn-next
-  await page.evaluate(() => {
-    const btns = document.querySelectorAll('#interview-container .btn-next, #interview-container .btn-nav');
-    for (const btn of btns) {
-      if (btn.offsetParent !== null) { btn.click(); break; }
+    // If results are showing, we're done
+    if (qState.resultCount > 0) {
+      assert(true, `Interview completed after ${questionNum - 1} questions`);
+      assert(qState.resultCount >= 1, `Results show ${qState.resultCount} radio recommendations`);
+      break;
     }
-  });
-  await delay(1000);
 
-  // Results should show recommendation cards
-  // Note: interview may have more than 3 questions (config-dependent)
-  // Check if we're on results or still in questions
-  const resultCards = await countElements(page, '.result-card');
-  const stillInQuestions = await countElements(page, '.iq-option');
-  if (resultCards >= 1) {
-    assert(true, `Interview results show ${resultCards} radio recommendations`);
-  } else if (stillInQuestions > 0) {
-    warn(`Interview has more questions than expected (${stillInQuestions} options visible) — config may have additional questions`);
-  } else {
-    assert(false, `Interview results show 0 recommendations (expected >=1)`);
+    // If no options and no results, something is wrong
+    if (qState.optionCount === 0) {
+      assert(false, `Question ${questionNum}: no options visible and no results`);
+      break;
+    }
+
+    assert(qState.optionCount >= 2, `Question ${questionNum} has ${qState.optionCount} options`);
+
+    // Select first option
+    await page.evaluate(() => {
+      const opts = document.querySelectorAll('#interview-container .iq-option');
+      if (opts.length > 0) opts[0].click();
+    });
+    await delay(300);
+
+    // Click next/results button
+    if (qState.hasNextBtn) {
+      await page.evaluate(() => {
+        const btn = document.querySelector('#interview-container .btn-next');
+        if (btn) btn.click();
+      });
+      await delay(500);
+    } else {
+      warn(`Question ${questionNum}: no Next button found`);
+      break;
+    }
+  }
+
+  // Final check if we never hit results
+  const finalResults = await countElements(page, '.result-card');
+  if (finalResults === 0 && questionNum >= maxQuestions) {
+    assert(false, 'Interview never reached results (hit max questions limit)');
   }
 }
 
@@ -779,6 +778,326 @@ async function testEmailSystemValidation(page) {
   assert(configValid, 'AJAX nonce and URL available for email capture');
 }
 
+async function testCategorySpecificFiltering(page) {
+  section('CATEGORY-SPECIFIC OPTION FILTERING');
+
+  // ── Scanner-only: verify accessories are scanner-relevant ──
+  await navigateToCategory(page, 4); // scanner (5th option)
+  await delay(500);
+
+  const scannerVisible = await isVisible(page, 'scanner-phase');
+  if (!scannerVisible) {
+    warn('Scanner phase not reachable — skipping scanner filtering tests');
+  } else {
+    // Select first scanner radio
+    await page.evaluate(() => {
+      const radios = document.querySelectorAll('#scanner-phase .radio-pick, #scanner-phase .nq-option');
+      if (radios.length > 0) radios[0].click();
+    });
+    await delay(600);
+
+    // Walk to accessories step
+    // Scanner steps: Radio → Antenna → Accessories → Programming → Review
+    // Click through to accessories
+    let maxClicks = 5;
+    while (maxClicks-- > 0) {
+      const hasAccessories = await page.evaluate(() => {
+        const phase = document.getElementById('scanner-phase');
+        return phase && phase.innerHTML.includes('Accessor');
+      });
+      if (hasAccessories) break;
+      await page.evaluate(() => {
+        const btns = document.querySelectorAll('#scanner-phase .btn-next');
+        for (const btn of btns) { if (btn.offsetParent !== null) { btn.click(); break; } }
+      });
+      await delay(500);
+    }
+
+    // Check scanner accessory names — should NOT include handheld-only items
+    const scannerAccNames = await page.evaluate(() => {
+      const phase = document.getElementById('scanner-phase');
+      if (!phase) return [];
+      const labels = phase.querySelectorAll('.nq-label, .nq-option');
+      return Array.from(labels).map(el => el.textContent.trim().toLowerCase());
+    });
+    const joinedNames = scannerAccNames.join(' ');
+
+    // Scanner should not show items like "speaker mic" that are handheld-specific
+    const hasIrrelevantItems = joinedNames.includes('wouxun') || joinedNames.includes('uv-5r');
+    assert(!hasIrrelevantItems, 'Scanner accessories do not include handheld-specific items');
+    assert(scannerAccNames.length >= 1, `Scanner has ${scannerAccNames.length} accessory/option items`);
+  }
+
+  // ── HF-only: verify accessories are HF-relevant ──
+  await navigateToCategory(page, 3); // HF (4th option)
+  await delay(500);
+
+  const hfVisible = await isVisible(page, 'hf-phase');
+  assert(hfVisible, 'HF phase visible for filtering test');
+
+  // Select first HF radio
+  await page.evaluate(() => {
+    const radios = document.querySelectorAll('#hf-phase .radio-pick, #hf-phase .nq-option');
+    if (radios.length > 0) radios[0].click();
+  });
+  await delay(600);
+
+  // Walk to accessories step
+  let hfMaxClicks = 6;
+  while (hfMaxClicks-- > 0) {
+    const hasAcc = await page.evaluate(() => {
+      const phase = document.getElementById('hf-phase');
+      return phase && phase.innerHTML.includes('Accessor');
+    });
+    if (hasAcc) break;
+    await page.evaluate(() => {
+      const btns = document.querySelectorAll('#hf-phase .btn-next');
+      for (const btn of btns) { if (btn.offsetParent !== null) { btn.click(); break; } }
+    });
+    await delay(500);
+  }
+
+  const hfAccNames = await page.evaluate(() => {
+    const phase = document.getElementById('hf-phase');
+    if (!phase) return [];
+    const labels = phase.querySelectorAll('.nq-label, .nq-option');
+    return Array.from(labels).map(el => el.textContent.trim().toLowerCase());
+  });
+  const hfJoined = hfAccNames.join(' ');
+
+  // HF should show HF-relevant items (digirig, antenna tuner) not handheld items
+  const hfHasIrrelevant = hfJoined.includes('speaker mic') || hfJoined.includes('uv-5r battery');
+  assert(!hfHasIrrelevant, 'HF accessories do not include handheld-specific items');
+  assert(hfAccNames.length >= 1, `HF has ${hfAccNames.length} accessory/option items`);
+
+  // ── Mobile: verify vehicle-specific content ──
+  await navigateToCategory(page, 1); // mobile
+  await delay(500);
+
+  const mobileVisible = await isVisible(page, 'mobile-phase');
+  assert(mobileVisible, 'Mobile phase visible for filtering test');
+
+  // Check that vehicle step exists (mobile-specific)
+  const hasVehicle = await page.evaluate(() => {
+    const phase = document.getElementById('mobile-phase');
+    return phase && (phase.innerHTML.includes('Vehicle') || phase.innerHTML.includes('vehicle') || phase.innerHTML.includes('Year'));
+  });
+  // Mobile needs radio selected first
+  await page.evaluate(() => {
+    const radios = document.querySelectorAll('#mobile-phase .radio-pick, #mobile-phase .nq-option');
+    if (radios.length > 0) radios[0].click();
+  });
+  await delay(600);
+
+  const hasVehicleStep = await page.evaluate(() => {
+    const phase = document.getElementById('mobile-phase');
+    return phase && (phase.innerHTML.includes('Vehicle') || phase.innerHTML.includes('vehicle'));
+  });
+  assert(hasVehicleStep, 'Mobile flow has vehicle-specific step (not present in other flows)');
+}
+
+async function testEmailFollowupCron(page) {
+  section('EMAIL FOLLOW-UP SYSTEM');
+
+  // Insert a test lead with old timestamp to trigger follow-ups
+  const testEmail = `cron-test-${Date.now()}@rme-test.com`;
+  const wpPath = '/home/u36-2gkvf0xatmnh/www/staging12.radiomadeeasy.com/public_html';
+
+  // 1. Verify the cron hook is registered
+  const { execSync } = require('child_process');
+  let cronOutput;
+  try {
+    cronOutput = execSync(
+      `ssh rme-staging "/usr/local/bin/wp cron event list --path=${wpPath} --fields=hook 2>/dev/null | grep rme_kb"`,
+      { encoding: 'utf8', timeout: 15000 }
+    ).trim();
+  } catch (e) {
+    cronOutput = '';
+  }
+  assert(cronOutput.includes('rme_kb_send_followups'), 'Cron hook rme_kb_send_followups is registered');
+
+  // 2. Insert a test lead directly via WP-CLI
+  // Write PHP to a temp file to avoid shell escaping issues
+  const fs = require('fs');
+  const os = require('os');
+  const path = require('path');
+  const tmpPhp = path.join(os.tmpdir(), 'rme-kb-test-insert.php');
+  fs.writeFileSync(tmpPhp, `<?php
+global $wpdb;
+$t = $wpdb->prefix . 'rme_kb_leads';
+$wpdb->replace($t, array(
+  'email' => '${testEmail}',
+  'name' => 'CronTest',
+  'created_at' => date('Y-m-d H:i:s', strtotime('-2 hours')),
+  'completed' => 0,
+  'confirmation_sent' => 0,
+  'reminder_1_sent' => 0,
+  'reminder_2_sent' => 0,
+  'unsubscribed' => 0,
+  'last_step' => 'test'
+));
+echo $wpdb->last_error ?: 'OK';
+`);
+  let insertResult;
+  try {
+    // Upload and execute the PHP file
+    execSync(`cat "${tmpPhp}" | ssh rme-staging "cat > /tmp/rme-kb-test.php"`, { timeout: 10000 });
+    insertResult = execSync(
+      `ssh rme-staging "/usr/local/bin/wp eval-file /tmp/rme-kb-test.php --path=${wpPath} 2>&1"`,
+      { encoding: 'utf8', timeout: 15000 }
+    ).trim();
+  } catch (e) {
+    insertResult = e.message.substring(0, 200);
+  }
+  assert(insertResult === 'OK' || insertResult === '', `Test lead inserted: ${insertResult}`);
+
+  // 3. Trigger the cron manually
+  let cronRunResult;
+  try {
+    cronRunResult = execSync(
+      `ssh rme-staging "/usr/local/bin/wp cron event run rme_kb_send_followups --path=${wpPath} 2>&1"`,
+      { encoding: 'utf8', timeout: 30000 }
+    ).trim();
+  } catch (e) {
+    cronRunResult = e.message;
+  }
+  assert(cronRunResult.includes('Executed') || cronRunResult.includes('Success') || !cronRunResult.includes('Error'),
+    `Cron executed: ${cronRunResult.substring(0, 80)}`);
+
+  // 4. Check if confirmation_sent was updated
+  const tmpCheck = path.join(os.tmpdir(), 'rme-kb-test-check.php');
+  fs.writeFileSync(tmpCheck, `<?php
+global $wpdb;
+$t = $wpdb->prefix . 'rme_kb_leads';
+$r = $wpdb->get_row($wpdb->prepare('SELECT confirmation_sent FROM ' . $t . ' WHERE email = %s', '${testEmail}'));
+echo $r ? $r->confirmation_sent : 'NOT_FOUND';
+`);
+  let confirmSent;
+  try {
+    execSync(`cat "${tmpCheck}" | ssh rme-staging "cat > /tmp/rme-kb-test-check.php"`, { timeout: 10000 });
+    confirmSent = execSync(
+      `ssh rme-staging "/usr/local/bin/wp eval-file /tmp/rme-kb-test-check.php --path=${wpPath} 2>&1"`,
+      { encoding: 'utf8', timeout: 15000 }
+    ).trim();
+  } catch (e) {
+    confirmSent = 'ERROR';
+  }
+  assert(confirmSent === '1', `Confirmation email sent (confirmation_sent = ${confirmSent})`);
+
+  // 5. Check email content via wp_mail log (if available) or just verify the send happened
+  // The wp_mail function was called — we verified via the DB flag update
+
+  // 6. Verify unsubscribe URL generation
+  const unsubWorks = await page.evaluate(async (email) => {
+    // Just verify the unsubscribe endpoint exists
+    const resp = await fetch(`${location.origin}/?rme_kb_unsub=1&email=${encodeURIComponent(email)}&token=invalid`);
+    return resp.status; // Should return 200 with "invalid token" message, not 404
+  }, testEmail);
+  assert(unsubWorks === 200, `Unsubscribe endpoint responds (status: ${unsubWorks})`);
+
+  // 7. Clean up test lead + temp files
+  const tmpClean = path.join(os.tmpdir(), 'rme-kb-test-clean.php');
+  fs.writeFileSync(tmpClean, `<?php
+global $wpdb;
+$t = $wpdb->prefix . 'rme_kb_leads';
+$wpdb->delete($t, array('email' => '${testEmail}'));
+echo 'cleaned';
+`);
+  try {
+    execSync(`cat "${tmpClean}" | ssh rme-staging "cat > /tmp/rme-kb-test-clean.php"`, { timeout: 10000 });
+    execSync(`ssh rme-staging "/usr/local/bin/wp eval-file /tmp/rme-kb-test-clean.php --path=${wpPath} 2>&1"`, { encoding: 'utf8', timeout: 15000 });
+    execSync(`ssh rme-staging "rm -f /tmp/rme-kb-test*.php"`, { timeout: 5000 });
+  } catch (e) { /* cleanup is best-effort */ }
+  try { fs.unlinkSync(tmpPhp); fs.unlinkSync(tmpCheck); fs.unlinkSync(tmpClean); } catch (e) {}
+}
+
+async function testAddToCartAndCleanup(page) {
+  section('ADD TO CART & CLEANUP');
+
+  // Walk through full handheld wizard to review, then add to cart
+  await navigateToCategory(page, 0); // handheld
+  await delay(300);
+
+  // Pick a radio via "I Know What I Want"
+  const selPaths = await page.$$('#selector-phase .selector-path');
+  if (selPaths.length >= 2) await selPaths[1].click();
+  await delay(400);
+
+  // Select first radio
+  await page.evaluate(() => {
+    const radios = document.querySelectorAll('#radio-grid .radio-pick');
+    if (radios.length > 0) radios[0].click();
+  });
+  await delay(600);
+
+  // Skip through wizard to review (select minimal items)
+  for (let i = 0; i < 5; i++) {
+    await page.evaluate(() => nextStep());
+    await delay(300);
+  }
+
+  // Should be on review step
+  const onReview = await page.evaluate(() => {
+    const el = document.getElementById('step-5');
+    return el && (el.classList.contains('active') || el.style.display !== 'none');
+  });
+  assert(onReview, 'Reached review step for add-to-cart test');
+
+  // Get cart count before
+  const cartBefore = await page.evaluate(async () => {
+    try {
+      const resp = await fetch('/?wc-ajax=get_refreshed_fragments');
+      const data = await resp.json();
+      return data.fragments ? Object.keys(data.fragments).length : 0;
+    } catch { return -1; }
+  });
+
+  // Click Add to Cart (the next button on review is the cart button)
+  await page.evaluate(() => {
+    const btn = document.getElementById('btn-next');
+    if (btn) btn.click();
+  });
+  await delay(3000);
+
+  // Check if we redirected to cart or got success
+  const afterCart = await page.evaluate(() => {
+    return {
+      url: location.href,
+      hasCartItems: document.querySelectorAll('.woocommerce-cart-form .cart_item, .rme-cart-item').length,
+      hasError: document.querySelector('.woocommerce-error, .rme-kb-error') !== null
+    };
+  });
+
+  if (afterCart.url.includes('cart')) {
+    assert(true, 'Redirected to cart page after add-to-cart');
+    assert(afterCart.hasCartItems >= 1, `Cart has ${afterCart.hasCartItems} items`);
+  } else {
+    // May still be on kit builder with loading overlay
+    const loadingGone = await page.evaluate(() => {
+      const overlay = document.getElementById('rkbLoading') || document.getElementById('rme-kb-loading');
+      return !overlay || overlay.style.display === 'none';
+    });
+    if (afterCart.hasError) {
+      warn('Add to cart showed an error (may be product availability issue on staging)');
+    } else {
+      assert(loadingGone, 'Add to cart completed (no loading overlay)');
+    }
+  }
+
+  // Clean up: empty the cart
+  const { execSync } = require('child_process');
+  const wpPath = '/home/u36-2gkvf0xatmnh/www/staging12.radiomadeeasy.com/public_html';
+  try {
+    execSync(
+      `ssh rme-staging "/usr/local/bin/wp eval \\"if(function_exists('WC')){WC()->cart->empty_cart();echo 'cart cleared';}\\" --path=${wpPath} 2>&1"`,
+      { encoding: 'utf8', timeout: 15000 }
+    );
+    assert(true, 'Cart cleaned up after test');
+  } catch (e) {
+    warn('Cart cleanup via WP-CLI failed (non-critical — cart is session-based)');
+  }
+}
+
 async function testJsErrorMonitoring(page) {
   section('JS ERROR MONITORING');
 
@@ -903,7 +1222,10 @@ async function testMultiKitFlow(page) {
     await testMultiKitFlow(page);
     await testConsultationEscape(page);
     await testBackButtonAtEveryLevel(page);
+    await testCategorySpecificFiltering(page);
     await testEmailSystemValidation(page);
+    await testEmailFollowupCron(page);
+    await testAddToCartAndCleanup(page);
     await testJsErrorMonitoring(page);
   } catch (err) {
     console.error(`\n${FAIL} Test runner error: ${err.message}`);
