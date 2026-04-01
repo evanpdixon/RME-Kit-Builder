@@ -161,7 +161,7 @@
   position: fixed; bottom: 0; left: 0; right: 0;
   background: #000; border-top: 2px solid #fdd351;
   padding: 14px 24px; display: flex; align-items: center; justify-content: center; gap: 24px;
-  z-index: 100;
+  z-index: 10000;
 }
 .rme-kb-bottom-bar .bb-summary { display: flex; align-items: center; gap: 16px; }
 .rme-kb-bottom-bar .bb-base { color: #c4a83a; font-size: 13px; }
@@ -519,6 +519,9 @@
 .rme-kb-bottom-bar {
   padding-bottom: max(14px, env(safe-area-inset-bottom));
 }
+
+/* ── Prevent Mailchimp popup from intercepting taps on kit builder ── */
+[id^="mcforms-"] { z-index: 99 !important; pointer-events: none !important; }
 
 /* ── Result cards: responsive width ────────── */
 #rme-kit-builder .result-card { width: 100%; max-width: 280px; }

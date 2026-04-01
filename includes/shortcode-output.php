@@ -199,14 +199,14 @@
 </div>
 
 <!-- CONSULTATION FOOTER (shown during wizard) -->
-<div id="consultation-footer" style="display:none;position:fixed;bottom:0;left:0;right:0;background:rgba(26,26,26,0.95);backdrop-filter:blur(8px);border-top:1px solid #333;padding:10px 16px;z-index:9998;text-align:center;">
+<div id="consultation-footer" style="display:none;position:fixed;bottom:72px;left:0;right:0;background:rgba(26,26,26,0.95);backdrop-filter:blur(8px);border-top:1px solid #333;padding:10px 16px;z-index:9998;text-align:center;">
   <a href="#" id="consultation-link" target="_blank" style="color:var(--rme-muted,#888);font-size:13px;text-decoration:none;">
     Not sure what to pick? <span style="color:var(--rme-gold,#d4a843);text-decoration:underline;">Book a consultation</span>
   </a>
 </div>
 
 <!-- CONSULTATION BANNER (triggered by inactivity) -->
-<div id="consultation-banner" style="display:none;position:fixed;bottom:60px;left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:480px;background:#1a1a1a;border:1px solid var(--rme-gold,#d4a843);border-radius:16px;padding:24px;z-index:9999;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,0.6);">
+<div id="consultation-banner" style="display:none;position:fixed;bottom:130px;left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:480px;background:#1a1a1a;border:1px solid var(--rme-gold,#d4a843);border-radius:16px;padding:24px;z-index:9999;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,0.6);">
   <div style="font-size:15px;font-weight:600;color:var(--rme-text,#e0e0e0);margin-bottom:8px;">Not sure which option to pick?</div>
   <div style="font-size:13px;color:var(--rme-muted,#888);margin-bottom:20px;line-height:1.5;">Our team can help you build the perfect radio kit. No obligation.</div>
   <div style="display:flex;gap:10px;justify-content:center;">

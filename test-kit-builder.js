@@ -400,7 +400,7 @@ async function testHandheldPicker(page) {
   assert(radioCount >= 3, `Radio grid has ${radioCount} radios`);
 
   // Back button works
-  await page.click('#radio-picker button[onclick="backToSelectorLanding()"]');
+  await page.evaluate(() => backToSelectorLanding());
   await delay(300);
 
   const backToLanding = await page.evaluate(() => {
