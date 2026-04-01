@@ -292,12 +292,12 @@ function rme_kb_handle_unsubscribe() {
     $token = sanitize_text_field( $_GET['token'] ?? '' );
 
     if ( ! $email || ! $token ) {
-        wp_die( 'Invalid unsubscribe link.' );
+        wp_die( 'Invalid unsubscribe link.', 'Invalid Link', array( 'response' => 400 ) );
     }
 
     $expected = hash_hmac( 'sha256', $email, wp_salt( 'nonce' ) );
     if ( ! hash_equals( $expected, $token ) ) {
-        wp_die( 'Invalid unsubscribe link.' );
+        wp_die( 'Invalid unsubscribe link.', 'Invalid Link', array( 'response' => 400 ) );
     }
 
     global $wpdb;
@@ -313,7 +313,8 @@ function rme_kb_handle_unsubscribe() {
         . '<p style="color:#666;">You won\'t receive any more kit builder emails from us.</p>'
         . '<p><a href="' . esc_url( home_url() ) . '" style="color:#d4a843;">Back to Radio Made Easy</a></p>'
         . '</div>',
-        'Unsubscribed — Radio Made Easy'
+        'Unsubscribed — Radio Made Easy',
+        array( 'response' => 200 )
     );
 }
 add_action( 'template_redirect', 'rme_kb_handle_unsubscribe' );

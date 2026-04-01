@@ -925,10 +925,12 @@ async function testEmailFollowupCron(page) {
   fs.writeFileSync(tmpPhp, `<?php
 global $wpdb;
 $t = $wpdb->prefix . 'rme_kb_leads';
+// Use current_time('mysql') minus 2 hours to match WordPress timezone (not server time)
+$two_hours_ago = date('Y-m-d H:i:s', strtotime(current_time('mysql')) - 7200);
 $wpdb->replace($t, array(
   'email' => '${testEmail}',
   'name' => 'CronTest',
-  'created_at' => date('Y-m-d H:i:s', strtotime('-2 hours')),
+  'created_at' => $two_hours_ago,
   'completed' => 0,
   'confirmation_sent' => 0,
   'reminder_1_sent' => 0,
@@ -989,11 +991,10 @@ echo $r ? $r->confirmation_sent : 'NOT_FOUND';
 
   // 6. Verify unsubscribe URL generation
   const unsubWorks = await page.evaluate(async (email) => {
-    // Just verify the unsubscribe endpoint exists
     const resp = await fetch(`${location.origin}/?rme_kb_unsub=1&email=${encodeURIComponent(email)}&token=invalid`);
-    return resp.status; // Should return 200 with "invalid token" message, not 404
+    return resp.status; // Should return 400 for invalid token (not 500)
   }, testEmail);
-  assert(unsubWorks === 200, `Unsubscribe endpoint responds (status: ${unsubWorks})`);
+  assert(unsubWorks === 400, `Unsubscribe endpoint returns 400 for invalid token (got: ${unsubWorks})`);
 
   // 7. Clean up test lead + temp files
   const tmpClean = path.join(os.tmpdir(), 'rme-kb-test-clean.php');
