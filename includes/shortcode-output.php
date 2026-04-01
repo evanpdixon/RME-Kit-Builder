@@ -215,6 +215,41 @@
   </div>
 </div>
 
+<!-- Debug Panel (toggle with triple-tap on header or ?debug=1) -->
+<div id="rme-kb-debug" style="display:none;position:fixed;top:0;right:0;width:420px;max-width:100vw;height:260px;background:#111;border:1px solid #333;border-radius:0 0 0 10px;z-index:10001;font-family:monospace;font-size:11px;overflow:hidden;">
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 10px;background:#1a1a1a;border-bottom:1px solid #333;">
+    <span style="color:#4caf50;font-weight:700;">KB DEBUG</span>
+    <div style="display:flex;gap:6px;">
+      <button onclick="rmeDebugCopy()" style="padding:3px 10px;font-size:10px;background:#333;color:#ccc;border:none;border-radius:4px;cursor:pointer;">COPY</button>
+      <button onclick="document.getElementById('rme-kb-debug').style.display='none'" style="padding:3px 10px;font-size:10px;background:#333;color:#ccc;border:none;border-radius:4px;cursor:pointer;">CLOSE</button>
+    </div>
+  </div>
+  <div id="rme-kb-debug-state" style="padding:4px 10px;color:#fdd351;font-size:10px;background:#0a0a0a;border-bottom:1px solid #222;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></div>
+  <div id="rme-kb-debug-content" style="padding:6px 10px;overflow-y:auto;height:calc(100% - 56px);color:#ccc;line-height:1.5;"></div>
+</div>
+<script>
+// Show debug panel with ?debug=1 URL param or triple-tap on kit builder
+(function(){
+  if (location.search.includes('debug=1')) {
+    var dp = document.getElementById('rme-kb-debug');
+    if (dp) dp.style.display = 'block';
+  }
+  var tapCount = 0, tapTimer;
+  var kb = document.getElementById('rme-kit-builder');
+  if (kb) kb.addEventListener('click', function(e) {
+    if (e.target.closest('button, a, .opt-card, .nq-option, .iq-option, .radio-pick, .result-card, .selector-path, input')) return;
+    tapCount++;
+    clearTimeout(tapTimer);
+    tapTimer = setTimeout(function() { tapCount = 0; }, 600);
+    if (tapCount >= 3) {
+      tapCount = 0;
+      var dp = document.getElementById('rme-kb-debug');
+      if (dp) dp.style.display = dp.style.display === 'none' ? 'block' : 'none';
+    }
+  });
+})();
+</script>
+
 <div class="lightbox" id="lightbox" onclick="closeLightbox()">
   <div class="lb-close">&times;</div>
   <img src="" alt="Product image">

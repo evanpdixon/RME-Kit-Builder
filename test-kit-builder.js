@@ -186,12 +186,12 @@ async function testEmailCapture(page) {
   const needsAfterEmail = await isVisible(page, 'needs-phase');
   assert(needsAfterEmail, 'Valid email → needs phase visible');
 
-  // Consultation footer should appear
-  const consultVisible = await page.evaluate(() => {
+  // Consultation footer should NOT appear yet (only during wizard)
+  const consultHidden = await page.evaluate(() => {
     const el = document.getElementById('consultation-footer');
-    return el && el.style.display !== 'none';
+    return el && (el.style.display === 'none' || el.style.display === '');
   });
-  assert(consultVisible, 'Consultation footer appears after email capture');
+  assert(consultHidden, 'Consultation footer hidden during needs phase (shows in wizard)');
 }
 
 async function testNeedsAssessmentGuided(page) {
@@ -672,12 +672,12 @@ async function testConsultationEscape(page) {
   await page.click('#kb-start-btn');
   await delay(1000);
 
-  // Consultation footer should be visible
-  const footerVisible = await page.evaluate(() => {
+  // Consultation footer hidden during needs (shows only in wizard)
+  const footerHidden = await page.evaluate(() => {
     const el = document.getElementById('consultation-footer');
-    return el && el.style.display !== 'none';
+    return el && (el.style.display === 'none' || el.style.display === '');
   });
-  assert(footerVisible, 'Consultation footer visible after email capture');
+  assert(footerHidden, 'Consultation footer hidden during needs phase');
 
   // Consultation link has Calendly URL
   const calendlyUrl = await page.evaluate(() => {

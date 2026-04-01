@@ -189,13 +189,22 @@ function getCalendlyUrl() {
 }
 
 function initConsultationFeatures() {
-  const footer = document.getElementById('consultation-footer');
+  // Only set URLs — don't show footer yet. It appears when the wizard starts.
   const link = document.getElementById('consultation-link');
   const bannerLink = document.getElementById('banner-consult-link');
-  if (footer) { footer.style.display = 'block'; }
   if (link) link.href = getCalendlyUrl();
   if (bannerLink) bannerLink.href = getCalendlyUrl();
+}
+
+function showConsultationFooter() {
+  const footer = document.getElementById('consultation-footer');
+  if (footer) footer.style.display = 'block';
   resetInactivityTimer();
+}
+
+function hideConsultationFooter() {
+  const footer = document.getElementById('consultation-footer');
+  if (footer) footer.style.display = 'none';
 }
 
 function resetInactivityTimer() {
@@ -1146,6 +1155,7 @@ function hideAllPhases() {
   });
   const bb = document.querySelector('.rme-kb-bottom-bar');
   if (bb) bb.style.display = 'none';
+  hideConsultationFooter();
 }
 
 // ══════════════════════════════════════════════════════
@@ -1157,6 +1167,7 @@ let mobileState = {};
 function startMobileFlow() {
   scrollToTop();
   hideAllPhases();
+  showConsultationFooter();
   mobileState = { radioKey: null, vehicle: { year: '', make: '', model: '' }, selections: {}, cartItems: [], step: 0 };
 
   document.getElementById('mobile-phase').style.display = 'block';
@@ -1751,6 +1762,7 @@ let baseState = {};
 function startBaseFlow() {
   scrollToTop();
   hideAllPhases();
+  showConsultationFooter();
   baseState = { radioKey: null, antennaPath: null, selections: {}, cartItems: [], step: 0 };
   document.getElementById('base-phase').style.display = 'block';
   document.getElementById('base-phase').innerHTML = '';
@@ -2285,6 +2297,7 @@ let hfState = {};
 function startHfFlow() {
   scrollToTop();
   hideAllPhases();
+  showConsultationFooter();
   hfState = { radioKey: null, selections: {}, cartItems: [], step: 0 };
   document.getElementById('hf-phase').style.display = 'block';
   document.getElementById('hf-phase').innerHTML = '';
@@ -2742,6 +2755,7 @@ function startDirectScanner() {
 function startScannerFlow() {
   scrollToTop();
   hideAllPhases();
+  showConsultationFooter();
   scannerState = { radioKey: null, selections: { antennas: new Set(), accessories: new Set() }, cartItems: [], step: 0 };
   const phase = document.getElementById('scanner-phase');
   phase.style.display = 'block';
@@ -5074,6 +5088,7 @@ function confirmRadioSelection(key) {
   if (!radio) { rmeDebug('ERROR', `Radio key "${key}" not found in lineup`); return; }
   pendingRadioKey = null;
   selectedRadioKey = key;
+  showConsultationFooter();
   if (kitSession.kits[kitSession.currentKitIndex]) kitSession.kits[kitSession.currentKitIndex].radioKey = key;
 
   // Load radio-specific products and update base price
