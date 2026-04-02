@@ -192,6 +192,8 @@ function getCalendlyUrl() {
 
 function initConsultationFeatures() {
   updateConsultButton();
+  const needsLink = document.getElementById('needs-consult-link');
+  if (needsLink) needsLink.href = getCalendlyUrl();
 }
 
 function updateConsultButton() {

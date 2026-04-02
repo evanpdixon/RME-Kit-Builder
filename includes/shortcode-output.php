@@ -24,15 +24,20 @@
       <p>Handhelds, vehicle mobiles, base stations, HF — or a combination. Every Radio Made Easy kit ships pre-programmed and ready to use. Let's figure out the right setup for you.</p>
       <div class="selector-paths">
         <div class="selector-path" onclick="startNeedsAssessment()">
-          <div class="sp-icon">&#x1F9ED;</div>
+          <div class="sp-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88" fill="currentColor" stroke="none"/></svg></div>
           <h3>Help Me Figure It Out</h3>
           <p>Answer a few quick questions about distance, vehicles, and use case — we'll recommend the right radios and build a plan.</p>
         </div>
         <div class="selector-path" onclick="showCategoryPicker()">
-          <div class="sp-icon">&#x1F4CB;</div>
+          <div class="sp-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
           <h3>I Know What I Need</h3>
           <p>Pick your categories — handheld, mobile, base, or HF — set quantities, and build each kit step by step.</p>
         </div>
+      </div>
+      <div style="margin-top:24px;text-align:center">
+        <a href="#" id="needs-consult-link" target="_blank" style="color:var(--rme-muted,#888);font-size:13px;text-decoration:none;">
+          Not sure where to start? <span style="color:var(--rme-gold,#d4a843);text-decoration:underline;">Book a free consultation</span>
+        </a>
       </div>
     </div>
     <div id="needs-container" style="display:none"></div>
@@ -46,12 +51,12 @@
       <p>Every Radio Made Easy kit comes pre-programmed and ready to use out of the box. Pick your radio and customize it with antennas, batteries, and accessories — we'll handle the rest.</p>
       <div class="selector-paths">
         <div class="selector-path" onclick="startInterview()">
-          <div class="sp-icon">&#x1F9ED;</div>
+          <div class="sp-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88" fill="currentColor" stroke="none"/></svg></div>
           <h3>Help Me Choose</h3>
           <p>Answer a few quick questions and we'll recommend the best radio for your needs.</p>
         </div>
         <div class="selector-path" onclick="showRadioPicker()">
-          <div class="sp-icon">&#x1F4FB;</div>
+          <div class="sp-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="6" width="10" height="16" rx="2"/><path d="M9 6V2h2v4"/><line x1="10" y1="10" x2="14" y2="10"/><circle cx="12" cy="16" r="1.5"/><rect x="10" y="12" width="4" height="2" rx="0.5"/></svg></div>
           <h3>I Know What I Want</h3>
           <p>Jump straight to our lineup and pick your radio to start building your kit.</p>
         </div>
