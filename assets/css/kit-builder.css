@@ -187,6 +187,12 @@
 .rme-kb-bottom-bar .btn-next:disabled { opacity: 0.4; cursor: not-allowed; }
 #rme-kit-builder .btn-cart { background: #fdd351; color: #111; font-size: 16px; padding: 14px 36px; }
 #rme-kit-builder .btn-cart:hover { background: #ffe87a; }
+.rme-kb-bottom-bar .btn-consult {
+  font-size: 12px; color: #888; text-decoration: none; padding: 8px 14px;
+  border: 1px solid #333; border-radius: 8px; white-space: nowrap; transition: all 0.15s;
+}
+.rme-kb-bottom-bar .btn-consult span { color: #d4a843; text-decoration: underline; }
+.rme-kb-bottom-bar .btn-consult:hover { border-color: #d4a843; background: rgba(212,168,67,0.08); }
 
 /* ── Review step ──────────────────────────── */
 #rme-kit-builder .review-list { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
@@ -550,6 +556,8 @@
   #rme-kit-builder .btn-nav,
   .rme-kb-bottom-bar .btn-nav { padding: 10px 18px; font-size: 13px; }
   #rme-kit-builder .btn-cart { font-size: 14px; padding: 10px 20px; }
+  .rme-kb-bottom-bar .btn-consult { font-size: 11px; padding: 6px 10px; }
+  .rme-kb-bottom-bar .btn-consult span { display: block; }
 }
 
 /* ── Small phone overrides (≤375px) ──────── */
@@ -560,5 +568,5 @@
   #rme-kit-builder .review-item { padding: 10px 12px; gap: 10px; }
   #rme-kit-builder .btn-nav,
   .rme-kb-bottom-bar .btn-nav { padding: 10px 14px; font-size: 12px; letter-spacing: 1px; }
+  .rme-kb-bottom-bar .btn-consult { padding: 4px 8px; font-size: 10px; }
 }
-@keyframes rme-kb-slideUp { from { transform: translate(-50%, 100%); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }

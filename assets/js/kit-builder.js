@@ -175,10 +175,6 @@ function markLeadCompleted() {
 
 // ── Consultation Escape Hatch ──────────────────────────────────────────────
 
-let _consultBannerShown = false;
-let _inactivityTimer = null;
-let _backCount = 0;
-
 function getCalendlyUrl() {
   let url = (typeof rmeKitBuilder !== 'undefined' && rmeKitBuilder.calendlyUrl)
     ? rmeKitBuilder.calendlyUrl
@@ -189,60 +185,24 @@ function getCalendlyUrl() {
 }
 
 function initConsultationFeatures() {
-  // Only set URLs — don't show footer yet. It appears when the wizard starts.
-  const link = document.getElementById('consultation-link');
-  const bannerLink = document.getElementById('banner-consult-link');
-  if (link) link.href = getCalendlyUrl();
-  if (bannerLink) bannerLink.href = getCalendlyUrl();
+  updateConsultButton();
+}
+
+function updateConsultButton() {
+  const btn = document.getElementById('btn-consult');
+  if (btn) btn.href = getCalendlyUrl();
 }
 
 function showConsultationFooter() {
-  const footer = document.getElementById('consultation-footer');
-  if (footer) footer.style.display = 'block';
-  resetInactivityTimer();
+  const btn = document.getElementById('btn-consult');
+  if (btn) btn.style.display = '';
+  updateConsultButton();
 }
 
 function hideConsultationFooter() {
-  const footer = document.getElementById('consultation-footer');
-  if (footer) footer.style.display = 'none';
+  const btn = document.getElementById('btn-consult');
+  if (btn) btn.style.display = 'none';
 }
-
-function resetInactivityTimer() {
-  clearTimeout(_inactivityTimer);
-  if (_consultBannerShown) return;
-  _inactivityTimer = setTimeout(() => {
-    showConsultBanner();
-  }, 60000); // 60 seconds
-}
-
-function showConsultBanner() {
-  if (_consultBannerShown) return;
-  _consultBannerShown = true;
-  const banner = document.getElementById('consultation-banner');
-  const bannerLink = document.getElementById('banner-consult-link');
-  if (bannerLink) bannerLink.href = getCalendlyUrl();
-  if (banner) {
-    banner.style.display = 'block';
-    banner.style.animation = 'rme-kb-slideUp 0.3s ease';
-  }
-}
-
-function dismissConsultBanner() {
-  const banner = document.getElementById('consultation-banner');
-  if (banner) banner.style.display = 'none';
-}
-
-function trackBackNavigation() {
-  _backCount++;
-  if (_backCount >= 3 && !_consultBannerShown) {
-    showConsultBanner();
-  }
-}
-
-// Listen for user activity to reset inactivity timer
-document.addEventListener('click', resetInactivityTimer);
-document.addEventListener('keydown', resetInactivityTimer);
-document.addEventListener('scroll', resetInactivityTimer);
 
 // Needs assessment questions
 const needsQuestions = [
@@ -330,7 +290,6 @@ function showCategoryPicker() {
 
 function needsGoBack() {
   rmeDebug('BACK', `From needs step ${needsStep}`);
-  trackBackNavigation();
   needsStep--;
   while (needsStep > 0) {
     const q = needsQuestions[needsStep];
@@ -4444,6 +4403,13 @@ function goStep(n) {
     };
   } else {
     back.onclick = prevStep;
+  }
+
+  // Show consultation button on all steps except review
+  const consultBtn = document.getElementById('btn-consult');
+  if (consultBtn) {
+    consultBtn.style.display = n === steps.length - 1 ? 'none' : '';
+    consultBtn.href = getCalendlyUrl();
   }
 
   if (n === steps.length - 1) {
