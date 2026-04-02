@@ -210,7 +210,10 @@
     </div>
   </div>
   <div id="rme-kb-debug-state" style="padding:4px 10px;color:#fdd351;font-size:10px;background:#0a0a0a;border-bottom:1px solid #222;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></div>
-  <div id="rme-kb-debug-content" style="padding:6px 10px;overflow-y:auto;height:calc(100% - 56px);color:#ccc;line-height:1.5;"></div>
+  <div id="rme-kb-debug-content" style="padding:6px 10px;overflow-y:auto;height:calc(100% - 92px);color:#ccc;line-height:1.5;"></div>
+  <div style="position:absolute;bottom:0;left:0;right:0;padding:6px 10px;background:#1a1a1a;border-top:1px solid #333;display:flex;gap:6px;">
+    <button onclick="rmeDebugCopy()" style="flex:1;padding:8px;font-size:12px;font-weight:600;background:#333;color:#fdd351;border:1px solid #555;border-radius:6px;cursor:pointer;">COPY LOG</button>
+  </div>
 </div>
 <script>
 // Show debug panel with ?debug=1 URL param or triple-tap on kit builder

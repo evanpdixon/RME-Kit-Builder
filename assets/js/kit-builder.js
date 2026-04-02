@@ -2039,9 +2039,14 @@ function renderBaseCoax() {
           <div class="nq-detail">Thinner, more flexible, slightly more signal loss. $3/ft (≤50ft) or $2/ft (>50ft).</div>
         </div>
       </div>
-      ${lengthHtml}
-      ${priceHtml}
-      <div style="font-size:11px;color:#888;margin-top:8px">Tip: Add a few extra feet for routing. It's better to have too much than too little.</div>
+      <div class="nq-option ${grade === 'none' ? 'selected' : ''}" onclick="baseState.selections.coax={grade:'none',length:0};renderBaseCoax()">
+        <div class="nq-check">${grade === 'none' ? '✓' : ''}</div>
+        <div>
+          <div class="nq-label">No Coax — I have my own</div>
+          <div class="nq-detail">Skip coax if you already have cable or want to source it separately.</div>
+        </div>
+      </div>
+      ${grade !== 'none' ? `${lengthHtml}${priceHtml}<div style="font-size:11px;color:#888;margin-top:8px">Tip: Add a few extra feet for routing. It's better to have too much than too little.</div>` : ''}
     </div>
   `;
 }
