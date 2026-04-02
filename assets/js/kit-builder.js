@@ -64,8 +64,14 @@ function rmeDebugCopy() {
   const state = _debugGetState();
   const text = '=== Kit Builder Debug ===\n' + state + '\n\n=== Log ===\n' + _debugLog.map(e => `${e.ts} ${e.action} ${e.detail || ''}`).join('\n');
   navigator.clipboard.writeText(text).then(() => {
-    const btn = document.querySelector('#rme-kb-debug [onclick*="rmeDebugCopy"]');
-    if (btn) { btn.textContent = 'COPIED!'; setTimeout(() => btn.textContent = 'COPY', 1500); }
+    document.querySelectorAll('#rme-kb-debug [onclick*="rmeDebugCopy"]').forEach(btn => {
+      const orig = btn.textContent;
+      btn.textContent = '✓ COPIED!';
+      btn.style.background = '#2a4a2a';
+      btn.style.color = '#4caf50';
+      btn.style.transition = 'all 0.2s';
+      setTimeout(() => { btn.textContent = orig; btn.style.background = ''; btn.style.color = ''; }, 1500);
+    });
   });
 }
 function _debugGetState() {
@@ -252,15 +258,28 @@ const needsQuestions = [
     question: "What matters most to you?",
     sub: "Pick up to two, or skip.",
     multi: true,
-    options: [
-      { key: 'digital', icon: ICO.lock, label: 'Digital / encryption', detail: 'Private, secure comms', pref: 'digital' },
-      { key: 'waterproof', icon: ICO.droplet, label: 'Waterproof / rugged', detail: 'Wet or harsh conditions', pref: 'waterproof' },
-      { key: 'simple', icon: ICO.thumbsup, label: 'Simple & easy', detail: 'Minimal learning curve', pref: 'simple' },
-      { key: 'range', icon: ICO.signal, label: 'Max range & power', detail: 'Reach as far as possible', pref: 'range' },
-      { key: 'budget', icon: ICO.dollar, label: 'Budget friendly', detail: 'Get set up affordably', pref: 'budget' },
-      { key: 'crossband', icon: ICO.crossband, label: 'Crossband repeat', detail: 'Extend handheld range via mobile', pref: 'crossband' },
-      { key: 'nopreference', icon: ICO.nopref, label: 'No preference', detail: 'Just recommend what works best', pref: '' },
-    ]
+    getOptions: function(answers) {
+      const usage = answers.usage || [];
+      const hfOnly = usage.length === 1 && usage[0] === 'hf';
+      const hfAndScanner = usage.length <= 2 && usage.includes('hf') && (usage.length === 1 || usage.includes('scanner'));
+      if (hfOnly || hfAndScanner) {
+        return [
+          { key: 'range', icon: ICO.signal, label: 'Maximum power & range', detail: '100W — 5x the power for serious DX', pref: 'range' },
+          { key: 'budget', icon: ICO.dollar, label: 'Budget friendly', detail: 'Get on the air without breaking the bank', pref: 'budget' },
+          { key: 'simple', icon: ICO.thumbsup, label: 'Simple & compact', detail: 'Smaller radio, easier to get started', pref: 'simple' },
+          { key: 'nopreference', icon: ICO.nopref, label: 'No preference', detail: 'Just recommend what works best', pref: '' },
+        ];
+      }
+      return [
+        { key: 'digital', icon: ICO.lock, label: 'Digital / encryption', detail: 'Private, secure comms', pref: 'digital' },
+        { key: 'waterproof', icon: ICO.droplet, label: 'Waterproof / rugged', detail: 'Wet or harsh conditions', pref: 'waterproof' },
+        { key: 'simple', icon: ICO.thumbsup, label: 'Simple & easy', detail: 'Minimal learning curve', pref: 'simple' },
+        { key: 'range', icon: ICO.signal, label: 'Max range & power', detail: 'Reach as far as possible', pref: 'range' },
+        { key: 'budget', icon: ICO.dollar, label: 'Budget friendly', detail: 'Get set up affordably', pref: 'budget' },
+        { key: 'crossband', icon: ICO.crossband, label: 'Crossband repeat', detail: 'Extend handheld range via mobile', pref: 'crossband' },
+        { key: 'nopreference', icon: ICO.nopref, label: 'No preference', detail: 'Just recommend what works best', pref: '' },
+      ];
+    },
   },
 ];
 
@@ -320,6 +339,7 @@ function renderNeedsQuestion() {
   }
 
   const q = needsQuestions[needsStep];
+  const qOptions = q.getOptions ? q.getOptions(kitSession.needsAnswers) : q.options;
   const answers = kitSession.needsAnswers[q.id] || (q.multi ? [] : '');
   const container = document.getElementById('needs-container');
 
@@ -327,7 +347,7 @@ function renderNeedsQuestion() {
     <div class="needs-q">
       <h2>${q.question}</h2>
       <div class="nq-sub">${q.sub}</div>
-      ${q.options.map(opt => {
+      ${qOptions.map(opt => {
         const isSelected = q.multi ? answers.includes(opt.key) : answers === opt.key;
         const indicator = q.multi
           ? `<div class="nq-check">${isSelected ? '✓' : ''}</div>`
@@ -412,8 +432,10 @@ function computeCategories() {
 
   // Preferences
   if (answers.preferences) {
+    const prefQ = needsQuestions.find(q => q.id === 'preferences');
+    const prefOpts = prefQ.getOptions ? prefQ.getOptions(answers) : prefQ.options;
     kitSession.preferences = answers.preferences.map(key => {
-      const opt = needsQuestions.find(q => q.id === 'preferences').options.find(o => o.key === key);
+      const opt = prefOpts.find(o => o.key === key);
       return opt ? opt.pref : key;
     });
   }
