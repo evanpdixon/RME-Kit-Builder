@@ -1590,12 +1590,12 @@ function renderMobileProgramming() {
 
   // Render the full programming UI into mobile step content
   const progContainer = document.createElement('div');
-  progContainer.id = 'programming-options';
+  progContainer.id = 'mobile-programming-options';
   c.innerHTML = '';
   c.appendChild(progContainer);
 
   // Use the shared programming renderer with mobile radio context
-  renderProgramming({ radioKey: mobileState.radioKey });
+  renderProgramming({ radioKey: mobileState.radioKey, _container: 'mobile-programming-options' });
 
   // Add itinerant license option (only if not already added in a prior kit)
   if (!wantsItinerantLicense) {
@@ -2131,10 +2131,10 @@ function renderBaseProgramming() {
   }
 
   const progContainer = document.createElement('div');
-  progContainer.id = 'programming-options';
+  progContainer.id = 'base-programming-options';
   c.innerHTML = '';
   c.appendChild(progContainer);
-  renderProgramming({ radioKey: baseState.radioKey });
+  renderProgramming({ radioKey: baseState.radioKey, _container: 'base-programming-options' });
 
   if (!wantsItinerantLicense) {
     const licDiv = document.createElement('div');
@@ -3390,7 +3390,8 @@ let _lastProgOpts = {};
 function renderProgramming(opts) {
   if (opts) _lastProgOpts = opts;
   const _opts = _lastProgOpts || {};
-  const container = document.getElementById('programming-options');
+  const container = (_opts._container && document.getElementById(_opts._container))
+    || document.getElementById('programming-options');
 
   const standardChecked = programmingChoice === 'standard' ? 'checked' : '';
   const multiChecked = programmingChoice === 'multi' ? 'checked' : '';
