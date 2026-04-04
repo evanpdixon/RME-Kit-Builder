@@ -36,6 +36,9 @@
           <p>Jump straight to our lineup and pick your radio.</p>
         </div>
       </div>
+      <div style="text-align:center;margin-top:16px">
+        <a href="#" class="kbs-consult-escape" target="_blank" onclick="this.href=typeof getCalendlyUrl==='function'?getCalendlyUrl():''">&#128222; Not sure where to start? Book a free consultation</a>
+      </div>
       <div id="kbs-interview-stack" style="display:none"></div>
     </div>
   </div>
@@ -65,6 +68,7 @@
       <div class="options-grid" id="antenna-options"></div>
       <div class="kb-section__actions">
         <button class="kb-btn kb-btn--primary" onclick="kbsCompleteSection('antennas')">Continue</button>
+        <a href="#" class="kbs-consult-escape" target="_blank" onclick="this.href=typeof getCalendlyUrl==='function'?getCalendlyUrl():''">&#128222; Not sure? Book a free consultation</a>
       </div>
     </div>
   </div>
@@ -80,6 +84,7 @@
       <div class="options-grid" id="battery-options"></div>
       <div class="kb-section__actions">
         <button class="kb-btn kb-btn--primary" onclick="kbsCompleteSection('battery')">Continue</button>
+        <a href="#" class="kbs-consult-escape" target="_blank" onclick="this.href=typeof getCalendlyUrl==='function'?getCalendlyUrl():''">&#128222; Not sure? Book a free consultation</a>
       </div>
     </div>
   </div>
@@ -96,6 +101,7 @@
       <div class="options-grid" id="accessory-options"></div>
       <div class="kb-section__actions">
         <button class="kb-btn kb-btn--primary" onclick="kbsCompleteSection('accessories')">Continue</button>
+        <a href="#" class="kbs-consult-escape" target="_blank" onclick="this.href=typeof getCalendlyUrl==='function'?getCalendlyUrl():''">&#128222; Not sure? Book a free consultation</a>
       </div>
     </div>
   </div>
@@ -112,6 +118,7 @@
       <div class="options-grid" id="programming-options"></div>
       <div class="kb-section__actions">
         <button class="kb-btn kb-btn--primary" onclick="kbsCompleteSection('programming')">Continue</button>
+        <a href="#" class="kbs-consult-escape" target="_blank" onclick="this.href=typeof getCalendlyUrl==='function'?getCalendlyUrl():''">&#128222; Not sure? Book a free consultation</a>
       </div>
     </div>
   </div>

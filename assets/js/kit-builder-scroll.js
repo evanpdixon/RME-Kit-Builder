@@ -327,10 +327,11 @@
               </div>`;
             }).join('')}
           </div>
-          <div style="margin-top:14px">
+          <div style="margin-top:14px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
             <button class="kb-btn kb-btn--primary" onclick="kbsNextQ()" ${!hasAnswer ? 'disabled' : ''}>
               ${i === kbsAllQuestions.length - 1 ? 'See Results' : 'Next'}
             </button>
+            <a href="#" class="kbs-consult-escape" target="_blank" onclick="this.href=typeof getCalendlyUrl==='function'?getCalendlyUrl():''">&#128222; Not sure? Book a free consultation</a>
           </div>
         </div>`;
       }
