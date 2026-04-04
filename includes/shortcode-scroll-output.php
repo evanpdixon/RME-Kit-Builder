@@ -18,15 +18,25 @@
     </div>
   </div>
 
-  <!-- SECTION 2: Interview -->
+  <!-- SECTION 2: Interview / Direct Pick -->
   <div class="kb-section kb-section--locked" data-section="interview" id="sec-interview">
     <div class="kb-section__header">
       <span class="kb-section__number">2</span>
-      <h2>Tell Us About Your Needs</h2>
+      <h2>Find Your Radio</h2>
     </div>
     <div class="kb-section__summary" style="display:none"></div>
     <div class="kb-section__content">
-      <div id="kbs-interview-stack"></div>
+      <div id="kbs-interview-choice" class="kbs-choice-screen">
+        <div class="kbs-choice-card" onclick="kbsStartGuided()">
+          <h3>Help Me Choose</h3>
+          <p>Answer a few quick questions and we'll recommend the best radio for your needs.</p>
+        </div>
+        <div class="kbs-choice-card" onclick="kbsStartDirect()">
+          <h3>I Know What I Want</h3>
+          <p>Jump straight to our lineup and pick your radio.</p>
+        </div>
+      </div>
+      <div id="kbs-interview-stack" style="display:none"></div>
     </div>
   </div>
 

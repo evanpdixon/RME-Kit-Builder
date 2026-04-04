@@ -4817,9 +4817,9 @@ const interviewQuestions = [
   },
   {
     id: 'use',
-    question: "Where will you use it most?",
-    sub: "Pick the one that fits best.",
-    multi: false,
+    question: "Where will you use your radio?",
+    sub: "Select all that apply. This helps us recommend the right features.",
+    multi: true,
     options: [
       { key: 'general', icon: ICO.town, label: 'Around town', detail: 'Family, neighborhood, local', tags: ['budget', 'simple'] },
       { key: 'outdoor', icon: ICO.outdoor, label: 'Outdoors', detail: 'Hiking, camping, overlanding', tags: ['gps', 'grow', 'waterproof'] },

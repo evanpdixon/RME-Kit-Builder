@@ -14,6 +14,9 @@
   // Signal to kit-builder.js that step-based navigation should not fire
   window._rmeScrollMode = true;
 
+  // Track whether a radio has been selected in THIS flow (not leftover from base JS)
+  let kbsRadioSelected = false;
+
   // ── Section State Machine ──────────────────────
   const SECTIONS = ['email', 'interview', 'radio', 'antennas', 'battery', 'accessories', 'programming', 'review'];
   const sectionState = {};
@@ -159,7 +162,7 @@
   function updateScrollPriceBar() {
     const bar = document.getElementById('kb-scroll-price-bar');
     if (!bar) return;
-    if (!selectedRadioKey) { bar.style.display = 'none'; return; }
+    if (!kbsRadioSelected) { bar.style.display = 'none'; return; }
     bar.style.display = '';
 
     const r = radioLineup.find(x => x.key === selectedRadioKey);
@@ -239,6 +242,24 @@
     }
     if (typeof initConsultationFeatures === 'function') initConsultationFeatures();
     kbsCompleteSection('email');
+  };
+
+  // ── Interview Choice (Help Me Choose vs I Know What I Want) ──
+  window.kbsStartGuided = function() {
+    document.getElementById('kbs-interview-choice').style.display = 'none';
+    document.getElementById('kbs-interview-stack').style.display = '';
+    renderInterviewStack();
+  };
+
+  window.kbsStartDirect = function() {
+    // Skip interview, go straight to radio grid
+    document.getElementById('kbs-interview-choice').style.display = 'none';
+    sectionState['interview'] = 'complete';
+    renderSummary('interview');
+    sectionState['radio'] = 'active';
+    applyAllStates();
+    renderScrollRadioGrid();
+    scrollToSection('radio');
   };
 
   // ── Interview Section ─────────────────────────
@@ -447,6 +468,7 @@
     // Use existing confirmRadioSelection to set up product state
     if (typeof loadRadioProducts === 'function') loadRadioProducts(key);
     selectedRadioKey = key;
+    kbsRadioSelected = true;
     const radio = radioLineup.find(r => r.key === key);
     if (radio) BASE_PRICE = radio.price;
 
@@ -527,17 +549,10 @@
 
   // ── Init ──────────────────────────────────────
   document.addEventListener('DOMContentLoaded', function() {
+    // Reset any leftover state from base JS
+    selectedRadioKey = '';
     applyAllStates();
     attachHeaderClicks();
-
-    // Start interview rendering when section becomes active
-    const observer = new MutationObserver(function() {
-      if (sectionState['interview'] === 'active' && document.getElementById('kbs-interview-stack')?.innerHTML === '') {
-        renderInterviewStack();
-      }
-    });
-    const interviewEl = document.getElementById('sec-interview');
-    if (interviewEl) observer.observe(interviewEl, { attributes: true, attributeFilter: ['class'] });
   });
 
 })();

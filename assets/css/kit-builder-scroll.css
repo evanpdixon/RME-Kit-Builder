@@ -40,6 +40,7 @@
   background: var(--rme-card);
   overflow: hidden;
   transition: opacity 0.3s ease, border-color 0.3s ease;
+  scroll-margin-top: 100px;
 }
 
 .kb-section__header {
@@ -253,6 +254,29 @@
 }
 .kb-skip-link:hover {
   color: var(--rme-gold);
+}
+
+/* ── Interview Choice Screen ───────────── */
+.kbs-choice-screen {
+  display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+  max-width: 600px; margin: 0 auto;
+}
+.kbs-choice-card {
+  flex: 1; min-width: 240px; max-width: 280px;
+  background: var(--rme-card); border: 2px solid var(--rme-border);
+  border-radius: var(--rme-radius); padding: 28px 24px; cursor: pointer;
+  text-align: center; transition: all 0.25s;
+}
+.kbs-choice-card:hover {
+  border-color: var(--rme-gold-dim); background: var(--rme-card-hover);
+  transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.3), 0 2px 12px rgba(253,211,81,0.1);
+}
+.kbs-choice-card h3 {
+  font-family: var(--rme-font-heading); font-size: 17px; color: var(--rme-gold);
+  margin-bottom: 8px;
+}
+.kbs-choice-card p {
+  font-size: 13px; color: #fff; line-height: 1.5; margin: 0;
 }
 
 /* ── Interview Stack ───────────────────── */
