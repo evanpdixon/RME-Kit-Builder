@@ -43,6 +43,39 @@ function rme_kb_shortcode( $atts ) {
 add_shortcode( 'rme_kit_builder', 'rme_kb_shortcode' );
 
 /**
+ * Register the [rme_kit_builder_scroll] shortcode — single-page scroll variant.
+ */
+function rme_kb_scroll_shortcode( $atts ) {
+    rme_kb_enqueue_assets(); // Load base JS (data + cart logic) and base CSS
+    rme_kb_enqueue_scroll_assets();
+
+    ob_start();
+    include RME_KB_PATH . 'includes/shortcode-scroll-output.php';
+    return ob_get_clean();
+}
+add_shortcode( 'rme_kit_builder_scroll', 'rme_kb_scroll_shortcode' );
+
+/**
+ * Enqueue scroll-variant specific assets.
+ */
+function rme_kb_enqueue_scroll_assets() {
+    wp_enqueue_style(
+        'rme-kit-builder-scroll',
+        RME_KB_URL . 'assets/css/kit-builder-scroll.css',
+        array( 'rme-kit-builder' ),
+        RME_KB_VERSION
+    );
+
+    wp_enqueue_script(
+        'rme-kit-builder-scroll',
+        RME_KB_URL . 'assets/js/kit-builder-scroll.js',
+        array( 'rme-kit-builder' ),
+        RME_KB_VERSION,
+        true
+    );
+}
+
+/**
  * Enqueue CSS and JS only on pages with the shortcode.
  */
 function rme_kb_enqueue_assets() {

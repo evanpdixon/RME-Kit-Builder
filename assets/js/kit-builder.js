@@ -4541,6 +4541,7 @@ function collectHandheldCartItems() {
 }
 
 function updateBottomBar() {
+  if (window._rmeScrollMode) return; // scroll variant has its own price bar
   const total = calcTotal();
   const adds = total - BASE_PRICE;
   const count = countAddons();
@@ -4553,6 +4554,7 @@ function updateBottomBar() {
 
 // ── Navigation ──────────────────────────────────────
 function goStep(n) {
+  if (window._rmeScrollMode) return; // scroll variant handles its own navigation
   rmeDebug('STEP', `→ step ${n}`);
   const steps = getSteps();
   if (n < 0 || n >= steps.length) return;
