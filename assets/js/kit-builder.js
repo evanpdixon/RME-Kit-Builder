@@ -734,25 +734,41 @@ function completeCurrentKit(cartItems, programmingData) {
   kit.cartItems = cartItems || [];
   if (programmingData) kit.programming = programmingData;
 
-  // Check for remaining pending kits of the same category
+  // Determine if this is a single-solution session (all kits same category)
+  const categories = new Set(kitSession.kits.map(k => k.category));
+  const isSingleSolution = categories.size === 1;
   const sameCatPending = kitSession.kits.filter(k => k.category === kit.category && k.status === 'pending');
 
-  // Hide all category phases and bottom bar
-  document.getElementById('selector-phase').style.display = 'none';
-  document.getElementById('wizard-phase').style.display = 'none';
-  { const _bb = document.querySelector('.rme-kb-bottom-bar'); if (_bb) _bb.style.display = 'none'; }
-  if (document.getElementById('mobile-phase')) document.getElementById('mobile-phase').style.display = 'none';
-  if (document.getElementById('base-phase')) document.getElementById('base-phase').style.display = 'none';
-  if (document.getElementById('hf-phase')) document.getElementById('hf-phase').style.display = 'none';
-  if (document.getElementById('scanner-phase')) document.getElementById('scanner-phase').style.display = 'none';
+  // Single solution with pending kits: offer to apply same config, then upsell/cart
+  if (isSingleSolution && sameCatPending.length > 0) {
+    showHidePhases();
+    const catName = categoryMeta[kit.category]?.name || kit.category;
+    const radioName = [...radioLineup, ...mobileRadioLineup, ...hfRadioLineup, ...scannerRadioLineup].find(r => r.key === kit.radioKey)?.name?.replace(' Essentials Kit','').replace(' Mobile Radio Kit','') || kit.radioKey;
+    const count = sameCatPending.length;
+    document.getElementById('kit-plan-container').innerHTML = `
+      <div class="kit-plan" style="text-align:center">
+        <h2>Apply to Remaining Kits?</h2>
+        <p style="color:#ddd;font-size:15px;max-width:500px;margin:0 auto 24px">You have ${count} more ${catName.toLowerCase()}${count > 1 ? 's' : ''} to build. Would you like to use the same configuration (${radioName} with the same accessories)?</p>
+        <p style="color:#888;font-size:13px;margin-bottom:24px">Programming addresses will still need to be set individually if they differ.</p>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+          <button class="btn-nav btn-next" onclick="applyToAllPendingThenCart('${kit.category}')">Apply to All ${count} →</button>
+          <button class="btn-nav btn-back" onclick="renderKitPlan()">Customize Each One</button>
+        </div>
+      </div>
+    `;
+    scrollToTop();
+    return;
+  }
 
-  // Show needs phase with kit plan
-  document.getElementById('needs-phase').style.display = 'block';
-  document.getElementById('needs-landing').style.display = 'none';
-  document.getElementById('needs-container').style.display = 'none';
-  document.getElementById('kit-plan-container').style.display = 'block';
+  // Single solution, all done: show volume upsell or go to cart
+  if (isSingleSolution) {
+    rmeDebug('CART', 'Single solution — checking for volume upsell');
+    showVolumeUpsellOrCart(kit.category);
+    return;
+  }
 
-  // If there are more pending kits of the same category, offer to apply same selections
+  // Multi-solution: use kit plan as usual
+  showHidePhases();
   if (sameCatPending.length > 0) {
     const catName = categoryMeta[kit.category]?.name || kit.category;
     const radioName = [...radioLineup, ...mobileRadioLineup, ...hfRadioLineup, ...scannerRadioLineup].find(r => r.key === kit.radioKey)?.name?.replace(' Essentials Kit','').replace(' Mobile Radio Kit','') || kit.radioKey;
@@ -773,6 +789,99 @@ function completeCurrentKit(cartItems, programmingData) {
   }
 
   renderKitPlan();
+}
+
+// Helper: hide all phases, show kit plan container
+function showHidePhases() {
+  document.getElementById('selector-phase').style.display = 'none';
+  document.getElementById('wizard-phase').style.display = 'none';
+  { const _bb = document.querySelector('.rme-kb-bottom-bar'); if (_bb) _bb.style.display = 'none'; }
+  ['mobile-phase','base-phase','hf-phase','scanner-phase'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.style.display = 'none';
+  });
+  document.getElementById('needs-phase').style.display = 'block';
+  document.getElementById('needs-landing').style.display = 'none';
+  document.getElementById('needs-container').style.display = 'none';
+  document.getElementById('kit-plan-container').style.display = 'block';
+}
+
+// Volume upsell prompt or direct to cart
+function showVolumeUpsellOrCart(category) {
+  const totalQty = kitSession.kits.filter(k => k.category === category).length;
+  const nextTier = getNextTier(totalQty);
+  const currentTier = getVolumeTier(totalQty);
+
+  // If there's a next tier they can reach by adding more
+  if (nextTier) {
+    const addMore = nextTier.min - totalQty;
+    const catName = categoryMeta[category]?.name || category;
+    const sourceKit = kitSession.kits.filter(k => k.category === category && k.status === 'complete').pop();
+    const radioName = sourceKit ? ([...radioLineup, ...mobileRadioLineup, ...hfRadioLineup, ...scannerRadioLineup].find(r => r.key === sourceKit.radioKey)?.name?.replace(' Essentials Kit','').replace(' Mobile Radio Kit','') || '') : '';
+
+    showHidePhases();
+    document.getElementById('kit-plan-container').innerHTML = `
+      <div class="kit-plan" style="text-align:center">
+        <h2>Want to Save More?</h2>
+        <p style="color:#ddd;font-size:15px;max-width:520px;margin:0 auto 8px">
+          You have <strong style="color:var(--gold)">${totalQty}</strong> ${catName.toLowerCase()}${totalQty > 1 ? 's' : ''} in your kit.
+          ${currentTier ? `That's <strong style="color:var(--green)">${currentTier.pct}% off</strong> (${currentTier.label}).` : ''}
+        </p>
+        <p style="color:var(--gold);font-size:17px;font-weight:600;margin:16px 0">
+          Add ${addMore} more ${catName.toLowerCase()}${addMore > 1 ? 's' : ''} to unlock <strong>${nextTier.pct}% off</strong> — ${nextTier.label}!
+        </p>
+        <p style="color:#888;font-size:13px;margin-bottom:24px">Same configuration${radioName ? ' (' + radioName + ')' : ''}, applied automatically.</p>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+          <button class="btn-nav btn-next" onclick="addUpsellKits('${category}', ${addMore})">Add ${addMore} More →</button>
+          <button class="btn-nav btn-back" onclick="addAllKitsToCart()">No Thanks, Add to Cart</button>
+        </div>
+      </div>
+    `;
+    scrollToTop();
+    return;
+  }
+
+  // At max tier or no tiers — go straight to cart
+  rmeDebug('CART', 'No upsell available — adding to cart');
+  addAllKitsToCart();
+}
+
+// Add upsell kits by cloning the last completed kit
+function addUpsellKits(category, count) {
+  const sourceKit = kitSession.kits.filter(k => k.category === category && k.status === 'complete').pop();
+  if (!sourceKit) { addAllKitsToCart(); return; }
+
+  for (let i = 0; i < count; i++) {
+    kitSession.kits.push({
+      category: category,
+      label: categoryMeta[category]?.name + ' #' + (kitSession.kits.filter(k => k.category === category).length + 1),
+      status: 'complete',
+      radioKey: sourceKit.radioKey,
+      cartItems: JSON.parse(JSON.stringify(sourceKit.cartItems)),
+      programming: sourceKit.programming ? JSON.parse(JSON.stringify(sourceKit.programming)) : null,
+    });
+  }
+
+  rmeDebug('UPSELL', `Added ${count} more ${category} kits`);
+  // Check if there's yet another tier they could reach
+  showVolumeUpsellOrCart(category);
+}
+
+// Apply to all pending then go to upsell/cart (for single-solution sessions)
+function applyToAllPendingThenCart(category) {
+  const sourceKit = kitSession.kits.filter(k => k.category === category && k.status === 'complete').pop();
+  if (!sourceKit) { addAllKitsToCart(); return; }
+
+  kitSession.kits.forEach(k => {
+    if (k.category === category && k.status === 'pending') {
+      k.status = 'complete';
+      k.radioKey = sourceKit.radioKey;
+      k.cartItems = JSON.parse(JSON.stringify(sourceKit.cartItems));
+      if (sourceKit.programming) k.programming = JSON.parse(JSON.stringify(sourceKit.programming));
+    }
+  });
+
+  rmeDebug('APPLY ALL', `Cloned ${category} kit to remaining pending kits, checking upsell`);
+  showVolumeUpsellOrCart(category);
 }
 
 function applyToAllPending(category) {
@@ -4257,8 +4366,16 @@ function adapterModalCancel() {
 }
 
 function toggleBattery(key) {
-  if (selectedBatteries.has(key)) selectedBatteries.delete(key);
-  else selectedBatteries.set(key, 1);
+  if (selectedBatteries.has(key)) {
+    selectedBatteries.delete(key);
+    uvproBatteryColors.delete(key);
+  } else {
+    selectedBatteries.set(key, 1);
+    // Default battery color to match the radio color for UV-PRO
+    if (selectedRadioKey === 'uv-pro' && !uvproBatteryColors.has(key)) {
+      uvproBatteryColors.set(key, uvproRadioColor);
+    }
+  }
   renderBatteryUpgrades();
   updateBottomBar();
 }
@@ -4507,7 +4624,8 @@ function goStep(n) {
   if (n === steps.length - 1) {
     // Review step
     const inSession = kitSession.kits.length > 0;
-    next.textContent = inSession ? '✓ Complete Kit' : '🛒  Add to Cart';
+    const isSingleKit = kitSession.kits.length === 1;
+    next.textContent = !inSession || isSingleKit ? '🛒  Add to Cart' : '✓ Complete Kit';
     next.className = 'btn-nav btn-cart';
     next.onclick = function() {
       if (inSession) {
