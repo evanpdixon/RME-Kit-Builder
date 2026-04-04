@@ -2776,8 +2776,18 @@ function addAllKitsToCart() {
     return;
   }
 
+  // Build kit name from completed kits
+  const kitNames = kitSession.kits
+    .filter(k => k.status === 'complete' && k.radioKey)
+    .map(k => {
+      const r = [...radioLineup, ...(typeof mobileRadioLineup !== 'undefined' ? mobileRadioLineup : [])].find(x => x.key === k.radioKey);
+      return r ? r.name : '';
+    })
+    .filter(Boolean);
+  const kitName = [...new Set(kitNames)].join(' + ');
+
   rmeDebug('CART', `Adding ${allItems.length} unique products (${allItems.reduce((s,i) => s + i.qty, 0)} total items)`);
-  rmeKbAddToCart(allItems);
+  rmeKbAddToCart(allItems, kitName);
 }
 
 // ══════════════════════════════════════════════════════
@@ -4642,7 +4652,8 @@ function goStep(n) {
       } else {
         // Single kit — add directly to cart
         const items = collectHandheldCartItems();
-        rmeKbAddToCart(items);
+        const selRadio = radioLineup.find(r => r.key === selectedRadioKey);
+        rmeKbAddToCart(items, selRadio ? selRadio.name : '');
       }
     };
   } else {
@@ -5404,7 +5415,7 @@ wizardInitialized = true;
 
 // ── WooCommerce Cart Integration ──
 let _rmeKbCartBusy = false;
-function rmeKbAddToCart(items) {
+function rmeKbAddToCart(items, kitName) {
   if (_rmeKbCartBusy) return Promise.resolve(); // prevent double-click
   _rmeKbCartBusy = true;
   // Disable all cart/add buttons and show loading state
@@ -5437,7 +5448,7 @@ function rmeKbAddToCart(items) {
   return fetch(rmeKitBuilder.ajaxUrl + '?action=rme_kb_add_to_cart&nonce=' + rmeKitBuilder.nonce, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ items: normalized })
+    body: JSON.stringify({ items: normalized, kitName: kitName || '' })
   })
   .then(r => r.json())
   .then(data => {
