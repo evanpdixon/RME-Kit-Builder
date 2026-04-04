@@ -3058,8 +3058,7 @@ function getSteps() {
   const hasColor = radiosWithColor.has(selectedRadioKey);
   const steps = [];
   if (hasColor) steps.push({ id: 'step-color', name: 'Color', render: renderColorChoice });
-  steps.push({ id: 'step-0', name: 'Antennas', render: renderAntennaUpgrades });
-  steps.push({ id: 'step-1', name: 'More Antennas', render: renderAdditionalAntennas });
+  steps.push({ id: 'step-0', name: 'Antennas', render: renderAllAntennas });
   steps.push({ id: 'step-2', name: 'Battery', render: renderBatteryUpgrades });
   steps.push({ id: 'step-3', name: 'Accessories', render: renderAccessories });
   steps.push({ id: 'step-4', name: 'Programming', render: renderProgramming });
@@ -3113,16 +3112,16 @@ const ADAPTER_PRICE = 5; // SMA-F to BNC-F Adapter [456] -added once if any BNC 
 
 // Shared items (available for all radios)
 const sharedAntennaUpgrades = [
-  { key: 'stubby', name: 'Stubby Antenna with BNC Adapter', desc: 'Compact, low-profile antenna. Great for covert carry, backpacking, or when you need a shorter profile.', price: 39, img: S+'2023/05/20250227_154740.jpg', ids: [816, 456], addsToCart: ['Stubby Antenna [816] ($39)'] },
-  { key: 'foulweather', name: 'Foul Weather Whip with BNC Adapter', desc: 'Flexible whip that bends without breaking. Ideal for field use, rucking, and mounting on chest rigs or plate carriers.', price: 40, img: S+'2024/03/20240320_115347.jpg', ids: [3916, 456], addsToCart: ['Foul Weather Whip [3916] ($40)'] },
-  { key: 'signalstick', name: 'Signal Stick with BNC Adapter', desc: 'Super elastic, nearly indestructible flexible antenna. Excellent all-around performer for both transmit and receive.', price: 25, img: S+'2022/07/IMGP8549-scaled.jpg', ids: [39, 456], addsToCart: ['Signal Stick [39] ($25)'] },
+  { key: 'stubby', name: 'Stubby Antenna with BNC Adapter', bestUse: 'Best for: Covert Carry', desc: 'Compact, low-profile antenna. Great for covert carry, backpacking, or when you need a shorter profile.', price: 39, img: S+'2023/05/20250227_154740.jpg', ids: [816, 456], addsToCart: ['Stubby Antenna [816] ($39)'] },
+  { key: 'foulweather', name: 'Foul Weather Whip with BNC Adapter', bestUse: 'Best for: Chest Rigs & Field Use', desc: 'Flexible whip that bends without breaking. Ideal for field use, rucking, and mounting on chest rigs or plate carriers.', price: 40, img: S+'2024/03/20240320_115347.jpg', ids: [3916, 456], addsToCart: ['Foul Weather Whip [3916] ($40)'] },
+  { key: 'signalstick', name: 'Signal Stick with BNC Adapter', bestUse: 'Best for: Overall Performance', desc: 'Super elastic, nearly indestructible flexible antenna. Excellent all-around performer for both transmit and receive.', price: 25, img: S+'2022/07/IMGP8549-scaled.jpg', ids: [39, 456], addsToCart: ['Signal Stick [39] ($25)'] },
 ];
 
 const sharedAdditionalAntennas = [
-  { key: 'wearable', name: 'Wearable BNC Antenna', desc: 'Low-profile antenna for chest rigs, plate carriers, and body-worn setups. Lays flat for a streamlined profile.', price: 69, img: S+'2022/10/20221006_154507.jpg', id: 460, needsAdapter: true },
-  { key: 'slimjim', name: 'Roll Up Slim Jim Antenna', desc: 'Portable VHF/UHF antenna you can hang from a tree branch, window, or tarp ridge line. Dramatically extends your range, essential for base camp ops.', price: 49, img: S+'2022/08/12200-2-scaled.jpg', id: 99, needsAdapter: true },
-  { key: 'magmount', name: 'Magnetic BNC Antenna Base', desc: 'Magnetic base mount for any BNC antenna. Stick on a vehicle roof, toolbox, or any metal surface for instant mobile capability.', price: 39, img: S+'2022/10/IMGP8553-scaled.jpg', id: 521, needsAdapter: true },
-  { key: 'mollemount', name: 'BNC MOLLE Antenna Mount', desc: 'Attach any BNC antenna to MOLLE webbing on your vest, pack, or plate carrier. Keeps the antenna off the radio for a low-profile setup.', price: 19, img: S+'2025/12/1000009993.jpg', id: 8717, needsAdapter: true },
+  { key: 'wearable', name: 'Wearable BNC Antenna', bestUse: 'Best for: Body-Worn Setups', desc: 'Low-profile antenna for chest rigs, plate carriers, and body-worn setups. Lays flat for a streamlined profile.', price: 69, img: S+'2022/10/20221006_154507.jpg', id: 460, needsAdapter: true },
+  { key: 'slimjim', name: 'Roll Up Slim Jim Antenna', bestUse: 'Best for: Base Camp Range', desc: 'Portable VHF/UHF antenna you can hang from a tree branch, window, or tarp ridge line. Dramatically extends your range, essential for base camp ops.', price: 49, img: S+'2022/08/12200-2-scaled.jpg', id: 99, needsAdapter: true },
+  { key: 'magmount', name: 'Magnetic BNC Antenna Base', bestUse: 'Best for: Vehicle Mounting', desc: 'Magnetic base mount for any BNC antenna. Stick on a vehicle roof, toolbox, or any metal surface for instant mobile capability.', price: 39, img: S+'2022/10/IMGP8553-scaled.jpg', id: 521, needsAdapter: true },
+  { key: 'mollemount', name: 'BNC MOLLE Antenna Mount', bestUse: 'Best for: Tactical Gear', desc: 'Attach any BNC antenna to MOLLE webbing on your vest, pack, or plate carrier. Keeps the antenna off the radio for a low-profile setup.', price: 19, img: S+'2025/12/1000009993.jpg', id: 8717, needsAdapter: true },
   { key: 'extraadapter', name: 'Extra SMA-F to BNC-F Adapter', desc: 'Spare BNC adapter so you can leave one on a mag mount or other accessory and still have one for the radio. One adapter is already included if you selected an antenna upgrade.', price: 5, img: S+'2022/09/smaftobncf.jpg', id: 456, needsAdapter: false, isAdapter: true },
 ];
 
@@ -3260,11 +3259,11 @@ function selectRadioColor(color) {
   renderColorChoice();
 }
 
-function renderAntennaUpgrades() {
+function renderAllAntennas() {
   const container = document.getElementById('antenna-options');
-  const anySelected = selectedAntennas.size > 0;
+  const anyUpgrade = selectedAntennas.size > 0;
 
-  // Factory antenna -always included, always shown as selected
+  // ── Section 1: Upgrade Your Antenna ──
   let factoryHtml = `
     <div class="opt-card selected" style="cursor:default;opacity:0.85">
       <div class="oc-check" style="background:var(--green);border-color:var(--green);color:#111">✓</div>
@@ -3276,17 +3275,17 @@ function renderAntennaUpgrades() {
     </div>
   `;
 
-  // Adapter note
-  let note = anySelected
+  let note = anyUpgrade
     ? '<div style="background:#1a2a1a;border:1px solid #2a3a2a;border-radius:8px;padding:12px 16px;margin:16px 0;font-size:13px;color:#5c5"><strong>SMA-F to BNC-F Adapter ($5)</strong> will be added once to your order, shared by all BNC antennas below.</div>'
     : '<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:16px 0;font-size:13px;color:var(--muted)">Want better performance? Add one or more BNC antenna upgrades below. Each requires a BNC adapter ($5, added once).</div>';
 
-  container.innerHTML = factoryHtml + note + antennaUpgrades.map(a => `
+  let upgradeCards = antennaUpgrades.map(a => `
     <div class="opt-card ${selectedAntennas.has(a.key) ? 'selected' : ''}"
          onclick="toggleAntenna('${a.key}')">
       <div class="oc-check">${selectedAntennas.has(a.key) ? '✓' : ''}</div>
       ${a.img ? `<div class="oc-img"><img src="${a.img}" alt="${a.name}" onerror="this.parentElement.innerHTML='<div style=\\'color:#444;font-size:11px;text-align:center;padding:8px\\'>No img</div>'"></div>` : ''}
       <div class="oc-body">
+        ${a.bestUse ? `<div class="oc-best-use">${a.bestUse}</div>` : ''}
         <div class="oc-name">${a.name}</div>
         <div class="oc-desc">${a.desc}</div>
         <div class="oc-meta"></div>
@@ -3294,7 +3293,47 @@ function renderAntennaUpgrades() {
       <div class="oc-price">+$${a.price}</div>
     </div>
   `).join('');
+
+  // ── Section 2: Add More Antennas ──
+  let adapterNote = '';
+  if (anyUpgrade) {
+    adapterNote = '<div style="background:#1a2a1a;border:1px solid #2a3a2a;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:13px;color:#5c5"><strong>BNC adapter already included</strong> with your antenna upgrade. BNC antennas below will share that adapter, or grab a spare below if you want one dedicated to each setup.</div>';
+  } else {
+    adapterNote = '<div style="background:#2a2000;border:1px solid #3a3000;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:13px;color:#d4af37"><strong>No antenna upgrade selected.</strong> BNC antennas below require an SMA-F to BNC-F Adapter, which will be auto-added if needed.</div>';
+  }
+
+  let addlCards = additionalAntennas.map(a => {
+    const isAdapter = a.isAdapter;
+    let adapterSubtitle = '';
+    if (isAdapter && anyUpgrade) {
+      adapterSubtitle = '<div style="font-size:11px;color:var(--green);margin-top:2px">✓ One already included with your upgrade. This adds a spare</div>';
+    } else if (isAdapter && !anyUpgrade) {
+      adapterSubtitle = '<div style="font-size:11px;color:var(--gold-dim);margin-top:2px">One will be auto-added if you select a BNC antenna. This adds an extra</div>';
+    }
+
+    return `
+    <div class="opt-card ${selectedAddlAntennas.has(a.key) ? 'selected' : ''}"
+         onclick="toggleAddlAntenna('${a.key}')">
+      <div class="oc-check">${selectedAddlAntennas.has(a.key) ? '✓' : ''}</div>
+      ${a.img ? `<div class="oc-img"><img src="${a.img}" alt="${a.name}" onerror="this.parentElement.innerHTML='<div style=\\'color:#444;font-size:11px;text-align:center;padding:8px\\'>No img</div>'"></div>` : ''}
+      <div class="oc-body">
+        ${a.bestUse ? `<div class="oc-best-use">${a.bestUse}</div>` : ''}
+        <div class="oc-name">${a.name}</div>
+        <div class="oc-desc">${a.desc}</div>
+        ${adapterSubtitle}
+        <div class="oc-meta"></div>
+      </div>
+      <div class="oc-price">${a.price ? '+$' + a.price : 'Price TBD'}</div>
+    </div>
+  `}).join('');
+
+  container.innerHTML = factoryHtml + note + upgradeCards
+    + '<div class="antenna-section-divider"><h3>Add More Antennas</h3><p>Supplemental antennas for extended range, mobile use, or body-worn setups.</p></div>'
+    + adapterNote + addlCards;
 }
+
+// Legacy render functions kept for any direct calls
+function renderAntennaUpgrades() { renderAllAntennas(); }
 
 function renderAdditionalAntennas() {
   const hasUpgrade = selectedAntennas.size > 0;
@@ -3401,7 +3440,27 @@ function renderBatteryUpgrades() {
 
 function renderAccessories() {
   const container = document.getElementById('accessory-options');
-  container.innerHTML = accessories.map(a => `
+
+  const helpGuide = `
+    <div class="acc-help-toggle" onclick="this.nextElementSibling.classList.toggle('open');this.classList.toggle('open')">
+      Not sure what you need? <span>Click here for a quick guide</span>
+    </div>
+    <div class="acc-help-panel">
+      <ul>
+        <li><strong>Cheat Sheets</strong> - Waterproof quick-reference cards. Great for beginners or field use.</li>
+        <li><strong>Speakermic / Wireless Speakermic</strong> - Clip to your gear so you can talk hands-free. The most popular accessory.</li>
+        <li><strong>Eartube Headset</strong> - Discreet earpiece for security, events, or when you don't want others hearing your radio.</li>
+        <li><strong>Exoskeleton / Saddle</strong> - Protective gear. The exoskeleton prevents drops and accidental transmissions. The saddle covers your accessory port.</li>
+        <li><strong>Programming Cable</strong> - For advanced users who want to program channels from a computer.</li>
+        <li><strong>Earpro Cable</strong> - Connects your speakermic to electronic ear protection (shooting, machinery, etc.).</li>
+        <li><strong>SO-239 Pigtail</strong> - Lets you connect your handheld to a full-size vehicle or base antenna.</li>
+        <li><strong>Battery Eliminator</strong> - Run your radio from 12V power (vehicle, battery pack) instead of the internal battery.</li>
+      </ul>
+      <p style="margin:8px 0 0;color:var(--gold-dim)">Still unsure? Book a free consultation using the button below.</p>
+    </div>
+  `;
+
+  container.innerHTML = helpGuide + accessories.map(a => `
     <div class="opt-card ${selectedAccessories.has(a.key) ? 'selected' : ''}"
          onclick="toggleAccessory('${a.key}')">
       <div class="oc-check">${selectedAccessories.has(a.key) ? '✓' : ''}</div>
@@ -4383,7 +4442,7 @@ function goStep(n) {
   currentStep = n;
 
   // Show/hide sections by ID
-  const allSectionIds = ['step-color', 'step-0', 'step-1', 'step-2', 'step-3', 'step-4', 'step-5'];
+  const allSectionIds = ['step-color', 'step-0', 'step-1', 'step-2', 'step-3', 'step-4', 'step-5']; // step-1 kept for cleanup
   allSectionIds.forEach(id => {
     const el = document.getElementById(id);
     if (el) { el.classList.remove('active'); el.style.display = 'none'; }
@@ -4436,10 +4495,12 @@ function goStep(n) {
     back.onclick = prevStep;
   }
 
-  // Show consultation button on all steps except review
+  // Show consultation button on all steps; dim on review to prevent layout shift
   const consultBtn = document.getElementById('btn-consult');
   if (consultBtn) {
-    consultBtn.style.display = n === steps.length - 1 ? 'none' : '';
+    consultBtn.style.display = '';
+    consultBtn.style.opacity = n === steps.length - 1 ? '0.4' : '1';
+    consultBtn.style.pointerEvents = n === steps.length - 1 ? 'none' : '';
     consultBtn.href = getCalendlyUrl();
   }
 
@@ -4490,10 +4551,11 @@ function scrollToTop() {
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   setTimeout(() => {
     // Scroll to page title if visible, otherwise kit builder container
+    // Use scrollIntoView with 'start' block - CSS scroll-margin-top handles sticky header offset
     const title = document.querySelector('.rme-page-title');
     const target = title || document.getElementById('rme-kit-builder');
     if (target) target.scrollIntoView({ behavior: prefersReduced ? 'auto' : 'smooth', block: 'start' });
-  }, prefersReduced ? 0 : 200);
+  }, prefersReduced ? 0 : 300);
 }
 
 function nextStep() {

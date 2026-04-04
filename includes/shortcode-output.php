@@ -107,17 +107,14 @@
 
     <div class="wizard-section active" id="step-0">
       <div class="section-head">
-        <h2>Antenna Upgrades</h2>
-        <p>Your kit includes the factory antenna. Add high-performance BNC antennas below.</p>
+        <h2>Antennas</h2>
+        <p>Your kit includes the factory antenna. Upgrade for better performance, or add antennas for specific setups.</p>
       </div>
       <div class="options-grid" id="antenna-options"></div>
     </div>
 
-    <div class="wizard-section" id="step-1">
-      <div class="section-head">
-        <h2>Additional Antennas</h2>
-        <p>Supplemental antennas for extended range, mobile use, or body-worn setups.</p>
-      </div>
+    <!-- step-1 retained as hidden placeholder for goStep cleanup -->
+    <div class="wizard-section" id="step-1" style="display:none">
       <div class="options-grid" id="addl-antenna-options"></div>
     </div>
 
@@ -171,7 +168,7 @@
   </div>
   <div class="bb-divider"></div>
   <button class="btn-nav btn-back" id="btn-back" onclick="prevStep()" style="display:none">Back</button>
-  <a href="#" id="btn-consult" class="btn-consult" target="_blank" style="display:none">Need help? <span>Book a consultation</span></a>
+  <a href="#" id="btn-consult" class="btn-consult" target="_blank" style="display:none">&#128222; Need help? <span>Book a free consultation</span></a>
   <button class="btn-nav btn-next" id="btn-next" onclick="nextStep()">Next &#8594;</button>
 </div>
 

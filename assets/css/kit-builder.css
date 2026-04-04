@@ -31,6 +31,11 @@
 #rme-kit-builder h1, #rme-kit-builder h2, #rme-kit-builder h3, #rme-kit-builder h4 {
   margin-top: 0;
 }
+/* Prevent theme sticky header from overlapping scroll targets */
+#rme-kit-builder, .rme-page-title { scroll-margin-top: 100px; }
+/* Ensure radio grid sits above any theme overlays */
+#rme-kit-builder .radio-grid { position: relative; z-index: 1; }
+#rme-kit-builder .radio-pick { position: relative; z-index: 2; }
 
 /* ── Hero ───────────────────────────────── */
 #rme-kit-builder .hero { display: flex; gap: 40px; margin-bottom: 40px; align-items: flex-start; }
@@ -43,8 +48,8 @@
 #rme-kit-builder .hero-info { flex: 1; padding-top: 8px; }
 #rme-kit-builder .hero-info h1 { font-family: var(--rme-font-heading) !important; font-size: 32px; font-weight: 700; color: var(--rme-text); line-height: 1.2; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
 #rme-kit-builder .hero-info .base-price { font-size: 26px; color: var(--rme-gold); font-weight: 300; margin-bottom: 12px; }
-#rme-kit-builder .hero-info .desc { color: var(--rme-muted); font-size: 14px; line-height: 1.6; margin-bottom: 20px; }
-#rme-kit-builder .hero-info .includes { font-size: 13px; color: var(--rme-muted); }
+#rme-kit-builder .hero-info .desc { color: var(--rme-muted); font-size: 15px; line-height: 1.6; margin-bottom: 20px; }
+#rme-kit-builder .hero-info .includes { font-size: 14px; color: var(--rme-muted); }
 #rme-kit-builder .hero-info .includes strong { color: var(--rme-gold); }
 #rme-kit-builder .hero-info .includes ul { list-style: none; padding: 0; margin-top: 6px; }
 #rme-kit-builder .hero-info .includes li { padding: 3px 0; }
@@ -61,7 +66,7 @@
 
 #rme-kit-builder .step-labels { display: flex; justify-content: space-evenly; margin-bottom: 8px; }
 #rme-kit-builder .step-label {
-  text-align: center; font-size: 11px; color: var(--rme-muted);
+  text-align: center; font-size: 12px; color: var(--rme-muted);
   letter-spacing: 0.5px; text-transform: uppercase; padding: 0 4px 8px;
   cursor: pointer; transition: color 0.2s; white-space: nowrap;
 }
@@ -80,7 +85,7 @@
 
 #rme-kit-builder .section-head { margin-bottom: 20px; }
 #rme-kit-builder .section-head h2 { font-size: 20px; font-weight: 600; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 2px; color: var(--rme-gold); }
-#rme-kit-builder .section-head p { color: #fff; font-size: 14px; }
+#rme-kit-builder .section-head p { color: #fff; font-size: 15px; }
 
 /* ── Option cards ─────────────────────────── */
 #rme-kit-builder .options-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
@@ -111,26 +116,43 @@
 #rme-kit-builder .opt-card:hover .oc-img::after { opacity: 1; }
 
 #rme-kit-builder .opt-card .oc-body { flex: 1; min-width: 0; }
-#rme-kit-builder .opt-card .oc-name { font-size: 15px; font-weight: 600; margin-bottom: 3px; color: #fff; transition: color 0.2s; }
+#rme-kit-builder .opt-card .oc-name { font-size: 16px; font-weight: 600; margin-bottom: 3px; color: #fff; transition: color 0.2s; }
 #rme-kit-builder .opt-card:hover .oc-name { color: #fff; }
 #rme-kit-builder .opt-card .oc-desc {
-  font-size: 12px; color: #ddd; line-height: 1.4;
+  font-size: 13px; color: #ddd; line-height: 1.4;
   max-height: 2.8em; overflow: hidden;
   transition: max-height 0.35s ease, color 0.25s ease;
 }
 #rme-kit-builder .opt-card:hover .oc-desc { max-height: 10em; color: #aaa; }
 #rme-kit-builder .opt-card .oc-meta {
-  font-size: 11px; color: #555; margin-top: 4px;
+  font-size: 12px; color: #555; margin-top: 4px;
   opacity: 0; max-height: 0; overflow: hidden;
   transition: opacity 0.3s ease 0.1s, max-height 0.3s ease 0.1s;
 }
 #rme-kit-builder .opt-card:hover .oc-meta { opacity: 1; max-height: 3em; }
 
-#rme-kit-builder .opt-card .oc-price { font-size: 16px; font-weight: 700; color: #fff; white-space: nowrap; flex-shrink: 0; margin-left: 8px; }
+#rme-kit-builder .opt-card .oc-price { font-size: 17px; font-weight: 700; color: #fff; white-space: nowrap; flex-shrink: 0; margin-left: 8px; }
 #rme-kit-builder .opt-card .oc-price.free { color: var(--rme-green); }
 #rme-kit-builder .opt-card .oc-badge-missing {
   display: inline-block; font-size: 10px; padding: 2px 7px; border-radius: 4px;
   background: #2a1515; color: var(--rme-red); border: 1px solid #3a2020; margin-left: 6px;
+}
+
+/* Best-use label on antenna cards */
+#rme-kit-builder .oc-best-use {
+  font-size: 11px; font-weight: 600; color: var(--rme-gold); text-transform: uppercase;
+  letter-spacing: 0.5px; margin-bottom: 2px;
+}
+/* Divider between antenna subsections */
+#rme-kit-builder .antenna-section-divider {
+  margin: 28px 0 16px; padding-top: 20px; border-top: 1px solid var(--rme-border);
+}
+#rme-kit-builder .antenna-section-divider h3 {
+  font-family: var(--rme-font-heading); font-size: 18px; font-weight: 600;
+  color: var(--rme-gold); text-transform: uppercase; margin-bottom: 4px;
+}
+#rme-kit-builder .antenna-section-divider p {
+  font-size: 14px; color: var(--rme-muted); margin: 0;
 }
 
 #rme-kit-builder .oc-check {
@@ -156,6 +178,28 @@
 #rme-kit-builder .nq-option:hover .oc-radio,
 #rme-kit-builder .iq-option:hover .oc-radio { border-color: #666; }
 
+/* ── Accessories help panel ──────────────── */
+#rme-kit-builder .acc-help-toggle {
+  background: var(--rme-card); border: 1px solid var(--rme-border); border-radius: var(--rme-radius);
+  padding: 14px 18px; margin-bottom: 16px; cursor: pointer; font-size: 14px; color: var(--rme-muted);
+  transition: border-color 0.2s;
+}
+#rme-kit-builder .acc-help-toggle:hover { border-color: var(--rme-border-lit); }
+#rme-kit-builder .acc-help-toggle span { color: var(--rme-gold); text-decoration: underline; }
+#rme-kit-builder .acc-help-toggle::after { content: ' +'; font-weight: 700; color: var(--rme-gold); }
+#rme-kit-builder .acc-help-toggle.open::after { content: ' \2212'; }
+#rme-kit-builder .acc-help-panel {
+  max-height: 0; overflow: hidden; transition: max-height 0.35s ease;
+  background: var(--rme-card); border-radius: var(--rme-radius);
+}
+#rme-kit-builder .acc-help-panel.open {
+  max-height: 600px; padding: 16px 20px; margin-bottom: 16px;
+  border: 1px solid var(--rme-border);
+}
+#rme-kit-builder .acc-help-panel ul { list-style: none; padding: 0; margin: 0; }
+#rme-kit-builder .acc-help-panel li { padding: 5px 0; font-size: 13px; color: #ccc; line-height: 1.5; }
+#rme-kit-builder .acc-help-panel li strong { color: var(--rme-gold); }
+
 /* ── Bottom bar (sticky cart) ─────────────── */
 .rme-kb-bottom-bar {
   position: fixed; bottom: 0; left: 0; right: 0;
@@ -164,8 +208,8 @@
   z-index: 10000;
 }
 .rme-kb-bottom-bar .bb-summary { display: flex; align-items: center; gap: 16px; }
-.rme-kb-bottom-bar .bb-base { color: #c4a83a; font-size: 13px; }
-.rme-kb-bottom-bar .bb-adds { color: #fdd351; font-size: 13px; }
+.rme-kb-bottom-bar .bb-base { color: #c4a83a; font-size: 14px; }
+.rme-kb-bottom-bar .bb-adds { color: #fdd351; font-size: 14px; }
 .rme-kb-bottom-bar .bb-total { font-size: 24px; font-weight: 700; color: #fdd351; }
 .rme-kb-bottom-bar .bb-items { color: #c4a83a; font-size: 12px; }
 .rme-kb-bottom-bar .bb-divider { width: 1px; height: 32px; background: #2a2a2a; }
@@ -188,11 +232,12 @@
 #rme-kit-builder .btn-cart { background: #fdd351; color: #111; font-size: 16px; padding: 14px 36px; }
 #rme-kit-builder .btn-cart:hover { background: #ffe87a; }
 .rme-kb-bottom-bar .btn-consult {
-  font-size: 12px; color: #888; text-decoration: none; padding: 8px 14px;
-  border: 1px solid #333; border-radius: 8px; white-space: nowrap; transition: all 0.15s;
+  font-size: 13px; color: var(--rme-gold, #fdd351); text-decoration: none; padding: 10px 18px;
+  border: 2px solid var(--rme-gold-dim, #d4af37); border-radius: 8px; white-space: nowrap; transition: all 0.15s;
+  font-weight: 500;
 }
-.rme-kb-bottom-bar .btn-consult span { color: #d4a843; text-decoration: underline; }
-.rme-kb-bottom-bar .btn-consult:hover { border-color: #d4a843; background: rgba(212,168,67,0.08); }
+.rme-kb-bottom-bar .btn-consult span { color: var(--rme-gold, #fdd351); text-decoration: underline; }
+.rme-kb-bottom-bar .btn-consult:hover { border-color: var(--rme-gold, #fdd351); background: rgba(253,211,81,0.12); }
 
 /* ── Review step ──────────────────────────── */
 #rme-kit-builder .review-list { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
