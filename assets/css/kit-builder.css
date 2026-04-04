@@ -526,8 +526,6 @@
   padding-bottom: max(14px, env(safe-area-inset-bottom));
 }
 
-/* ── Prevent Mailchimp popup from intercepting taps on kit builder ── */
-[id^="mcforms-"] { z-index: 99 !important; pointer-events: none !important; }
 
 /* ── Result cards: responsive width ────────── */
 #rme-kit-builder .result-card { width: 100%; max-width: 280px; }
