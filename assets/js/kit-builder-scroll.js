@@ -111,8 +111,12 @@
         break;
       }
       case 'interview': {
-        const prefs = kbsInterviewTags.slice(0, 3).join(', ') || 'General use';
-        html = `<span class="kbs-sel">${prefs}</span>`;
+        const usage = kbsAnswers['usage'] || [];
+        const prefs = kbsInterviewTags.slice(0, 3);
+        const parts = [];
+        if (usage.length) parts.push(usage.map(u => u.charAt(0).toUpperCase() + u.slice(1)).join(', '));
+        if (prefs.length) parts.push(prefs.join(', '));
+        html = `<span class="kbs-sel">${parts.join(' / ') || 'General use'}</span>`;
         break;
       }
       case 'radio': {
@@ -238,84 +242,102 @@
   };
 
   // ── Interview Section ─────────────────────────
-  let kbsInterviewStep = 0;
-  let kbsInterviewAnswers = {};
+  // Combined flow: needsQuestions (usage/distance/location/preferences) then interviewQuestions (radio-specific)
+  let kbsStep = 0;
+  let kbsAnswers = {};
   let kbsInterviewTags = [];
+  let kbsAllQuestions = []; // built dynamically based on conditional logic
+
+  function buildQuestionList() {
+    kbsAllQuestions = [];
+    // Phase 1: Needs assessment questions (with condition checks)
+    if (typeof needsQuestions !== 'undefined') {
+      needsQuestions.forEach(q => {
+        // Check condition
+        if (q.condition && !q.condition(kbsAnswers)) return;
+        // Resolve dynamic options
+        const opts = q.getOptions ? q.getOptions(kbsAnswers) : q.options;
+        kbsAllQuestions.push({ ...q, options: opts, phase: 'needs' });
+      });
+    }
+    // Phase 2: Radio interview questions
+    if (typeof interviewQuestions !== 'undefined') {
+      interviewQuestions.forEach(q => {
+        kbsAllQuestions.push({ ...q, phase: 'interview' });
+      });
+    }
+  }
 
   function renderInterviewStack() {
     const container = document.getElementById('kbs-interview-stack');
-    if (!container || typeof interviewQuestions === 'undefined') return;
+    if (!container) return;
+    buildQuestionList();
 
     let html = '';
-    for (let i = 0; i <= kbsInterviewStep && i < interviewQuestions.length; i++) {
-      const q = interviewQuestions[i];
-      const answers = kbsInterviewAnswers[q.id];
-      const isAnswered = i < kbsInterviewStep;
+    for (let i = 0; i <= kbsStep && i < kbsAllQuestions.length; i++) {
+      const q = kbsAllQuestions[i];
+      const answer = kbsAnswers[q.id];
+      const isAnswered = i < kbsStep;
+      const opts = q.options || [];
 
       if (isAnswered) {
-        // Collapsed answered state
-        const selectedOpts = q.options.filter(o => {
-          if (q.multi) return (answers || []).includes(o.key);
-          return answers === o.key;
+        const selectedOpts = opts.filter(o => {
+          if (q.multi) return (answer || []).includes(o.key);
+          return answer === o.key;
         });
         const ansText = selectedOpts.map(o => o.label).join(', ');
         html += `<div class="kbs-iq kbs-iq--answered">
           <h3>${q.question} <span class="kbs-iq-answer">${ansText}</span></h3>
         </div>`;
       } else {
-        // Active question
+        const hasAnswer = answer !== undefined && answer !== null && (Array.isArray(answer) ? answer.length > 0 : true);
         html += `<div class="kbs-iq">
           <h3>${q.question}</h3>
           ${q.sub ? '<p>' + q.sub + '</p>' : ''}
           <div class="kbs-iq-options">
-            ${q.options.map(o => {
+            ${opts.map(o => {
               const sel = q.multi
-                ? (answers || []).includes(o.key)
-                : answers === o.key;
+                ? (answer || []).includes(o.key)
+                : answer === o.key;
               return `<div class="kbs-iq-opt ${sel ? 'selected' : ''}"
-                onclick="kbsAnswerInterview('${q.id}','${o.key}',${!!q.multi})">
-                ${o.label}
+                onclick="kbsAnswer('${q.id}','${o.key}',${!!q.multi})">
+                ${o.icon ? '<span style="margin-right:6px">' + o.icon + '</span>' : ''}${o.label}
+                ${o.detail ? '<span style="display:block;font-size:12px;color:#888;margin-top:2px">' + o.detail + '</span>' : ''}
               </div>`;
             }).join('')}
           </div>
-          ${i > 0 || (answers !== undefined && answers !== null) ? `
           <div style="margin-top:14px">
-            <button class="kb-btn kb-btn--primary" onclick="kbsNextInterviewQ()" ${!answers ? 'disabled' : ''}>
-              ${i === interviewQuestions.length - 1 ? 'See Results' : 'Next'}
+            <button class="kb-btn kb-btn--primary" onclick="kbsNextQ()" ${!hasAnswer ? 'disabled' : ''}>
+              ${i === kbsAllQuestions.length - 1 ? 'See Results' : 'Next'}
             </button>
-          </div>` : ''}
+          </div>
         </div>`;
       }
     }
     container.innerHTML = html;
   }
 
-  window.kbsAnswerInterview = function(qId, optKey, multi) {
+  window.kbsAnswer = function(qId, optKey, multi) {
     if (multi) {
-      if (!kbsInterviewAnswers[qId]) kbsInterviewAnswers[qId] = [];
-      const idx = kbsInterviewAnswers[qId].indexOf(optKey);
-      if (idx >= 0) kbsInterviewAnswers[qId].splice(idx, 1);
-      else kbsInterviewAnswers[qId].push(optKey);
+      if (!kbsAnswers[qId]) kbsAnswers[qId] = [];
+      const idx = kbsAnswers[qId].indexOf(optKey);
+      if (idx >= 0) kbsAnswers[qId].splice(idx, 1);
+      else kbsAnswers[qId].push(optKey);
     } else {
-      kbsInterviewAnswers[qId] = optKey;
-    }
-    // For first question, auto-advance on single select
-    if (!multi && kbsInterviewStep === 0) {
-      kbsNextInterviewQ();
-      return;
+      kbsAnswers[qId] = optKey;
     }
     renderInterviewStack();
   };
 
-  window.kbsNextInterviewQ = function() {
-    kbsInterviewStep++;
-    if (kbsInterviewStep >= interviewQuestions.length) {
-      // Interview complete, show results
+  window.kbsNextQ = function() {
+    kbsStep++;
+    // Rebuild question list (conditionals may have changed)
+    buildQuestionList();
+    if (kbsStep >= kbsAllQuestions.length) {
       showScrollResults();
       return;
     }
     renderInterviewStack();
-    // Scroll to the new question
     setTimeout(() => {
       const qs = document.querySelectorAll('.kbs-iq:not(.kbs-iq--answered)');
       if (qs.length) qs[qs.length - 1].scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -323,14 +345,19 @@
   };
 
   function showScrollResults() {
-    // Score radios using existing logic
+    // Score radios using all answers (needs prefs + interview tags)
     const scores = {};
     radioLineup.forEach(r => { scores[r.key] = 0; });
 
-    // Collect tags from answers
+    // Collect tags from all answers
     kbsInterviewTags = [];
-    interviewQuestions.forEach(q => {
-      const answer = kbsInterviewAnswers[q.id];
+    // From needs preferences
+    const prefs = kbsAnswers['preferences'] || [];
+    prefs.forEach(p => { if (p && p !== 'nopreference') kbsInterviewTags.push(p); });
+
+    // From interview questions
+    kbsAllQuestions.filter(q => q.phase === 'interview').forEach(q => {
+      const answer = kbsAnswers[q.id];
       if (!answer) return;
       const keys = Array.isArray(answer) ? answer : [answer];
       keys.forEach(key => {
@@ -343,6 +370,13 @@
             });
           });
         }
+      });
+    });
+
+    // Also score from needs preferences
+    prefs.forEach(pref => {
+      radioLineup.forEach(r => {
+        if (r.tags.includes(pref)) scores[r.key] += 10;
       });
     });
 
@@ -372,13 +406,14 @@
 
     // Show answered questions + results in interview section
     let html = '';
-    // Answered questions
-    interviewQuestions.forEach((q, i) => {
-      const answers = kbsInterviewAnswers[q.id];
-      if (answers === undefined || answers === null) return;
-      const selectedOpts = q.options.filter(o => {
-        if (q.multi) return (answers || []).includes(o.key);
-        return answers === o.key;
+    // Answered questions from all phases
+    kbsAllQuestions.forEach(q => {
+      const answer = kbsAnswers[q.id];
+      if (answer === undefined || answer === null) return;
+      const opts = q.options || [];
+      const selectedOpts = opts.filter(o => {
+        if (q.multi) return (answer || []).includes(o.key);
+        return answer === o.key;
       });
       const ansText = selectedOpts.map(o => o.label).join(', ');
       html += `<div class="kbs-iq kbs-iq--answered">
