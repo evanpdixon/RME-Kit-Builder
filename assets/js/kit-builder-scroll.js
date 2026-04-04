@@ -165,8 +165,9 @@
     if (!kbsRadioSelected) { bar.style.display = 'none'; return; }
     bar.style.display = '';
 
-    const r = radioLineup.find(x => x.key === selectedRadioKey);
-    document.getElementById('kbs-radio-name').textContent = r ? r.name.replace(' Essentials Kit', '') : '';
+    const lineup = kbsGetRadioLineup();
+    const r = lineup.find(x => x.key === selectedRadioKey) || radioLineup.find(x => x.key === selectedRadioKey);
+    document.getElementById('kbs-radio-name').textContent = r ? r.name.replace(' Essentials Kit', '').replace(' Mobile Radio Kit', '') : '';
 
     // Calculate total using existing calcTotal if available, otherwise manual
     let total = r ? r.price : 0;
@@ -281,11 +282,47 @@
         kbsAllQuestions.push({ ...q, options: opts, phase: 'needs' });
       });
     }
-    // Phase 2: Radio interview questions
-    if (typeof interviewQuestions !== 'undefined') {
+    // Phase 2: Radio interview questions (handheld only)
+    // Other categories (mobile, base, HF, scanner) skip interview and go straight to radio selection
+    const detectedCategory = kbsDetectCategory();
+    if (detectedCategory === 'handheld' && typeof interviewQuestions !== 'undefined') {
       interviewQuestions.forEach(q => {
         kbsAllQuestions.push({ ...q, phase: 'interview' });
       });
+    }
+  }
+
+  // Determine which radio category the user needs based on their needs answers
+  function kbsDetectCategory() {
+    const usage = kbsAnswers['usage'] || [];
+    if (usage.includes('vehicle')) return 'mobile';
+    if (usage.includes('base')) return 'base';
+    if (usage.includes('hf')) return 'hf';
+    if (usage.includes('scanner')) return 'scanner';
+    // Check distance/where for "notsure" users
+    const distance = kbsAnswers['distance'];
+    if (distance === 'long') return 'base';
+    if (distance === 'extreme') return 'hf';
+    const where = kbsAnswers['where'] || [];
+    if (where.includes('invehicle')) return 'mobile';
+    if (where.includes('athome')) return 'base';
+    if (where.includes('monitoring')) return 'scanner';
+    return 'handheld'; // default
+  }
+
+  // Get the right radio lineup for the detected category
+  function kbsGetRadioLineup() {
+    const cat = kbsDetectCategory();
+    switch (cat) {
+      case 'mobile':
+      case 'base':
+        return typeof mobileRadioLineup !== 'undefined' ? mobileRadioLineup : radioLineup;
+      case 'hf':
+        return typeof hfRadioLineup !== 'undefined' ? hfRadioLineup : radioLineup;
+      case 'scanner':
+        return typeof scannerRadioLineup !== 'undefined' ? scannerRadioLineup : radioLineup;
+      default:
+        return radioLineup;
     }
   }
 
@@ -367,6 +404,16 @@
   };
 
   function showScrollResults() {
+    const category = kbsDetectCategory();
+    const lineup = kbsGetRadioLineup();
+
+    // For non-handheld categories, the wizard steps are different (vehicle setup, coax, etc.)
+    // Route to V1's category-specific flow for now
+    if (category !== 'handheld') {
+      showNonHandheldResult(category, lineup);
+      return;
+    }
+
     // Score radios using all answers (needs prefs + interview tags)
     const scores = {};
     radioLineup.forEach(r => { scores[r.key] = 0; });
@@ -520,15 +567,80 @@
   function renderScrollRadioGrid() {
     const grid = document.getElementById('kbs-radio-grid');
     if (!grid) return;
-    grid.innerHTML = radioLineup.map(r => `
-      <div class="radio-pick" onclick="kbsSelectRadio('${r.key}')">
+    const lineup = kbsGetRadioLineup();
+    const category = kbsDetectCategory();
+    grid.innerHTML = lineup.filter(r => !r.outOfStock).map(r => `
+      <div class="radio-pick" onclick="${category === 'handheld' ? "kbsSelectRadio('" + r.key + "')" : "kbsSelectNonHandheld('" + r.key + "','" + category + "')"}">
         <div class="rp-img"><img src="${r.img}" alt="${r.name}"></div>
-        <h4>${r.name.replace(' Essentials Kit', '')}</h4>
+        <h4>${r.name.replace(' Essentials Kit', '').replace(' Mobile Radio Kit', '')}</h4>
         <div class="rp-price">$${r.price}</div>
         <div class="rp-tag">${r.tagline}</div>
       </div>
     `).join('');
   }
+
+  // Non-handheld categories: show recommendation with link to V1's specialized flow
+  function showNonHandheldResult(category, lineup) {
+    const catNames = { mobile: 'Vehicle / Mobile', base: 'Base Station', hf: 'HF (Long-Distance)', scanner: 'Scanner' };
+    const catName = catNames[category] || category;
+    const available = lineup.filter(r => !r.outOfStock);
+
+    let html = '';
+    // Show answered questions
+    kbsAllQuestions.forEach(q => {
+      const answer = kbsAnswers[q.id];
+      if (answer === undefined || answer === null) return;
+      const opts = q.options || [];
+      const selectedOpts = opts.filter(o => {
+        if (q.multi) return (answer || []).includes(o.key);
+        return answer === o.key;
+      });
+      const ansText = selectedOpts.map(o => o.label).join(', ');
+      html += `<div class="kbs-iq kbs-iq--answered">
+        <h3>${q.question} <span class="kbs-iq-answer">${ansText}</span></h3>
+      </div>`;
+    });
+
+    html += `
+      <div style="text-align:center;padding:24px 0">
+        <h3 style="font-size:20px;color:var(--rme-gold);margin-bottom:8px">${catName} Radios</h3>
+        <p style="color:var(--rme-muted);font-size:14px;margin-bottom:4px">Based on your answers, you need a ${catName.toLowerCase()} setup.</p>
+        <p style="color:#888;font-size:13px;margin-bottom:24px">The ${catName.toLowerCase()} kit builder includes specialized options for ${
+          category === 'mobile' ? 'vehicle mounting, antenna installation, and power wiring' :
+          category === 'base' ? 'antenna mounting, coax cabling, and power supply' :
+          category === 'hf' ? 'HF antennas, coax, and power setup' :
+          'scanner antennas and programming'
+        }.</p>
+        <div class="result-cards">
+          ${available.map((r, i) => {
+            const name = r.name.replace(' Essentials Kit', '').replace(' Mobile Radio Kit', '');
+            return `
+              <div class="result-card ${i === 0 ? 'recommended' : ''}" onclick="kbsSelectNonHandheld('${r.key}','${category}')">
+                ${i === 0 ? '<div class="result-badge">Recommended</div>' : ''}
+                <div class="rc-img"><img src="${r.img}" alt="${r.name}"></div>
+                <h3>${name}</h3>
+                <div class="rc-price">$${r.price}</div>
+                <div class="rc-why"><ul>${r.features.map(f => '<li>&#10003; ' + f + '</li>').join('')}</ul></div>
+                <p style="font-size:13px;color:var(--rme-muted);margin-bottom:16px">${r.pitch || ''}</p>
+                <button class="rc-btn" onclick="event.stopPropagation();kbsSelectNonHandheld('${r.key}','${category}')">${i === 0 ? 'Build This Kit' : 'Choose This'}</button>
+              </div>`;
+          }).join('')}
+        </div>
+      </div>`;
+
+    document.getElementById('kbs-interview-stack').innerHTML = html;
+  }
+
+  // Handle non-handheld radio selection: route to V1's category-specific wizard
+  window.kbsSelectNonHandheld = function(radioKey, category) {
+    // V1 handles mobile/base/HF/scanner flows with specialized wizards
+    // (vehicle YMM, antenna paths, coax calculation, etc.)
+    // Route there with the radio pre-selected via URL params
+    const v1Url = (typeof rmeKitBuilder !== 'undefined' && rmeKitBuilder.config)
+      ? '/kit-builder/'
+      : '/kit-builder/';
+    window.location.href = v1Url + '?category=' + encodeURIComponent(category) + '&radio=' + encodeURIComponent(radioKey);
+  };
 
   // ── Override existing render callbacks ────────
   // The existing toggle functions (toggleAntenna, toggleAddlAntenna, toggleBattery, etc.)
