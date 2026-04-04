@@ -510,11 +510,12 @@ function backToNeedsLanding() {
   scannerState = { radioKey: null, selections: { antennas: new Set(), accessories: new Set() }, cartItems: [], step: 0 };
   wantsItinerantLicense = false;
   _rmeKbCartBusy = false;
-  // Hide all phases, show landing
+  // Hide all phases, then show needs phase with landing visible
+  hideAllPhases();
+  document.getElementById('needs-phase').style.display = '';
   document.getElementById('needs-landing').style.display = '';
   document.getElementById('needs-container').style.display = 'none';
   document.getElementById('kit-plan-container').style.display = 'none';
-  hideAllPhases();
 }
 
 const categoryMeta = {
