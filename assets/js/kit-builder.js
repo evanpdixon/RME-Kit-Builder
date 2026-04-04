@@ -5447,19 +5447,24 @@ function rmeKbAddToCart(items) {
       // Update header cart badge
       const badge = document.querySelector('.rme-cart-count');
       if (badge && data.data.cartCount) badge.textContent = data.data.cartCount;
+      // Log partial errors to console but don't block the user
       if (errors.length > 0) {
-        alert('Added ' + count + ' items to cart. Some items had issues: ' + errors.join(', '));
+        console.warn('RME KB: Some items had issues:', errors);
+        rmeDebug('CART', 'Partial errors: ' + errors.join(', '));
       }
-      // Mark lead completed before redirect
+      // Redirect to cart if anything was added
       if (count > 0) {
         markLeadCompleted();
         window.location.href = data.data.cartUrl || rmeKitBuilder.cartUrl;
+      } else {
+        // Nothing added at all — show error
+        _rmeKbCartBusy = false;
+        alert('Could not add items to cart. Please try again or book a consultation for help.');
       }
     } else {
       _rmeKbCartBusy = false;
       alert('Error adding to cart: ' + (data.data ? data.data.message : 'Unknown error'));
     }
-    if (count === 0) _rmeKbCartBusy = false; // reset if nothing was added (no redirect)
   })
   .catch(err => {
     _rmeKbCartBusy = false;
