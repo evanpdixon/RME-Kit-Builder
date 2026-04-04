@@ -5405,6 +5405,13 @@ let _rmeKbCartBusy = false;
 function rmeKbAddToCart(items) {
   if (_rmeKbCartBusy) return Promise.resolve(); // prevent double-click
   _rmeKbCartBusy = true;
+  // Disable all cart/add buttons and show loading state
+  document.querySelectorAll('.btn-cart, .btn-next, [onclick*="addAllKitsToCart"], [onclick*="rmeKbAddToCart"]').forEach(function(b) {
+    b.disabled = true; b.style.opacity = '0.5'; b.style.pointerEvents = 'none';
+  });
+  const cartBtn = document.getElementById('btn-next');
+  const origText = cartBtn ? cartBtn.textContent : '';
+  if (cartBtn) cartBtn.textContent = 'Adding to cart...';
   if (typeof rmeKitBuilder === 'undefined' || !rmeKitBuilder.ajaxUrl) {
     _rmeKbCartBusy = false;
     alert('WooCommerce integration not available. Items collected: ' + items.length);
