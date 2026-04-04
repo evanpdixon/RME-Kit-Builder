@@ -4208,7 +4208,7 @@ function toggleAntenna(key) {
 function toggleAddlAntenna(key) {
   if (selectedAddlAntennas.has(key)) {
     selectedAddlAntennas.delete(key);
-    renderAdditionalAntennas();
+    renderAllAntennas();
     updateBottomBar();
     return;
   }
@@ -4224,7 +4224,7 @@ function toggleAddlAntenna(key) {
   }
 
   selectedAddlAntennas.add(key);
-  renderAdditionalAntennas();
+  renderAllAntennas();
   updateBottomBar();
 }
 
@@ -4237,7 +4237,7 @@ function adapterModalAdd() {
   selectedAddlAntennas.add(pendingAntennaKey);
   pendingAntennaKey = null;
   document.getElementById('adapter-modal').classList.remove('open');
-  renderAdditionalAntennas();
+  renderAllAntennas();
   updateBottomBar();
 }
 
@@ -4246,7 +4246,7 @@ function adapterModalSkip() {
   selectedAddlAntennas.add(pendingAntennaKey);
   pendingAntennaKey = null;
   document.getElementById('adapter-modal').classList.remove('open');
-  renderAdditionalAntennas();
+  renderAllAntennas();
   updateBottomBar();
 }
 

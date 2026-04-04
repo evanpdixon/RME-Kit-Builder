@@ -52,13 +52,8 @@
       <div class="selector-paths">
         <div class="selector-path" onclick="startInterview()">
           <div class="sp-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88" fill="currentColor" stroke="none"/></svg></div>
-          <h3>Help Me Choose</h3>
+          <h3>Let's Get Started</h3>
           <p>Answer a few quick questions and we'll recommend the best radio for your needs.</p>
-        </div>
-        <div class="selector-path" onclick="showRadioPicker()">
-          <div class="sp-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="6" width="10" height="16" rx="2"/><path d="M9 6V2h2v4"/><line x1="10" y1="10" x2="14" y2="10"/><circle cx="12" cy="16" r="1.5"/><rect x="10" y="12" width="4" height="2" rx="0.5"/></svg></div>
-          <h3>I Know What I Want</h3>
-          <p>Jump straight to our lineup and pick your radio to start building your kit.</p>
         </div>
       </div>
     </div>
