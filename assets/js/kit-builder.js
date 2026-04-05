@@ -3561,13 +3561,12 @@ function renderProgramming(opts) {
     </div>
   `;
 
-  // Notes field (always visible unless 'none')
+  // Additional fields (visible unless 'none')
   if (programmingChoice !== 'none') {
     const _rk = _opts.radioKey || selectedRadioKey;
     const _allRadios = [].concat(radioLineup, mobileRadioLineup || [], hfRadioLineup || []);
     const isDmr = _rk === 'dmr-6x2' || _rk === 'da-7x2' || _rk === 'd578';
-    const selRadio = _allRadios.find(r => r.key === _rk);
-    const showLicensing = interviewAnswers.use === 'professional' || (selRadio && selRadio.tags && selRadio.tags.includes('commercial'));
+
     html += `
       <div class="prog-section">
         ${isDmr ? `
@@ -3578,29 +3577,35 @@ function renderProgramming(opts) {
           <div class="prog-note">If you have an amateur radio license and a Brandmeister ID, we'll program it into your radio for DMR digital voice. Don't have one yet? <a href="https://brandmeister.network" target="_blank" rel="noopener" style="color:var(--gold)">Register at brandmeister.network</a></div>
         </div>
         ` : ''}
-        <div class="prog-field" onclick="event.stopPropagation()">
-          ${(() => {
-            // Check if license was added in a prior kit (multi-kit mode)
-            const addedInPriorKit = kitSession.kits.length > 0 && kitSession.kits.some((k, i) => i < kitSession.currentKitIndex && k.cartItems && k.cartItems.some(item => item.name && item.name.includes('Itinerant')));
-            if (addedInPriorKit && !wantsItinerantLicense) {
-              return '<div style="font-size:13px;color:#4caf50;padding:12px;background:#0a1a0a;border:1px solid #1a3a1a;border-radius:8px">✓ Business Itinerant License Assistance already included in your order.</div>';
-            }
-            return `
-            <div class="opt-card ${wantsItinerantLicense ? 'selected' : ''}" onclick="wantsItinerantLicense=!wantsItinerantLicense;renderProgramming()" style="margin-bottom:0">
-              <div class="oc-check">${wantsItinerantLicense ? '✓' : ''}</div>
-              <div class="oc-body">
-                <div class="oc-name">Business Itinerant License Assistance</div>
-                <div class="oc-desc" style="max-height:none">We'll help you obtain your FCC Business Itinerant license, valid for 10 years. One license covers all radios in your order. Required for commercial Part 90 operation.</div>
-              </div>
-              <div class="oc-price">+$579</div>
-            </div>`;
-          })()}
-        </div>
         <div class="prog-field">
           <label>Anything else we should know about your programming preferences?</label>
-          <textarea placeholder="e.g. Custom channel names, specific repeater frequencies, Part 90 channels (license required), etc."
+          <textarea placeholder="e.g. Custom channel names, specific frequencies, etc."
                     onchange="progNotes=this.value" onfocus="event.stopPropagation()">${progNotes}</textarea>
           <div class="prog-note">Optional. Leave blank if standard programming is all you need.</div>
+        </div>
+        <div class="prog-field" onclick="event.stopPropagation()">
+          ${(() => {
+            const addedInPriorKit = kitSession.kits.length > 0 && kitSession.kits.some((k, i) => i < kitSession.currentKitIndex && k.cartItems && k.cartItems.some(item => item.name && item.name.includes('Itinerant')));
+            if (addedInPriorKit && !wantsItinerantLicense) {
+              return '<div style="font-size:13px;color:#4caf50;padding:12px;background:#0a1a0a;border:1px solid #1a3a1a;border-radius:8px">\u2713 Business Itinerant License Assistance already included in your order.</div>';
+            }
+            const expanded = wantsItinerantLicense || window._kbsLicenseExpanded;
+            return `
+            <div class="prog-license-toggle" onclick="event.stopPropagation();window._kbsLicenseExpanded=!window._kbsLicenseExpanded;if(!window._kbsLicenseExpanded)wantsItinerantLicense=false;renderProgramming()">
+              <span style="color:var(--gold);font-size:14px">${expanded ? '\u25BC' : '\u25B6'}</span>
+              <span style="font-size:14px;color:var(--text,#e0e0e0)">Need your own private frequencies for secure comms?</span>
+            </div>
+            ${expanded ? `
+              <div style="margin-top:12px;padding:16px;background:#0a0a0a;border:1px solid var(--border,#2a2a2a);border-radius:8px">
+                <div style="font-size:14px;font-weight:600;color:var(--gold,#fdd351);margin-bottom:8px">Business Itinerant License Assistance</div>
+                <div style="font-size:13px;color:#bbb;line-height:1.6;margin-bottom:12px">We handle the FCC paperwork to get you your own licensed frequencies. Your comms stay private and legally protected. One license covers all radios in your order, valid for 10 years.</div>
+                <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:14px;color:var(--text,#e0e0e0)" onclick="event.stopPropagation();wantsItinerantLicense=!wantsItinerantLicense;renderProgramming()">
+                  <span style="width:22px;height:22px;border:2px solid ${wantsItinerantLicense ? 'var(--gold,#fdd351)' : '#444'};border-radius:4px;display:flex;align-items:center;justify-content:center;background:${wantsItinerantLicense ? 'var(--gold,#fdd351)' : 'transparent'};color:#111;font-size:13px;flex-shrink:0">${wantsItinerantLicense ? '\u2713' : ''}</span>
+                  Yes, add license assistance <span style="color:var(--gold,#fdd351);font-weight:600">+$579</span>
+                </label>
+              </div>
+            ` : ''}`;
+          })()}
         </div>
       </div>
     `;
