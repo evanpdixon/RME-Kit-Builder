@@ -26,6 +26,15 @@ async function runAudit(page, viewport, label) {
   await page.goto(KB_URL, { waitUntil: 'networkidle2', timeout: 30000 });
   await sleep(500);
 
+  // Dismiss Mailchimp popup if present (test-only)
+  await page.evaluate(() => {
+    const btns = document.querySelectorAll('button, a, div[role="button"]');
+    for (const b of btns) {
+      if (b.textContent.trim().toUpperCase().includes('NO, THANKS')) { b.click(); break; }
+    }
+  });
+  await sleep(300);
+
   // ── 1. Page Structure ──
   console.log(`${SECTION}1. Page Structure${RESET}`);
   const container = await page.$('#rme-kit-builder-scroll');
