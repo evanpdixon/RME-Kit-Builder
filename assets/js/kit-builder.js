@@ -19,7 +19,7 @@ const ICO = {
   hf:         _s('<circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15 15 0 014 10 15 15 0 01-4 10 15 15 0 01-4-10A15 15 0 0112 2"/>'),
   scanner:    _s('<rect x="3" y="4" width="18" height="14" rx="2"/><line x1="7" y1="8" x2="17" y2="8"/><line x1="7" y1="11" x2="13" y2="11"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="18" x2="12" y2="21"/>'),
   notsure:    _s('<circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r=".5" fill="currentColor" stroke="none"/>'),
-  nopref:     _s('<path d="M5 12h14"/><path d="M12 5l-7 7 7 7"/>'),
+  nopref:     _s('<circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/>'),
   compass:    _s('<circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88" fill="currentColor" stroke="none"/>'),
   browse:     _s('<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>'),
   shortrange: _s('<circle cx="12" cy="12" r="3"/><path d="M12 2v2"/><path d="M12 20v2"/>'),
@@ -4738,6 +4738,18 @@ const interviewQuestions = [
       { key: 'high', icon: ICO.premium, label: 'Best of the best', detail: 'Maximum capability, every feature available', tags: ['encryption', 'digital', 'premium', 'crossband'] },
       { key: 'mid', icon: ICO.midprice, label: 'Mid-range', detail: 'More features and durability, the sweet spot for most people', tags: ['waterproof', 'gps', 'bluetooth', 'grow'] },
       { key: 'low', icon: ICO.budget, label: 'Economical', detail: 'A solid, reliable radio without the extras', tags: ['budget', 'simple', 'compact'] },
+    ]
+  },
+  {
+    id: 'reach',
+    question: "Who are you trying to reach?",
+    sub: "Select all that apply.",
+    multi: true,
+    options: [
+      { key: 'nearby', icon: ICO.nearby, label: 'Nearby', detail: 'Same property, group, or event', tags: ['budget', 'simple'] },
+      { key: 'local', icon: ICO.local, label: 'Local', detail: 'Across town, neighboring cities, through repeaters', tags: ['channels', 'grow'] },
+      { key: 'far', icon: ICO.farreach, label: 'Long distance', detail: 'Statewide, cross-country, or worldwide', tags: [] },
+      { key: 'listen', icon: ICO.monitoring, label: 'Listen only', detail: 'Monitor police, fire, EMS, or aircraft', tags: [] },
     ]
   },
   {

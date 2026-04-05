@@ -27,7 +27,15 @@
   <label><input type="radio" name="budget" value="low"> <strong>Economical</strong> <small style="color:#888">A solid, reliable radio without the extras</small></label>
 </div>
 
-<h2>2. What do you need? (multi-select)</h2>
+<h2>2. Who are you trying to reach? (multi-select)</h2>
+<div class="group">
+  <label><input type="checkbox" name="reach" value="nearby"> <strong>Nearby</strong> <small style="color:#888">Same property, group, or event</small></label>
+  <label><input type="checkbox" name="reach" value="local"> <strong>Local</strong> <small style="color:#888">Across town, neighboring cities, through repeaters</small></label>
+  <label><input type="checkbox" name="reach" value="far"> <strong>Long distance</strong> <small style="color:#888">Statewide, cross-country, or worldwide</small></label>
+  <label><input type="checkbox" name="reach" value="listen"> <strong>Listen only</strong> <small style="color:#888">Monitor police, fire, EMS, or aircraft</small></label>
+</div>
+
+<h2>3. What do you need? (multi-select)</h2>
 <div class="group">
   <label><input type="checkbox" name="needs" value="emergency"> <strong>Emergency / disaster prep</strong> <small style="color:#888">Backup comms when cell networks fail</small></label>
   <label><input type="checkbox" name="needs" value="outdoor"> <strong>Outdoor / overlanding</strong> <small style="color:#888">Hiking, camping, off-road</small></label>
@@ -48,12 +56,6 @@
     <label><input type="checkbox" name="usage" value="base"> Base Station</label>
     <label><input type="checkbox" name="usage" value="hf"> HF (Long-Distance)</label>
     <label><input type="checkbox" name="usage" value="scanner"> Scanner</label>
-  </div>
-  <div class="group" style="margin-top:8px">
-    <label><input type="checkbox" name="reach" value="nearby"> Nearby</label>
-    <label><input type="checkbox" name="reach" value="local"> Local</label>
-    <label><input type="checkbox" name="reach" value="far"> Long distance</label>
-    <label><input type="checkbox" name="reach" value="listen"> Listen only</label>
   </div>
 </details>
 
@@ -88,7 +90,10 @@ const scannerRadioLineup = [
 
 const interviewQuestions = [
   { id:'budget', multi:false, options:[
-    {key:'low',tags:['budget']},{key:'mid',tags:['waterproof','gps','bluetooth','grow']},{key:'high',tags:['encryption','digital','premium','crossband']}
+    {key:'low',tags:['budget','simple','compact']},{key:'mid',tags:['waterproof','gps','bluetooth','grow']},{key:'high',tags:['encryption','digital','premium','crossband']}
+  ]},
+  { id:'reach', multi:true, options:[
+    {key:'nearby',tags:['budget','simple']},{key:'local',tags:['channels','grow']},{key:'far',tags:[]},{key:'listen',tags:[]}
   ]},
   { id:'needs', multi:true, options:[
     {key:'emergency',tags:['channels','grow','noaa']},{key:'outdoor',tags:['gps','grow','waterproof']},{key:'water',tags:['waterproof']},{key:'encryption',tags:['encryption','digital','professional','commercial']},{key:'gps',tags:['gps']},{key:'texting',tags:['grow','digital']},{key:'airband',tags:['airband']},{key:'repeater',tags:['crossband','grow']},{key:'bluetooth',tags:['bluetooth']},{key:'nopreference',tags:[]}
