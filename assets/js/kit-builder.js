@@ -3455,7 +3455,7 @@ function renderBatteryUpgrades() {
     <div class="opt-card ${isSelected ? 'selected' : ''}"
          onclick="toggleBattery('${b.key}')">
       <div class="oc-check">${isSelected ? '✓' : ''}</div>
-      ${b.img ? `<div class="oc-img"><img src="${b.img}" alt="${b.name}" onerror="this.parentElement.innerHTML='<div style=\\'color:#444;font-size:11px;text-align:center;padding:8px\\'>No img</div>'"></div>` : ''}
+      <div class="oc-img">${b.img ? `<img src="${b.img}" alt="${b.name}" onerror="this.parentElement.innerHTML='<div class=\\'oc-img--placeholder-icon\\'><svg viewBox=\\'0 0 40 40\\' fill=\\'none\\' stroke=\\'#555\\' stroke-width=\\'1.5\\'><rect x=\\'10\\' y=\\'10\\' width=\\'20\\' height=\\'24\\' rx=\\'2\\'/><rect x=\\'15\\' y=\\'6\\' width=\\'10\\' height=\\'4\\' rx=\\'1\\'/><line x1=\\'20\\' y1=\\'17\\' x2=\\'20\\' y2=\\'27\\'/><line x1=\\'15\\' y1=\\'22\\' x2=\\'25\\' y2=\\'22\\'/></svg></div>'">` : '<div class="oc-img--placeholder-icon"><svg viewBox="0 0 40 40" fill="none" stroke="#555" stroke-width="1.5"><rect x="10" y="10" width="20" height="24" rx="2"/><rect x="15" y="6" width="10" height="4" rx="1"/><line x1="20" y1="17" x2="20" y2="27"/><line x1="15" y1="22" x2="25" y2="22"/></svg></div>'}</div>
       <div class="oc-body">
         <div class="oc-name">${b.name}</div>
         <div class="oc-desc">${b.desc}</div>
@@ -3490,7 +3490,7 @@ function renderAccessories() {
     <div class="opt-card ${selectedAccessories.has(a.key) ? 'selected' : ''}"
          onclick="toggleAccessory('${a.key}')">
       <div class="oc-check">${selectedAccessories.has(a.key) ? '✓' : ''}</div>
-      <div class="oc-img">${a.img ? `<img src="${a.img}" alt="${a.name}" onerror="this.parentElement.classList.add('oc-img--placeholder')">` : '<div class="oc-img--placeholder-icon">A</div>'}</div>
+      <div class="oc-img">${a.img ? `<img src="${a.img}" alt="${a.name}" onerror="this.parentElement.classList.add('oc-img--placeholder')">` : '<div class="oc-img--placeholder-icon"><svg viewBox="0 0 40 40" fill="none" stroke="#555" stroke-width="1.5"><rect x="8" y="8" width="24" height="24" rx="4"/><circle cx="20" cy="20" r="6"/><circle cx="20" cy="20" r="2"/></svg></div>'}</div>
       <div class="oc-body">
         <div class="oc-name">${a.name}</div>
         <div class="oc-desc">${a.desc}</div>
