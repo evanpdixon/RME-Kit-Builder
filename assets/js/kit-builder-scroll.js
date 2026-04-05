@@ -337,13 +337,10 @@
   window.kbsDirectProceed = function() {
     // Set usage answers so category detection works
     kbsAnswers['usage'] = kbsDirectCategories;
-    // Complete interview, activate radio
-    sectionState['interview'] = 'complete';
-    renderSummary('interview');
-    sectionState['radio'] = 'active';
-    applyAllStates();
+    // Pre-render radio grid before transition
     renderScrollRadioGrid();
-    scrollToSection('radio');
+    // Use the standard animated transition
+    kbsCompleteSection('interview');
   };
 
   // ── Interview Section ─────────────────────────
