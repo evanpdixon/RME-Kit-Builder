@@ -3522,7 +3522,7 @@ function renderProgramming(opts) {
         <div class="oc-radio"></div>
         <div class="oc-body">
           <div class="oc-name">Standard Custom Programming <span class="prog-included">Included</span></div>
-          <div class="oc-desc" style="max-height:none">GMRS channels (1-22 + repeater pairs), FRS, NOAA weather, and local repeaters for one location. Our recommended channel layout, ready to use out of the box.</div>
+          <div class="oc-desc" style="max-height:none">Direct channels for your group, local repeaters for your area, and weather alerts. Our recommended layout, ready to use out of the box.</div>
         </div>
         <div class="oc-price free" style="color:var(--green)">Included</div>
       </div>
