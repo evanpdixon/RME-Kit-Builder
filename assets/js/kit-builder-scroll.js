@@ -129,6 +129,12 @@
     const activeEl = activeSection ? document.getElementById('sec-' + activeSection) : null;
 
     function doEdit() {
+      // If editing radio section in guided handheld mode, go to interview instead
+      // (recommendation cards live in the interview section, not radio grid)
+      if (name === 'radio' && kbsGuidedMode && kbsCurrentCategory === 'handheld') {
+        name = 'interview';
+      }
+
       sectionState[name] = 'active';
       const idx = SECTIONS.indexOf(name);
       for (let i = idx + 1; i < SECTIONS.length; i++) {
