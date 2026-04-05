@@ -983,8 +983,8 @@ const mobileProducts = {
     { key: 'tacoma-console', name: 'Console Radio Mounting Bracket (Toyota Tacoma 2016+)', desc: 'Vehicle-specific console mount for Tacoma. Clean, integrated look.', price: 129, id: 6987, vehicleMatch: 'tacoma' },
   ],
   antennaMounts: [
-    { key: 'lipmount-nmo', name: 'Comet CP-5NMO Antenna Lip Mount', desc: 'Permanent lip mount, the most stable option. Mounts on trunk/hood lip without drilling.', price: 99, id: 7013, mountType: 'permanent' },
-    { key: 'lipmount-so239', name: 'Comet CP-5M Antenna Lip Mount (SO-239)', desc: 'Permanent lip mount with SO-239 connector.', price: 99, id: 7277, mountType: 'permanent' },
+    { key: 'lipmount-nmo', name: 'Comet CP-5NMO Antenna Lip Mount', desc: 'Permanent lip mount, the most stable option. Mounts on trunk/hood lip without drilling.', price: 99, id: 7013, mountType: 'permanent', img: S+'2025/03/61NAaQUrDSL._AC_SL1500_.jpg' },
+    { key: 'lipmount-so239', name: 'Comet CP-5M Antenna Lip Mount (SO-239)', desc: 'Permanent lip mount with SO-239 connector.', price: 99, id: 7277, mountType: 'permanent', img: S+'2025/05/CP-5M__12349.jpg' },
     { key: 'fender-tacoma', name: 'NCG Tacoma Fender Mount (TACANTNCG)', desc: 'No-drill NMO fender bracket for Toyota Tacoma 2016-2023. Uses existing fender bolts.', price: 29, id: 8224, mountType: 'permanent', vehicleMatch: 'tacoma', isFenderMount: true },
     { key: 'fender-ford', name: 'NCG Ford Truck Fender Mount (FO3ANTNCG)', desc: 'No-drill NMO fender bracket for Ford F-150 (2015+), F-250/F-350 (2017+), Expedition (2018+).', price: 29, id: null, mountType: 'permanent', vehicleMatch: 'ford-truck', isFenderMount: true },
     { key: 'fender-chevy', name: 'NCG Silverado/Sierra Fender Mount (CV3ANTNCG)', desc: 'No-drill NMO fender bracket for Chevy Silverado/GMC Sierra 1500 (2019-24), 2500/3500 (2020-23).', price: 29, id: null, mountType: 'permanent', vehicleMatch: 'chevy-truck', isFenderMount: true },
@@ -992,12 +992,12 @@ const mobileProducts = {
     { key: 'fender-ram-new', name: 'NCG Ram Fender Mount (DG3ANTNCG)', desc: 'No-drill NMO fender bracket for Ram 1500/2500/3500 (2019-2023). Driver side.', price: 29, id: null, mountType: 'permanent', vehicleMatch: 'ram-truck-new', isFenderMount: true },
     { key: 'fender-colorado', name: 'NCG Colorado/Canyon Fender Mount (COANTNCG)', desc: 'No-drill NMO fender bracket for Chevy Colorado/GMC Canyon (2012-2022).', price: 29, id: null, mountType: 'permanent', vehicleMatch: 'colorado', isFenderMount: true },
     { key: 'magmount-nmo', name: 'Comet Mag Mount NMO', desc: 'Flat magnetic mount for vehicle roofs. Easy to remove, best if you need to take the antenna off regularly.', price: 39, id: 6940, mountType: 'temporary' },
-    { key: 'roofrack', name: 'Comet RS-660U Roof Rack Mount', desc: 'Clamps to roof rack bars (up to 2.25" x 2"). Good option when no flat metal surface is available.', price: 59, id: 7198, mountType: 'permanent' },
-    { key: 'ditchlight', name: 'Ditch Light Antenna Mount Extension', desc: 'Adds antenna mount to existing ditch light mount.', price: 29, id: 7602, mountType: 'permanent' },
+    { key: 'roofrack', name: 'Comet RS-660U Roof Rack Mount', desc: 'Clamps to roof rack bars (up to 2.25" x 2"). Good option when no flat metal surface is available.', price: 59, id: 7198, mountType: 'permanent', img: S+'2025/04/cma-rs-660u_kb_xl.jpg' },
+    { key: 'ditchlight', name: 'Ditch Light Antenna Mount Extension', desc: 'Adds antenna mount to existing ditch light mount.', price: 29, id: 7602, mountType: 'permanent', img: S+'2025/07/71Icm8mvWL._AC_SL1500_.jpg' },
   ],
   vehicleAntennas: [
-    { key: 'sar', name: 'Wideband Search and Rescue Vehicle Antenna', desc: 'Covers Amateur, FRS/GMRS, MURS, and Commercial frequencies. VHF 140-160MHz, UHF 435-465MHz. PL-259 terminated.', price: 79, id: 5428, recommended: true },
-    { key: 'comet-b10', name: 'Comet B-10 VHF/UHF NMO Antenna (12")', desc: 'Compact 12-inch NMO antenna. Low profile for vehicles that need clearance.', price: 59, id: 8869 },
+    { key: 'sar', name: 'Wideband Search and Rescue Vehicle Antenna', desc: 'Covers Amateur, FRS/GMRS, MURS, and Commercial frequencies. VHF 140-160MHz, UHF 435-465MHz. PL-259 terminated.', price: 79, id: 5428, recommended: true, img: S+'2024/09/2x4sr.png' },
+    { key: 'comet-b10', name: 'Comet B-10 VHF/UHF NMO Antenna (12")', desc: 'Compact 12-inch NMO antenna. Low profile for vehicles that need clearance.', price: 59, id: 8869, img: S+'2026/01/1000010691.jpg' },
   ],
   nmoCoax: [
     { key: 'nmo-coax', name: 'NMO Antenna Coax Cable Assembly', desc: 'Pre-terminated coax for NMO mounts. Connects your NMO mount to your radio.', price: 49, id: 6636 },
@@ -1031,8 +1031,8 @@ const baseProducts = {
       label: 'Magnetic Mount (Quick Setup)',
       desc: 'Sticks to any metal surface: roof, barn, RV, toolbox, vehicle. Set up in seconds, move it anywhere. No drilling, no mast, no permanent install.',
       items: [
-        { key: 'mtn-jumper', name: 'Mountain Jumper Angle-Adjustable Mount', desc: '180° adjustable magnetic mount. Works on metal roofs, barns, RVs, toolboxes, or any metal surface.', price: 69, id: 2046, required: true },
-        { key: 'sar-antenna', name: 'Wideband Search and Rescue Antenna', desc: 'Covers Amateur, FRS/GMRS, MURS, and Commercial frequencies. Pairs with the Mountain Jumper mount.', price: 79, id: 5428, required: true },
+        { key: 'mtn-jumper', name: 'Mountain Jumper Angle-Adjustable Mount', desc: '180° adjustable magnetic mount. Works on metal roofs, barns, RVs, toolboxes, or any metal surface.', price: 69, id: 2046, required: true, img: S+'2023/08/mountainjumpermagenticbase.png' },
+        { key: 'sar-antenna', name: 'Wideband Search and Rescue Antenna', desc: 'Covers Amateur, FRS/GMRS, MURS, and Commercial frequencies. Pairs with the Mountain Jumper mount.', price: 79, id: 5428, required: true, img: S+'2024/09/2x4sr.png' },
       ]
     },
     permanent: {
@@ -1041,8 +1041,8 @@ const baseProducts = {
       antennas: [
         { key: 'gp3', name: 'Comet GP-3 Base Antenna', desc: 'Dual-band VHF/UHF base antenna. SO-239 connector. Good balance of size and performance.', price: 109, id: 6897, recommended: true },
         { key: 'gp6', name: 'Comet GP-6 Base Antenna', desc: 'Higher-gain dual-band VHF/UHF base antenna. SO-239 connector. Better range than GP-3, larger antenna.', price: 179, id: 6716 },
-        { key: 'sar-antenna', name: 'Wideband Search and Rescue Antenna', desc: 'Covers Amateur, FRS/GMRS, MURS, and Commercial frequencies on a single antenna. Versatile and broadband. Works with any mount.', price: 79, id: 5428 },
-        { key: 'slimjim', name: 'Roll Up Slim Jim Antenna', desc: 'Lightweight VHF/UHF roll-up antenna. Hang from a tree branch, rafter, window frame, or any elevated point. Includes 16ft of coax (additional length available in the next step). Requires SO-239 to BNC-M adapter (auto-added).', price: 49, id: 99, needsBncAdapter: true },
+        { key: 'sar-antenna', name: 'Wideband Search and Rescue Antenna', desc: 'Covers Amateur, FRS/GMRS, MURS, and Commercial frequencies on a single antenna. Versatile and broadband. Works with any mount.', price: 79, id: 5428, img: S+'2024/09/2x4sr.png' },
+        { key: 'slimjim', name: 'Roll Up Slim Jim Antenna', desc: 'Lightweight VHF/UHF roll-up antenna. Hang from a tree branch, rafter, window frame, or any elevated point. Includes 16ft of coax (additional length available in the next step). Requires SO-239 to BNC-M adapter (auto-added).', price: 49, id: 99, needsBncAdapter: true, img: S+'2022/08/12200-2-scaled.jpg' },
       ],
       mounts: [
         { key: 'chimney', name: 'Antenna Mast Chimney Strap Mounts', desc: 'Strap-on chimney mount for antenna mast. No drilling into the roof.', price: 49, id: 6949 },
@@ -1060,10 +1060,10 @@ const hfProducts = {
     { key: 'efhw-80-10-permanent', name: 'Chameleon LEFS Weatherproof End Fed Half Wave 80M-10M', desc: 'Permanent/weatherproof HF antenna covering 80-10 meters. Built for long-term outdoor installation.', price: 179, id: 6947 },
   ],
   accessories: [
-    { key: 'digirig-ft891', name: 'Digirig with Interface Cables for FT-891', desc: 'Digital modes interface for the FT-891. Run FT8, JS8Call, Winlink, and other digital modes from your computer.', price: 89, id: 7272, radioMatch: 'ft891' },
-    { key: 'digirig-g90', name: 'Digirig with Interface Cables for G90', desc: 'Digital modes interface for the G90. Run FT8, JS8Call, Winlink, and other digital modes from your computer.', price: 89, id: 7273, radioMatch: 'g90' },
+    { key: 'digirig-ft891', name: 'Digirig with Interface Cables for FT-891', desc: 'Digital modes interface for the FT-891. Run FT8, JS8Call, Winlink, and other digital modes from your computer.', price: 89, id: 7272, radioMatch: 'ft891', img: S+'2025/05/DRMOB-1_10-1.jpg' },
+    { key: 'digirig-g90', name: 'Digirig with Interface Cables for G90', desc: 'Digital modes interface for the G90. Run FT8, JS8Call, Winlink, and other digital modes from your computer.', price: 89, id: 7273, radioMatch: 'g90', img: S+'2025/05/DRMOB-1_10-1.jpg' },
     { key: 'relocation', name: 'Antenna Jack Relocation Cable', desc: 'Right-angle PL-259 to SO-239 cable.', price: 19, id: 7271 },
-    { key: 'cheatsheets', name: 'Radio Cheat Sheets', desc: 'Waterproof laminated quick-reference cards.', price: 19, id: 966 },
+    { key: 'cheatsheets', name: 'Radio Cheat Sheets', desc: 'Waterproof laminated quick-reference cards.', price: 19, id: 966, img: S+'2023/05/1000007350.jpg' },
   ],
 };
 
@@ -2765,10 +2765,10 @@ const scannerProducts = {
     { key: 'tele-wideband', name: 'Telescoping Wideband Receive Antenna', desc: 'Portable telescoping BNC antenna. 25MHz to 1.3GHz coverage. Upgrade from the stock antenna for better reception.', price: 35, id: 3746 },
   ],
   accessories: [
-    { key: 'cheatsheets', name: 'Radio Cheat Sheets', desc: 'Waterproof laminated quick-reference cards.', price: 19, id: 966 },
-    { key: 'magmount', name: 'Magnetic BNC Antenna Base', desc: 'Magnetic mount base with BNC connector. Place on any metal surface for improved antenna positioning.', price: 39, id: 521 },
-    { key: 'stubby', name: 'BNC Stubby Antenna', desc: 'Compact BNC rubber duck antenna. Low-profile option for portable or indoor use.', price: 39, id: 816 },
-    { key: 'signalstick', name: 'BNC Signal Stick Antenna', desc: 'Flexible whip BNC antenna with improved gain over stock. Great portable upgrade.', price: 25, id: 39, compatRadios: ['sds100', 'sdr-kit'] },
+    { key: 'cheatsheets', name: 'Radio Cheat Sheets', desc: 'Waterproof laminated quick-reference cards.', price: 19, id: 966, img: S+'2023/05/1000007350.jpg' },
+    { key: 'magmount', name: 'Magnetic BNC Antenna Base', desc: 'Magnetic mount base with BNC connector. Place on any metal surface for improved antenna positioning.', price: 39, id: 521, img: S+'2022/10/IMGP8553-scaled.jpg' },
+    { key: 'stubby', name: 'BNC Stubby Antenna', desc: 'Compact BNC rubber duck antenna. Low-profile option for portable or indoor use.', price: 39, id: 816, img: S+'2023/05/20250227_154740.jpg' },
+    { key: 'signalstick', name: 'BNC Signal Stick Antenna', desc: 'Flexible whip BNC antenna with improved gain over stock. Great portable upgrade.', price: 25, id: 39, compatRadios: ['sds100', 'sdr-kit'], img: S+'2022/07/IMGP8549-scaled.jpg' },
     { key: 'sds100-battery', name: 'SDS100 Spare Battery with Charger', desc: 'Replacement battery and charger for extended field time. Swap batteries to keep scanning all day.', price: 89, id: 9452, compatRadios: ['sds100'] },
     { key: 'usbc-adapter', name: 'Mini USB to USB-C Charging Adapter', desc: 'Charge your SDS100 via USB-C instead of the Mini USB port. Use any modern cable.', price: 9, id: 9453, compatRadios: ['sds100'] },
     { key: 'ram-hanger', name: 'RAM Mount Compatible Scanner Hanger', desc: 'Attach your SDS100 to any RAM ball mount system. Great for vehicles, desks, or go-kits.', price: 19, id: 9454, compatRadios: ['sds100'] },
@@ -3188,7 +3188,7 @@ const radioProducts = {
       { key: 'saddle', name: 'Kenwood Plug Saddle', desc: 'Rubber port protector that keeps moisture and debris out of the accessory jack when not in use.', price: 9, img: S+'2024/02/4A7A3864-White.png', id: 3701 },
       { key: 'monocable', name: 'Speakermic to Earpro Cable', desc: '3.5mm mono cable connecting your speakermic to electronic ear protection. Hear radio traffic through your earpro.', price: 9, img: S+'2023/07/20230703_103456.jpg', id: 1438 },
       { key: 'so239-pigtail', name: 'SO-239 Antenna Pigtail Adapter', desc: 'Connects your handheld radio to an external SO-239 antenna. Essential for vehicle or base station antenna use with a handheld.', price: 12, id: null },
-      { key: 'battery-elim', name: '12V Battery Eliminator', desc: 'Run your UV-5R from a 12V source (vehicle, battery pack) without draining the internal battery. Replaces the battery pack with a 12V DC input.', price: 25, id: 455 },
+      { key: 'battery-elim', name: '12V Battery Eliminator', desc: 'Run your UV-5R from a 12V source (vehicle, battery pack) without draining the internal battery. Replaces the battery pack with a 12V DC input.', price: 25, id: 455, img: S+'2022/09/20221006_154105.jpg' },
     ],
   },
   'uv5r-mini': {
@@ -3236,7 +3236,7 @@ const radioProducts = {
       { key: 'saddle', name: 'Kenwood Plug Saddle', desc: 'Rubber port protector that keeps moisture and debris out of the accessory jack when not in use.', price: 9, img: S+'2024/02/4A7A3864-White.png', id: 3701 },
       { key: 'monocable', name: 'Speakermic to Earpro Cable', desc: '3.5mm mono cable connecting your speakermic to electronic ear protection.', price: 9, img: S+'2023/07/20230703_103456.jpg', id: 1438 },
       { key: 'so239-pigtail', name: 'SO-239 Antenna Pigtail Adapter', desc: 'Connects your handheld radio to an external SO-239 antenna. Essential for vehicle or base station antenna use with a handheld.', price: 12, id: null },
-      { key: 'battery-elim', name: '12V Battery Eliminator', desc: 'Run your DMR 6X2 PRO from a 12V source (vehicle, battery pack) without draining the internal battery. Replaces the battery pack with a 12V DC input.', price: 29, id: 7344 },
+      { key: 'battery-elim', name: '12V Battery Eliminator', desc: 'Run your DMR 6X2 PRO from a 12V source (vehicle, battery pack) without draining the internal battery. Replaces the battery pack with a 12V DC input.', price: 29, id: 7344, img: S+'2025/05/dmr-6x2-pro-battery-eliminator.png' },
     ],
   },
   'da-7x2': {
@@ -3253,7 +3253,7 @@ const radioProducts = {
       { key: 'saddle', name: 'Kenwood Plug Saddle', desc: 'Rubber port protector that keeps moisture and debris out of the accessory jack when not in use.', price: 9, img: S+'2024/02/4A7A3864-White.png', id: 3701 },
       { key: 'monocable', name: 'Speakermic to Earpro Cable', desc: '3.5mm mono cable connecting your speakermic to electronic ear protection.', price: 9, img: S+'2023/07/20230703_103456.jpg', id: 1438 },
       { key: 'so239-pigtail', name: 'SO-239 Antenna Pigtail Adapter', desc: 'Connects your handheld radio to an external SO-239 antenna. Essential for vehicle or base station antenna use with a handheld.', price: 12, id: null },
-      { key: 'battery-elim', name: '12V Battery Eliminator', desc: 'Run your DA-7X2 from a 12V source (vehicle, battery pack) without draining the internal battery. Replaces the battery pack with a 12V DC input.', price: 29, id: 7344 },
+      { key: 'battery-elim', name: '12V Battery Eliminator', desc: 'Run your DA-7X2 from a 12V source (vehicle, battery pack) without draining the internal battery. Replaces the battery pack with a 12V DC input.', price: 29, id: 7344, img: S+'2025/05/dmr-6x2-pro-battery-eliminator.png' },
     ],
   },
 };
