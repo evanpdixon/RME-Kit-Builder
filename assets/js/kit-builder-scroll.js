@@ -1202,7 +1202,7 @@
       scanner: { antennas: 'Antenna', battery: 'Accessories', accessories: 'Additional Gear', programming: 'Programming' },
     };
     const descriptions = {
-      mobile: { antennas: 'Choose an antenna mount, antenna, and coax cable for your vehicle installation.' },
+      mobile: { antennas: 'Choose your antenna, then pick a mounting option for your vehicle.', battery: 'Your kit includes two ways to power your radio.' },
       base: { antennas: 'Choose your antenna and feedline for your base station setup.' },
       hf: { antennas: 'Select an HF antenna for your station.' },
       scanner: { antennas: 'Add an antenna to improve reception.' },
@@ -1318,23 +1318,59 @@
     if (section === 'battery') {
       const container = document.getElementById('battery-options');
       if (!container) return;
+
+      if (category === 'mobile') {
+        // Show included power items, then optional spare harness
+        var html = '<div class="kbs-group-label">Included With Your Kit</div>';
+        html += '<div class="kbs-included-item">' +
+          '<span class="kbs-included-check">&#10003;</span>' +
+          '<div><strong>Cigarette Lighter Power Adapter</strong>' +
+          '<div style="font-size:13px;color:#999;margin-top:2px">Plug into any 12V outlet. Easiest way to power your radio.</div></div>' +
+          '</div>';
+        html += '<div class="kbs-included-item">' +
+          '<span class="kbs-included-check">&#10003;</span>' +
+          '<div><strong>Direct-Wire Harness with Fuse</strong>' +
+          '<div style="font-size:13px;color:#999;margin-top:2px">Hardwire to your vehicle battery for a permanent install. Includes inline fuse.</div></div>' +
+          '</div>';
+
+        // Optional: spare harness
+        var spareHarness = (mobileProducts.powerCables || []).find(function(c) { return c.key === 'wiring-harness'; });
+        if (spareHarness) {
+          html += '<div class="kbs-group-label" style="margin-top:20px">Optional</div>';
+          html += '<div class="opt-card ' + (selectedBatteries.has(spareHarness.key) ? 'selected' : '') + '"' +
+            ' onclick="toggleBattery(\'' + spareHarness.key + '\')">' +
+            '<div class="oc-check">' + (selectedBatteries.has(spareHarness.key) ? '\u2713' : '') + '</div>' +
+            '<div class="oc-img"><div class="oc-img--placeholder-icon">P</div></div>' +
+            '<div class="oc-body">' +
+              '<div class="oc-name">Spare Wiring Harness</div>' +
+              '<div class="oc-desc">Extra direct-wire harness. Handy if you move the radio between vehicles.</div>' +
+            '</div>' +
+            '<div class="oc-price">+$' + spareHarness.price + '</div>' +
+          '</div>';
+        }
+
+        container.innerHTML = html;
+        return;
+      }
+
+      // Non-mobile categories: use mobileProducts.power as shared options
       if (typeof mobileProducts === 'undefined') {
         container.innerHTML = '<p style="color:var(--rme-muted)">Standard power setup included.</p>';
         return;
       }
-      const powerOpts = mobileProducts.power || [];
-      container.innerHTML = powerOpts.map(p => `
-        <div class="opt-card ${selectedBatteries.has(p.key) ? 'selected' : ''}"
-             onclick="toggleBattery('${p.key}')">
-          <div class="oc-check">${selectedBatteries.has(p.key) ? '\u2713' : ''}</div>
-          <div class="oc-img">${p.img ? '<img src="' + p.img + '" alt="' + p.name + '">' : '<div class="oc-img--placeholder-icon">A</div>'}</div>
-          <div class="oc-body">
-            <div class="oc-name">${p.name}</div>
-            <div class="oc-desc">${p.desc || ''}</div>
-          </div>
-          <div class="oc-price">+$${p.price}</div>
-        </div>
-      `).join('') || '<p style="color:var(--rme-muted)">Standard power setup included.</p>';
+      var powerOpts = mobileProducts.power || [];
+      container.innerHTML = powerOpts.map(function(p) {
+        return '<div class="opt-card ' + (selectedBatteries.has(p.key) ? 'selected' : '') + '"' +
+             ' onclick="toggleBattery(\'' + p.key + '\')">' +
+          '<div class="oc-check">' + (selectedBatteries.has(p.key) ? '\u2713' : '') + '</div>' +
+          '<div class="oc-img">' + (p.img ? '<img src="' + p.img + '" alt="' + p.name + '">' : '<div class="oc-img--placeholder-icon">A</div>') + '</div>' +
+          '<div class="oc-body">' +
+            '<div class="oc-name">' + p.name + '</div>' +
+            '<div class="oc-desc">' + (p.desc || '') + '</div>' +
+          '</div>' +
+          '<div class="oc-price">+$' + p.price + '</div>' +
+        '</div>';
+      }).join('') || '<p style="color:var(--rme-muted)">Standard power setup included.</p>';
     }
 
     if (section === 'accessories') {
