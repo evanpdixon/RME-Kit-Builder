@@ -240,16 +240,16 @@
   grid-template-rows: auto auto;
   gap: 0 14px;
   padding: 16px; border: none;
-  border-bottom: 1px solid var(--rme-border);
-  border-radius: 0; background: transparent;
+  border: 1px solid var(--rme-border);
+  border-radius: var(--rme-radius); background: transparent;
+  margin-bottom: 8px;
   transition: background 0.2s ease;
 }
-#rme-kit-builder-scroll #rme-kit-builder .opt-card:first-child { border-top: 1px solid var(--rme-border); }
+/* Cards are individually bordered+rounded, no special first-child rule needed */
 #rme-kit-builder-scroll #rme-kit-builder .opt-card:hover { background: var(--rme-card-hover); box-shadow: none; }
 #rme-kit-builder-scroll #rme-kit-builder .opt-card.selected {
   background: #2a2200; box-shadow: none;
-  border: 1px solid var(--rme-gold-dim);
-  border-left: 3px solid var(--rme-gold);
+  border: 2px solid var(--rme-gold-dim);
 }
 #rme-kit-builder-scroll #rme-kit-builder .opt-card.selected .oc-name { color: var(--rme-gold); }
 #rme-kit-builder-scroll #rme-kit-builder .opt-card.selected .oc-price { color: var(--rme-gold); }
