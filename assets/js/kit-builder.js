@@ -2723,7 +2723,7 @@ const scannerRadioLineup = [
   {
     key: 'sds200', name: 'Uniden SDS200 Digital Scanner Base Station', price: 799, id: 7512,
     img: S+'2025/06/SDS200_square.png',
-    tagline: 'Desktop monitoring powerhouse',
+    tagline: 'Best for home, office, or desk use. Plug in and listen.',
     pitch: 'Full-featured base station scanner with the best audio and largest display. Decodes P25, DMR, EDACS, and NXDN digital systems. AC or DC powered for home, office, or vehicle use. Arrives pre-programmed for your area.',
     features: ['P25 Phase I & II, DMR, EDACS, NXDN', 'Close Call: detect nearby signals instantly', 'Scan by zip code or GPS location', 'AC and DC power options', 'Best-in-class audio quality'],
     includes: ['SDS200 Scanner', 'BNC Telescoping Antenna', 'USB Programming Cable', 'AC Power Adapter', 'DC Power Harness', 'microSD Card (8GB)'],
@@ -2732,7 +2732,7 @@ const scannerRadioLineup = [
   {
     key: 'sds100', name: 'Uniden SDS100 Handheld Digital Scanner', price: 749, id: 6721,
     img: S+'2025/02/unidensds100.png',
-    tagline: 'Portable monitoring anywhere',
+    tagline: 'Best for on the go. Battery powered, fits in your hand.',
     pitch: 'Same digital decoding as the SDS200 in a portable, battery-powered package. Take it to events, on the road, or keep it on your belt. USB rechargeable with extended battery included. Arrives pre-programmed for your area.',
     features: ['P25 Phase I & II, DMR, EDACS, NXDN', 'Close Call: detect nearby signals instantly', 'Scan by zip code or GPS location', 'USB rechargeable, 5400mAh extended battery', 'Compact and portable with belt clip'],
     includes: ['SDS100 Scanner', 'SMA Antenna + BNC Adapter', 'USB Programming/Charging Cable', 'AC Wall Charger', 'Extended Battery (5400mAh)', 'Belt Clip', 'microSD Card (8GB)'],
@@ -2741,7 +2741,7 @@ const scannerRadioLineup = [
   {
     key: 'sdr-kit', name: 'SDR Essentials Kit', price: 99, id: 3723,
     img: S+'2024/02/20240228_165343.jpg',
-    tagline: 'Explore the RF spectrum visually',
+    tagline: 'Best for tinkerers. Plugs into your computer or phone.',
     pitch: 'Software Defined Radio turns your computer, tablet, or phone into a visual spectrum analyzer. See radio signals on a waterfall display, track aircraft, decode digital modes, and explore frequencies from 25MHz to 1.3GHz. Requires a computer, tablet, or phone with compatible software (not included).',
     features: ['25MHz to 1.3GHz frequency range', 'Visual waterfall spectrum display', 'Aircraft tracking via ADS-B', 'Works with PC, Mac, Android, or iOS', 'Genuine RTL-SDR v4 (not a clone)'],
     includes: ['RTL-SDR v4 receiver', 'Telescoping wideband antenna', 'SMA-M to BNC-F adapter', 'USB-A to USB-C OTG adapter'],
@@ -2751,7 +2751,7 @@ const scannerRadioLineup = [
   {
     key: 'sds150', name: 'Uniden SDS150 Digital Scanner Base Station', price: 1049, id: 8978,
     img: S+'2026/01/1000011075.png',
-    tagline: 'Premium base station scanner with touchscreen',
+    tagline: 'Best audio and touchscreen. Premium home monitoring.',
     pitch: 'Uniden\'s flagship scanner with a full-color touchscreen, advanced digital decoding, and premium audio. All the capabilities of the SDS200 with a next-generation interface. Arrives pre-programmed for your area.',
     features: ['P25 Phase I & II, DMR, EDACS, NXDN', 'Full-color touchscreen interface', 'Close Call: detect nearby signals instantly', 'Scan by zip code or GPS location', 'Premium audio with built-in speaker'],
     includes: ['SDS150 Scanner', 'BNC Antenna', 'USB Programming Cable', 'AC Power Adapter', 'microSD Card'],
