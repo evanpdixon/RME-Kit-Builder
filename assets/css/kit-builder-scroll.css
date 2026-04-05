@@ -189,10 +189,7 @@
   color: #111;
   transform: scale(0.85);
 }
-.kb-section--complete .kb-section__number::after {
-  content: '\2713';
-}
-.kb-section--complete .kb-section__number span { display: none; }
+/* Number stays visible on completed steps (no checkmark replacement) */
 .kb-section--complete .kb-section__header h2 {
   color: #5a7a5a;
   font-size: 14px;
