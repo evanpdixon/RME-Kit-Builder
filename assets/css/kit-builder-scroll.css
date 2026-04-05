@@ -247,7 +247,8 @@
 #rme-kit-builder-scroll #rme-kit-builder .opt-card:first-child { border-top: 1px solid var(--rme-border); }
 #rme-kit-builder-scroll #rme-kit-builder .opt-card:hover { background: var(--rme-card-hover); box-shadow: none; }
 #rme-kit-builder-scroll #rme-kit-builder .opt-card.selected {
-  background: #2a2200; border-color: var(--rme-gold-dim); box-shadow: none;
+  background: #2a2200; box-shadow: none;
+  border: 1px solid var(--rme-gold-dim);
   border-left: 3px solid var(--rme-gold);
 }
 #rme-kit-builder-scroll #rme-kit-builder .opt-card.selected .oc-name { color: var(--rme-gold); }
@@ -263,7 +264,7 @@
 #rme-kit-builder-scroll #rme-kit-builder .opt-card:hover .oc-img { transform: none; box-shadow: none; }
 
 /* Column 3: check row 1, price row 2, tight stack mirroring image height */
-#rme-kit-builder-scroll #rme-kit-builder .opt-card .oc-check { grid-row: 1; grid-column: 3; align-self: end; justify-self: center; margin: 0; }
+#rme-kit-builder-scroll #rme-kit-builder .opt-card .oc-check { grid-row: 1; grid-column: 3; align-self: end; justify-self: center; margin: 0 0 4px; }
 #rme-kit-builder-scroll #rme-kit-builder .opt-card .oc-body { grid-row: 1; grid-column: 2; align-self: center; }
 #rme-kit-builder-scroll #rme-kit-builder .opt-card .oc-name { font-size: 15px; font-weight: 600; }
 #rme-kit-builder-scroll #rme-kit-builder .opt-card .oc-price {
