@@ -3342,7 +3342,7 @@ function renderAllAntennas() {
 
   let note = anyUpgrade
     ? '<div style="background:#1a2a1a;border:1px solid #2a3a2a;border-radius:8px;padding:12px 16px;margin:16px 0;font-size:13px;color:#5c5"><strong>SMA-F to BNC-F Adapter ($5)</strong> will be added once to your order, shared by all BNC antennas below.</div>'
-    : '<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:16px 0;font-size:13px;color:var(--muted)">Want better performance? Add one or more BNC antenna upgrades below. Each requires a BNC adapter ($5, added once).</div>';
+    : '<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:16px 0;font-size:13px;color:var(--muted)">Want better performance? Add one or more antenna upgrades below. Automatically bundled with a BNC adapter for your radio.</div>';
 
   let upgradeCards = antennaUpgrades.map(a => `
     <div class="opt-card ${selectedAntennas.has(a.key) ? 'selected' : ''}"
@@ -4768,10 +4768,9 @@ const interviewQuestions = [
     multi: true,
     options: [
       { key: 'emergency', icon: ICO.emergency, label: 'Emergency / disaster prep', detail: 'Backup comms when cell networks fail', tags: ['channels', 'grow', 'noaa'] },
-      { key: 'professional', icon: ICO.work, label: 'Work / business use', detail: 'Worksite, security, events, farms', tags: ['professional', 'commercial', 'gps'] },
       { key: 'outdoor', icon: ICO.outdoor, label: 'Outdoor / overlanding', detail: 'Hiking, camping, off-road', tags: ['gps', 'grow', 'waterproof'] },
       { key: 'water', icon: ICO.droplet, label: 'Wet conditions', detail: 'Rain, boating, submersion', tags: ['waterproof'] },
-      { key: 'encryption', icon: ICO.lock, label: 'Private / encrypted comms', detail: 'Secure digital communication', tags: ['encryption', 'digital'] },
+      { key: 'encryption', icon: ICO.lock, label: 'Secure / encryption capable', detail: 'Private comms for work, security, or personal use', tags: ['encryption', 'digital', 'professional', 'commercial'] },
       { key: 'gps', icon: ICO.signal, label: 'GPS location sharing', detail: 'Track and share positions via APRS', tags: ['gps'] },
       { key: 'texting', icon: ICO.channels, label: 'Text messaging over radio', detail: 'Send text without cell service', tags: ['grow', 'digital'] },
       { key: 'airband', icon: ICO.plane, label: 'Listen to aircraft', detail: 'Monitor aviation frequencies', tags: ['airband'] },
@@ -4922,8 +4921,8 @@ function getPersonalizedReasons(radio) {
   if (a.use === 'outdoor' && radio.tags.includes('gps')) reasons.push('GPS & APRS, perfect for the outdoor use you mentioned');
   // Needs-based reasons (from combined question)
   const needs = a.needs || [];
-  if (needs.includes('professional') && radio.tags.includes('commercial')) reasons.push('FCC Part 90 commercial certified, approved for business and commercial use');
-  if (needs.includes('professional') && radio.tags.includes('professional')) reasons.push('Feature-rich and reliable for professional use');
+  if (needs.includes('encryption') && radio.tags.includes('commercial')) reasons.push('FCC Part 90 commercial certified, approved for business and commercial use');
+  if (needs.includes('encryption') && radio.tags.includes('professional') && !radio.tags.includes('encryption')) reasons.push('Professional-grade radio, but does not support encryption');
   if (needs.includes('emergency') && radio.tags.includes('channels')) reasons.push('Lots of channels. Covers more repeaters for emergency readiness');
   if (needs.includes('emergency') && radio.tags.includes('noaa')) reasons.push('Automatic NOAA weather alerts. Get warned before severe weather hits');
   if (needs.includes('water') && radio.tags.includes('waterproof')) reasons.push('IP67 waterproof, fully submersible for the conditions you need');
