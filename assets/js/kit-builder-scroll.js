@@ -492,6 +492,8 @@
   };
 
   function showScrollResults() {
+    // Push history state so Android back returns to quiz instead of leaving
+    pushSectionState('interview-results');
     const category = kbsDetectCategory();
     const lineup = kbsGetRadioLineup();
 
@@ -587,8 +589,12 @@
           ${resultCard(top, topReasons, true)}
           ${resultCard(runner, runnerReasons, false)}
         </div>
-        <div style="margin-top:16px">
+        <div style="margin-top:16px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+          <button class="kb-btn kb-btn--secondary" onclick="kbsRetakeQuiz()">Retake Quiz</button>
           <button class="kb-btn kb-btn--secondary" onclick="kbsShowAllRadios()">See All Radios</button>
+        </div>
+        <div style="margin-top:12px">
+          <a href="#" class="kbs-consult-escape kbs-consult-link" target="_blank">&#128222; Not sure? Book a consultation</a>
         </div>
       </div>
     `;
@@ -598,6 +604,18 @@
     // Also populate the radio grid in radio section (hidden until "See All Radios")
     renderScrollRadioGrid();
   }
+
+  window.kbsRetakeQuiz = function() {
+    // Reset interview answers and step, re-render questions
+    kbsStep = 0;
+    var keepUsage = kbsAnswers['usage']; // preserve category selection
+    kbsAnswers = {};
+    if (keepUsage) kbsAnswers['usage'] = keepUsage;
+    kbsInterviewTags = [];
+    document.getElementById('kbs-interview-stack').style.display = '';
+    renderInterviewStack();
+    scrollToSection('interview');
+  };
 
   // ── Radio Selection ───────────────────────────
   window.kbsSelectRadio = function(key) {
@@ -984,10 +1002,15 @@
 
   window.addEventListener('popstate', function(e) {
     if (!e.state || !e.state.kbSection) return;
-    const section = e.state.kbSection;
+    var section = e.state.kbSection;
+    // Handle back from recommendation results
+    if (section === 'interview-results') {
+      kbsRetakeQuiz();
+      return;
+    }
     // Find the current active section
-    const activeIdx = SECTIONS.findIndex(s => sectionState[s] === 'active');
-    const targetIdx = SECTIONS.indexOf(section);
+    var activeIdx = SECTIONS.findIndex(function(s) { return sectionState[s] === 'active'; });
+    var targetIdx = SECTIONS.indexOf(section);
     if (targetIdx >= 0 && targetIdx < activeIdx) {
       kbsEditSection(section);
     }
