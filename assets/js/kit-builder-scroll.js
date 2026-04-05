@@ -20,6 +20,7 @@
   // Multi-category tracking: all categories the user selected, and which are done
   let kbsAllCategories = [];    // e.g. ['handheld', 'vehicle', 'base']
   let kbsCompletedCategories = [];
+  let kbsCompletedKits = [];    // e.g. [{category:'mobile', radioKey:'uv50pro'}, ...]
 
   // ── Section State Machine ──────────────────────
   const SECTIONS = ['email', 'interview', 'radio', 'antennas', 'battery', 'accessories', 'programming', 'review', 'quantity'];
@@ -497,6 +498,7 @@
     if (!kbsCompletedCategories.includes(kbsCurrentCategory)) {
       kbsCompletedCategories.push(kbsCurrentCategory);
     }
+    kbsCompletedKits.push({ category: kbsCurrentCategory, radioKey: selectedRadioKey });
     var completedMapped = kbsCompletedCategories.map(function(c) { return catMap[c] || c; });
 
     // Check for remaining categories
@@ -1167,16 +1169,38 @@
     if (!grid) return;
     const lineup = kbsGetRadioLineup();
     const category = kbsDetectCategory();
-    grid.innerHTML = lineup.filter(r => !r.outOfStock).map(r => `
-      <div class="radio-pick" onclick="${category === 'handheld' ? "kbsSelectRadio('" + r.key + "')" : "kbsSelectNonHandheld('" + r.key + "','" + category + "')"}">
+
+    // Check if a completed kit from a related category used one of these radios
+    var matchLabels = { mobile: 'vehicle', base: 'vehicle', handheld: null, hf: null, scanner: null };
+    var relatedCat = matchLabels[category];
+    var matchedRadioKey = null;
+    var matchLabel = '';
+    if (relatedCat) {
+      kbsCompletedKits.forEach(function(kit) {
+        // mobile and base share a lineup; check if prior kit used a radio from this lineup
+        if ((relatedCat === 'vehicle' && kit.category === 'mobile') ||
+            (relatedCat === 'base' && kit.category === 'base')) {
+          if (lineup.find(function(r) { return r.key === kit.radioKey; })) {
+            matchedRadioKey = kit.radioKey;
+            matchLabel = 'Matches your ' + relatedCat + ' radio';
+          }
+        }
+      });
+    }
+
+    grid.innerHTML = lineup.filter(r => !r.outOfStock).map(r => {
+      var isMatch = r.key === matchedRadioKey;
+      return `
+      <div class="radio-pick${isMatch ? ' radio-pick--match' : ''}" onclick="${category === 'handheld' ? "kbsSelectRadio('" + r.key + "')" : "kbsSelectNonHandheld('" + r.key + "','" + category + "')"}">
         <div class="rp-img"><img src="${r.img}" alt="${r.name}"></div>
         <div class="rp-info">
           <h4>${r.name.replace(' Essentials Kit', '').replace(' Mobile Radio Kit', '')}</h4>
+          ${isMatch ? '<div class="rp-match">' + matchLabel + '</div>' : ''}
           <div class="rp-price">$${r.price}</div>
           <div class="rp-tag">${r.tagline}</div>
         </div>
-      </div>
-    `).join('');
+      </div>`;
+    }).join('');
   }
 
   // Non-handheld categories: show recommendation with link to V1's specialized flow
@@ -1214,9 +1238,12 @@
         <div class="result-cards">
           ${available.map((r, i) => {
             const name = r.name.replace(' Essentials Kit', '').replace(' Mobile Radio Kit', '');
+            const vehicleMatch = kbsCompletedKits.find(k => k.category === 'mobile' && k.radioKey === r.key);
+            const matchBadge = vehicleMatch ? '<div class="result-badge" style="background:#1a2a1a;color:#4caf50;border:1px solid #2a3a2a">Matches Your Vehicle Radio</div>' : '';
+            const isTop = i === 0 && !vehicleMatch;
             return `
-              <div class="result-card ${i === 0 ? 'recommended' : ''}" onclick="kbsSelectNonHandheld('${r.key}','${category}')">
-                ${i === 0 ? '<div class="result-badge">Recommended</div>' : ''}
+              <div class="result-card ${vehicleMatch ? 'recommended' : (isTop ? 'recommended' : '')}" onclick="kbsSelectNonHandheld('${r.key}','${category}')">
+                ${vehicleMatch ? matchBadge : (isTop ? '<div class="result-badge">Recommended</div>' : '')}
                 <div class="rc-img"><img src="${r.img}" alt="${r.name}"></div>
                 <h3>${name}</h3>
                 <div class="rc-price">$${r.price}</div>
