@@ -1,39 +1,59 @@
-# Session: V2 Kit Builder UI Audit & Fixes (Continued)
+# Session: Kit Builder V2 Full Audit & Feature Build
 Started: 2026-04-05
 Status: in-progress
 
 ## Goal
-Continued UI audit and fixes for the v2 kit builder scroll workflow. Follow-up from 2026-04-04 audit session.
+Complete audit and fix of V2 scroll variant, then add missing features to bring it to production parity and beyond V1.
 
 ## Source
-User feedback on v2 scroll variant after initial audit
+User request: full logic + UI audit on desktop and mobile for all category flows.
 
 ## Plan
-- [x] Fix recommendation scroll position on mobile (scroll-margin-top 80->150px, delay 400->800ms)
-- [x] Filter vehicle fender mounts behind YMM picker dropdown (13 -> 7 items)
-- [x] Fix section descriptions adapting per category (vehicle, base, HF, scanner)
-- [x] Fix factory antenna card layout (add placeholder image for consistent grid)
-- [x] Fix "See Results" button text on setup question for non-handheld paths
-- [x] Create logic.html - recommendation logic map showing all answer combinations
-- [ ] Verify recommendation scroll fix on real mobile device
-- [ ] Scanner category interview features development
-- [ ] Full scroll position audit across ALL step transitions on mobile
+- [x] Full code audit of V2 logic and UI
+- [x] Fix 5 critical bugs (non-handheld cart/review/edit, HF routing, scanner duplicates)
+- [x] Fix high-priority bugs (email validation, retake quiz, toggle functions)
+- [x] Add accessibility (ARIA, keyboard nav, focus management, modal scroll lock)
+- [x] Fix vehicle antenna toggle overwriting with handheld products
+- [x] Add volume discount / quantity picker (step 10)
+- [x] Split vehicle antennas: antenna first, then mount selection
+- [x] Simplify vehicle power: show included items, drop advanced options
+- [x] Multi-category flow: build all selected types in sequence
+- [x] Fix multi-category cart redirect and ordering
+- [x] Add product images from WooCommerce for ~20 items
+- [x] SVG line-art placeholders for imageless products
+- [x] Programming skip option reformatted, license toggle, notes reordered
+- [x] Scanner taglines rewritten for use-case guidance
+- [x] Card layout fixes (rounded corners, checkbox/price positioning, selected states)
+- [x] Mobile price bar simplified (price + phone icon only)
+- [x] Radio name + split pricing in bottom bar
+- [x] Matching radio badge for base kit after vehicle kit
+- [x] Radio mounting step (factory bracket + RAM Wedge upgrade)
+- [x] Magnetic Mic Upgrade accessory ($59 placeholder)
+- [x] Auto-suggest NMO coax for fender mount / ditch light
+- [x] 5% cross-category discount with nudge text
+- [x] Product page flow (email -> pre-selected radio -> accessories)
+- [ ] Real-device testing and final polish
 
 ## Progress Notes
-- 2026-04-05 commit 3d57275: Fixed recommendation scroll position (scroll-margin-top: 150px, 800ms delay)
-- 2026-04-05 commit a96eaa5: Filtered vehicle fender mounts behind dropdown picker, fixed section descriptions, fixed factory antenna card
-- 2026-04-05 commit 04ef765: Fixed setup question "See Results" button when non-handheld selected
-- 2026-04-05: Created logic.html showing all unique answer combinations and resulting recommendations
+- All 5 category flows (handheld, vehicle, base, HF, scanner) working end-to-end
+- Multi-category flow: builds in list order, prompts for next, last kit redirects to cart
+- Volume discount tiers: 2-3 (5%), 4-6 (10%), 7-9 (12%), 10+ (15%) per-category
+- Cross-category: 5% off base price on 2nd+ category with nudge
+- Product page mode: skips interview, detects category from all lineups
+- Version at 2.2.0
 
 ## Key Decisions
-- Vehicle fender mounts hidden behind a simple dropdown picker rather than full YMM picker (simpler, sufficient for V2)
-- Setup question excluded from "See Results" button check since it's never the true last question
-- Category detection priority: vehicle > base > scanner > handheld (first non-handheld wins)
+- Volume discounts per-category (identical radios save programming time)
+- Cross-category 5% discount (not a full volume tier, just a nudge incentive)
+- Vehicle power simplified: cigarette lighter + wire harness included, LiFePO4 removed
+- Mounting is its own step (factory included, RAM Wedge upgrade)
+- Coax auto-suggested only for fender mount + ditch light (not all mounts)
+- Scanner has no interview questions, taglines guide selection instead
 
 ## Resume Instructions
-- logic.html created in repo root - standalone HTML page showing all recommendation logic paths
-- User reported "still ending up on handheld antennas on vehicle flow" but Puppeteer tests confirm correct behavior on staging. Likely browser cache. Need user to hard-refresh and verify.
-- User reported recommendation step scrolling too far down on mobile - fix deployed but needs real-device verification
-- Scanner interview features still need development (deferred)
-- Full scroll position audit across all mobile transitions still pending
-- All changes committed and pushed to single-page-flow branch, deployed to staging12
+- All changes on branch `single-page-flow`
+- Deploy path: `git pull` on staging12 + cache flush
+- Product page integration needs WC product page testing (enable via config `productPageEnabled: true`)
+- Magnetic mic has `id: null` (placeholder, needs WC product created)
+- Several fender mounts have `id: null` (need WC products)
+- Real-device mobile testing recommended before production deploy
