@@ -23,7 +23,7 @@
   let kbsCompletedKits = [];    // e.g. [{category:'mobile', radioKey:'uv50pro'}, ...]
 
   // ── Section State Machine ──────────────────────
-  const SECTIONS = ['email', 'interview', 'radio', 'antennas', 'battery', 'accessories', 'programming', 'review', 'quantity'];
+  const SECTIONS = ['email', 'interview', 'radio', 'mounting', 'antennas', 'battery', 'accessories', 'programming', 'review', 'quantity'];
   const sectionState = {};
   SECTIONS.forEach((s, i) => { sectionState[s] = i === 0 ? 'active' : 'locked'; });
 
@@ -64,6 +64,30 @@
 
     // Render product content for next section (if needed)
     function renderNext() {
+      // Skip mounting step for non-vehicle/base categories
+      if (next === 'mounting' && kbsCurrentCategory !== 'mobile' && kbsCurrentCategory !== 'base') {
+        document.getElementById('sec-mounting').style.display = 'none';
+        sectionState['mounting'] = 'complete';
+        // Immediately advance to antennas
+        var antEl = document.getElementById('sec-antennas');
+        if (antEl) { antEl.classList.remove('kb-section--locked'); antEl.classList.add('kb-section--loading'); }
+        scrollToSection('antennas');
+        setTimeout(function() {
+          if (kbsCurrentCategory === 'handheld') renderAllAntennas();
+          else renderCategoryProducts('antennas', kbsCurrentCategory, selectedRadioKey);
+          sectionState['antennas'] = 'active';
+          if (antEl) antEl.classList.remove('kb-section--loading');
+          applyAllStates();
+          updateScrollPriceBar();
+          updateConsultLinks();
+        }, 800);
+        return;
+      }
+      if (next === 'mounting') {
+        document.getElementById('sec-mounting').style.display = '';
+        renderMountingOptions();
+        return;
+      }
       if (next === 'quantity') { renderQuantityPicker(); enableCartBtn(); return; }
       if (kbsCurrentCategory === 'handheld') {
         if (next === 'antennas') renderAllAntennas();
@@ -144,6 +168,7 @@
       applyAllStates();
       scrollToSection(name);
       // Re-render if product section (category-aware)
+      if (name === 'mounting') renderMountingOptions();
       if (kbsCurrentCategory === 'handheld') {
         if (name === 'antennas') renderAllAntennas();
         if (name === 'battery') renderBatteryUpgrades();
@@ -206,6 +231,12 @@
         const lineup = kbsGetRadioLineup();
         const r = lineup.find(x => x.key === selectedRadioKey) || radioLineup.find(x => x.key === selectedRadioKey);
         if (r) html = `<span class="kbs-sel">${r.name.replace(' Essentials Kit', '').replace(' Mobile Radio Kit', '')} - $${r.price}</span>`;
+        break;
+      }
+      case 'mounting': {
+        html = kbsSelectedMount === 'ramwedge'
+          ? `<span class="kbs-sel">RAM Wedge Mount</span>`
+          : `<span class="kbs-none">Factory bracket</span>`;
         break;
       }
       case 'antennas': {
@@ -298,6 +329,11 @@
     var lineup = kbsGetRadioLineup();
     var radio = lineup.find(function(r) { return r.key === selectedRadioKey; });
     var total = radio ? radio.price : BASE_PRICE;
+    // Mount upgrade
+    if (kbsSelectedMount === 'ramwedge' && typeof mobileProducts !== 'undefined' && mobileProducts.vehicleMounts) {
+      var ram = mobileProducts.vehicleMounts.find(function(m) { return m.key === 'ramwedge'; });
+      if (ram) total += ram.price;
+    }
     var antennaList = [], powerList = [], accList = [];
     if (kbsCurrentCategory === 'mobile' || kbsCurrentCategory === 'base') {
       if (typeof mobileProducts !== 'undefined') {
@@ -318,6 +354,10 @@
     selectedBatteries.forEach(function(qty, key) { var p = powerList.find(function(x) { return x.key === key; }); if (p) total += p.price * qty; });
     selectedAccessories.forEach(function(key) { var a = accList.find(function(x) { return x.key === key; }); if (a) total += (a.price || 0); });
     if (programmingChoice === 'multi') total += 10;
+    // Cross-category 5% discount on base price
+    if (kbsCompletedCategories.length > 0) {
+      total -= Math.round(BASE_PRICE * 5 / 100);
+    }
     return total;
   }
 
@@ -339,6 +379,11 @@
 
     // Calculate total using existing calcTotal if available, otherwise manual
     let total = r ? r.price : 0;
+    // Add mount upgrade if selected
+    if (kbsSelectedMount === 'ramwedge' && typeof mobileProducts !== 'undefined' && mobileProducts.vehicleMounts) {
+      var ram = mobileProducts.vehicleMounts.find(function(m) { return m.key === 'ramwedge'; });
+      if (ram) total += ram.price;
+    }
     if (kbsCurrentCategory === 'handheld') {
       // Handheld: antenna upgrades + BNC adapter + additional antennas
       if (typeof antennaUpgrades !== 'undefined') {
@@ -389,6 +434,10 @@
     }
     if (programmingChoice === 'multi') total += 10;
 
+    // Apply cross-category 5% discount when building 2nd+ category
+    var crossCatDiscount = kbsCompletedCategories.length > 0 ? Math.round(BASE_PRICE * 5 / 100) : 0;
+    total -= crossCatDiscount;
+
     // Apply quantity and volume discount
     var tier = (kbsKitQty >= 2 && typeof getVolumeTier === 'function') ? getVolumeTier(kbsKitQty) : null;
     var perKitDiscount = tier ? Math.round(BASE_PRICE * tier.pct / 100) : 0;
@@ -433,6 +482,12 @@
     var radio = lineup.find(function(r) { return r.key === selectedRadioKey; });
     if (!radio) return [];
     var items = [{ name: radio.name, price: radio.price, id: radio.id, qty: 1 }];
+
+    // Add mount upgrade if selected
+    if (kbsSelectedMount === 'ramwedge' && typeof mobileProducts !== 'undefined' && mobileProducts.vehicleMounts) {
+      var ram = mobileProducts.vehicleMounts.find(function(m) { return m.key === 'ramwedge'; });
+      if (ram && ram.id) items.push({ name: ram.name, price: ram.price, id: ram.id, qty: 1 });
+    }
 
     var antennaList = [];
     var powerList = [];
@@ -534,11 +589,16 @@
     // Show prompt in the quantity section content area
     var container = document.getElementById('kbs-qty-picker');
     if (!container) return;
+    var nudgeHtml = '<div style="background:#1a2a1a;border:1px solid #2a3a2a;border-radius:8px;padding:12px 16px;margin:16px 0;font-size:13px;color:#5c5;text-align:left">' +
+      '<strong>5% multi-kit discount:</strong> Since we program and test all your radios together, you save 5% on the base price of your ' + nextLabel.toLowerCase() + ' kit.' +
+      '</div>';
+
     container.innerHTML =
       '<div style="text-align:center;padding:20px 0">' +
         '<div style="font-size:18px;color:var(--rme-gold);margin-bottom:8px;font-family:var(--rme-font-heading);text-transform:uppercase;letter-spacing:1px">Kit Added to Cart</div>' +
-        '<p style="color:#ccc;font-size:15px;margin-bottom:20px">You also selected <strong style="color:var(--rme-gold)">' + nextLabel + '</strong>' +
+        '<p style="color:#ccc;font-size:15px;margin-bottom:4px">You also selected <strong style="color:var(--rme-gold)">' + nextLabel + '</strong>' +
           (moreCount > 1 ? ' and ' + (moreCount - 1) + ' more type' + (moreCount > 2 ? 's' : '') : '') + '. Ready to build ' + (moreCount === 1 ? 'it' : 'the next one') + '?</p>' +
+        nudgeHtml +
         '<div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">' +
           '<button class="kb-btn kb-btn--primary" onclick="kbsStartNextCategory(\'' + nextCat + '\')">Build ' + nextLabel + ' Kit</button>' +
           '<a href="/cart/" class="kb-btn kb-btn--secondary" style="text-decoration:none;display:inline-flex;align-items:center">Go to Cart</a>' +
@@ -568,13 +628,14 @@
     adapterSuppressed = false;
     kbsRadioSelected = false;
     kbsKitQty = 1;
+    kbsSelectedMount = 'factory';
     selectedRadioKey = '';
 
     // Set answers so category detection returns the right type
     kbsAnswers['usage'] = [catKey];
 
-    // Reset sections 3-9 to locked, activate radio section
-    ['radio', 'antennas', 'battery', 'accessories', 'programming', 'review', 'quantity'].forEach(function(s) {
+    // Reset all product sections to locked, activate radio section
+    ['radio', 'mounting', 'antennas', 'battery', 'accessories', 'programming', 'review', 'quantity'].forEach(function(s) {
       sectionState[s] = 'locked';
     });
     sectionState['radio'] = 'active';
@@ -1131,6 +1192,7 @@
     selectedRadioKey = key;
     kbsRadioSelected = true;
     kbsKitQty = 1;
+    kbsSelectedMount = 'factory';
     const radio = radioLineup.find(r => r.key === key);
     if (radio) BASE_PRICE = radio.price;
 
@@ -1285,6 +1347,7 @@
     selectedRadioKey = radioKey;
     kbsRadioSelected = true;
     kbsKitQty = 1;
+    kbsSelectedMount = 'factory';
     BASE_PRICE = radio.price;
 
     // Reset selections
@@ -1338,6 +1401,53 @@
   let kbsCurrentCategory = 'handheld';
 
   // Adapt section headings and descriptions for the selected category
+  // ── Mounting Options (vehicle/base only) ────────
+  let kbsSelectedMount = 'factory'; // 'factory' or 'ramwedge'
+
+  function renderMountingOptions() {
+    var container = document.getElementById('mounting-options');
+    if (!container) return;
+    var ramWedge = (typeof mobileProducts !== 'undefined' && mobileProducts.vehicleMounts)
+      ? mobileProducts.vehicleMounts.find(function(m) { return m.key === 'ramwedge'; })
+      : null;
+
+    var html = '';
+    // Factory bracket (included, default selected)
+    html += '<div class="opt-card ' + (kbsSelectedMount === 'factory' ? 'selected' : '') + '"' +
+      ' onclick="kbsSelectMount(\'factory\')">' +
+      '<div class="oc-check">' + (kbsSelectedMount === 'factory' ? '\u2713' : '') + '</div>' +
+      '<div class="oc-img"><div class="oc-img--placeholder-icon">' + PLACEHOLDER_SVG.mount + '</div></div>' +
+      '<div class="oc-body">' +
+        '<div class="oc-name">Factory Mounting Bracket</div>' +
+        '<div class="oc-desc">Standard mounting bracket included with your radio. Mounts to any flat surface with screws.</div>' +
+      '</div>' +
+      '<div class="oc-price" style="color:var(--rme-green)">Included</div>' +
+    '</div>';
+
+    // RAM Wedge upgrade
+    if (ramWedge) {
+      html += '<div class="opt-card ' + (kbsSelectedMount === 'ramwedge' ? 'selected' : '') + '"' +
+        ' onclick="kbsSelectMount(\'ramwedge\')">' +
+        '<div class="oc-check">' + (kbsSelectedMount === 'ramwedge' ? '\u2713' : '') + '</div>' +
+        '<div class="oc-img">' + (ramWedge.img ? '<img src="' + ramWedge.img + '" alt="' + ramWedge.name + '">' : '<div class="oc-img--placeholder-icon">' + PLACEHOLDER_SVG.mount + '</div>') + '</div>' +
+        '<div class="oc-body">' +
+          '<div class="oc-best-use">Upgrade</div>' +
+          '<div class="oc-name">' + ramWedge.name + '</div>' +
+          '<div class="oc-desc">' + ramWedge.desc + '</div>' +
+        '</div>' +
+        '<div class="oc-price">+$' + ramWedge.price + '</div>' +
+      '</div>';
+    }
+
+    container.innerHTML = html;
+  }
+
+  window.kbsSelectMount = function(mountKey) {
+    kbsSelectedMount = mountKey;
+    renderMountingOptions();
+    updateScrollPriceBar();
+  };
+
   function adaptSectionsForCategory(cat) {
     const headings = {
       mobile: { antennas: 'Antenna & Mount', battery: 'Power Setup', accessories: 'Accessories', programming: 'Custom Programming' },
@@ -1480,6 +1590,28 @@
         html += universalMounts.map(m =>
           renderOneCard(m, m.mountType === 'permanent' ? 'Bolt-On / No Drill' : 'Temporary / Removable', selectedAntennas.has(m.key))
         ).join('');
+
+        // Auto-suggest NMO coax when fender mount or ditch light is selected
+        var needsCoax = selectedAntennas.has('ditchlight') ||
+          fenderMounts.some(function(m) { return selectedAntennas.has(m.key); });
+        if (needsCoax && typeof mobileProducts !== 'undefined' && mobileProducts.nmoCoax) {
+          var coax = mobileProducts.nmoCoax.find(function(c) { return c.key === 'nmo-coax'; });
+          if (coax) {
+            html += '<div class="kbs-group-label" style="margin-top:20px">Coax Cable</div>';
+            html += '<p style="color:#999;font-size:13px;margin:8px 0 12px">Your selected mount does not include coax. Add a cable to connect the mount to your radio, or skip if you already have one.</p>';
+            html += '<div class="opt-card ' + (selectedAntennas.has(coax.key) ? 'selected' : '') + '"' +
+              ' onclick="toggleAntenna(\'' + coax.key + '\')">' +
+              '<div class="oc-check">' + (selectedAntennas.has(coax.key) ? '\u2713' : '') + '</div>' +
+              '<div class="oc-img">' + productImgHtml(coax) + '</div>' +
+              '<div class="oc-body">' +
+                '<div class="oc-best-use">Recommended</div>' +
+                '<div class="oc-name">' + coax.name + '</div>' +
+                '<div class="oc-desc">' + coax.desc + '</div>' +
+              '</div>' +
+              '<div class="oc-price">+$' + coax.price + '</div>' +
+            '</div>';
+          }
+        }
 
         container.innerHTML = html;
       }
@@ -1786,6 +1918,20 @@
       '</div>'
     );
 
+    // Mount upgrade
+    if (kbsSelectedMount === 'ramwedge' && typeof mobileProducts !== 'undefined' && mobileProducts.vehicleMounts) {
+      var ram = mobileProducts.vehicleMounts.find(function(m) { return m.key === 'ramwedge'; });
+      if (ram) {
+        items.push(
+          '<div class="review-item">' +
+            '<div class="ri-img">' + (ram.img ? '<img src="' + ram.img + '" alt="">' : '') + '</div>' +
+            '<div class="ri-name">' + ram.name + '<small>Radio mount upgrade</small></div>' +
+            '<div class="ri-price">+$' + ram.price + '</div>' +
+          '</div>'
+        );
+      }
+    }
+
     // Build product lists for lookups
     var antennaList = [];
     var powerList = [];
@@ -2004,6 +2150,82 @@
     updateSectionAria();
   };
 
+  // ── Product Page Mode ─────────────────────────
+  // When loaded on a WC product page, skip interview/radio and start
+  // with email → accessories flow for the pre-selected radio
+  function initProductPageMode() {
+    if (typeof rmeKitBuilderProduct === 'undefined' || !rmeKitBuilderProduct.productPageMode) return false;
+
+    var radioKey = rmeKitBuilderProduct.productRadioKey;
+    if (!radioKey) return false;
+
+    // Detect which category this radio belongs to
+    var detectedCat = 'handheld';
+    if (typeof mobileRadioLineup !== 'undefined' && mobileRadioLineup.find(function(r) { return r.key === radioKey; })) detectedCat = 'mobile';
+    else if (typeof hfRadioLineup !== 'undefined' && hfRadioLineup.find(function(r) { return r.key === radioKey; })) detectedCat = 'hf';
+    else if (typeof scannerRadioLineup !== 'undefined' && scannerRadioLineup.find(function(r) { return r.key === radioKey; })) detectedCat = 'scanner';
+
+    kbsCurrentCategory = detectedCat;
+    kbsAnswers['usage'] = [detectedCat === 'mobile' ? 'vehicle' : detectedCat];
+
+    // Hide interview and radio sections
+    document.getElementById('sec-interview').style.display = 'none';
+    document.getElementById('sec-radio').style.display = 'none';
+
+    // After email is completed, auto-select the radio and jump to accessories
+    var _origEmailComplete = window.kbsCompleteSection;
+    window.kbsCompleteSection = function(name) {
+      if (name === 'email') {
+        sectionState['email'] = 'complete';
+        renderSummary('email');
+        sectionState['interview'] = 'complete';
+        sectionState['radio'] = 'complete';
+
+        // Set up radio state
+        if (typeof loadRadioProducts === 'function') loadRadioProducts(radioKey);
+        selectedRadioKey = radioKey;
+        kbsRadioSelected = true;
+        kbsKitQty = 1;
+        kbsSelectedMount = 'factory';
+        var lineup = kbsGetRadioLineup();
+        var radio = lineup.find(function(r) { return r.key === radioKey; });
+        if (radio) BASE_PRICE = radio.price;
+        selectedAntennas = new Set();
+        selectedAddlAntennas = new Set();
+        selectedBatteries = new Map();
+        selectedAccessories = new Set();
+        programmingChoice = 'standard';
+        adapterSuppressed = false;
+
+        // Adapt section headings
+        if (detectedCat !== 'handheld') adaptSectionsForCategory(detectedCat);
+
+        // Skip directly to mounting (vehicle/base) or antennas (others)
+        var firstProductSection = (detectedCat === 'mobile' || detectedCat === 'base') ? 'mounting' : 'antennas';
+        if (firstProductSection === 'mounting') {
+          document.getElementById('sec-mounting').style.display = '';
+          sectionState['mounting'] = 'active';
+          renderMountingOptions();
+        } else {
+          sectionState[firstProductSection] = 'active';
+          if (detectedCat === 'handheld') renderAllAntennas();
+          else renderCategoryProducts('antennas', detectedCat, radioKey);
+        }
+
+        applyAllStates();
+        updateScrollPriceBar();
+        updateConsultLinks();
+        scrollToSection(firstProductSection);
+        return;
+      }
+      // For all other sections, use normal flow
+      pushSectionState(name);
+      _origComplete(name);
+    };
+
+    return true;
+  }
+
   // ── Init ──────────────────────────────────────
   document.addEventListener('DOMContentLoaded', function() {
     // Reset any leftover state from base JS
@@ -2018,6 +2240,8 @@
     document.querySelectorAll('.modal-overlay').forEach(function(modal) {
       modalObserver.observe(modal, { attributes: true, attributeFilter: ['class'] });
     });
+    // Initialize product page mode if applicable
+    initProductPageMode();
   });
 
 })();

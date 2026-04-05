@@ -1019,6 +1019,7 @@ const mobileProducts = {
   accessories: [
     { key: 'bs22', name: 'BS-22 Wireless Speakermic', desc: 'Bluetooth wireless speaker-microphone. Clips to gear, pairs via Bluetooth.', price: 59, id: 8491, compatRadios: ['uv50pro'], img: S+'2025/12/1000009367.jpg' },
     { key: 'bt01', name: 'BT-01 Mobile Bluetooth Speaker Mic', desc: 'Bluetooth speaker-microphone for mobile radios. Wireless audio with PTT for hands-free operation.', price: 149, id: 6717, compatRadios: ['d578'], img: S+'2025/02/103ed8b249b56d45d92df2fb25350ab6.jpg' },
+    { key: 'magmic', name: 'Magnetic Mic Upgrade', desc: 'Magnetic mounting solution for your hand microphone. Keeps the mic secure and accessible on any metal surface in your vehicle.', price: 59, id: null },
     { key: 'relocation', name: 'Antenna Jack Relocation Cable', desc: 'Right-angle PL-259 to SO-239 cable for repositioning the antenna jack.', price: 19, id: 7271 },
     { key: 'so239-pigtail', name: 'SO-239 Antenna Pigtail Adapter', desc: 'Connect your handheld radio to your vehicle-mounted antenna. BNC to SO-239 adapter with short coax lead.', price: 9, id: 1434, img: S+'2023/07/20230628_1406042.jpg' },
   ],

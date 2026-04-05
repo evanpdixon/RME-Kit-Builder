@@ -62,10 +62,27 @@
     </div>
   </div>
 
-  <!-- SECTION 4: Antennas -->
-  <div class="kb-section kb-section--locked" data-section="antennas" id="sec-antennas" role="region" aria-label="Antennas" aria-expanded="false" aria-disabled="true">
+  <!-- SECTION 4: Radio Mounting (vehicle/base only, hidden for handheld) -->
+  <div class="kb-section kb-section--locked" data-section="mounting" id="sec-mounting" role="region" aria-label="Radio mounting" aria-expanded="false" aria-disabled="true" style="display:none">
     <div class="kb-section__header">
       <span class="kb-section__number">4</span>
+      <h2>Radio Mounting</h2>
+    </div>
+    <div class="kb-section__summary" style="display:none"></div>
+    <div class="kb-section__content">
+      <p>Your kit includes a factory mounting bracket. Upgrade for a more secure install.</p>
+      <div class="options-grid" id="mounting-options"></div>
+      <div class="kb-section__actions">
+        <button class="kb-btn kb-btn--secondary" onclick="kbsGoBack('mounting')">Back</button>
+        <button class="kb-btn kb-btn--primary" onclick="kbsCompleteSection('mounting')">Continue</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 5: Antennas -->
+  <div class="kb-section kb-section--locked" data-section="antennas" id="sec-antennas" role="region" aria-label="Antennas" aria-expanded="false" aria-disabled="true">
+    <div class="kb-section__header">
+      <span class="kb-section__number">5</span>
       <h2>Antennas</h2>
     </div>
     <div class="kb-section__summary" style="display:none"></div>
@@ -80,10 +97,10 @@
     </div>
   </div>
 
-  <!-- SECTION 5: Battery -->
+  <!-- SECTION 6: Battery -->
   <div class="kb-section kb-section--locked" data-section="battery" id="sec-battery" role="region" aria-label="Battery upgrade" aria-expanded="false" aria-disabled="true">
     <div class="kb-section__header">
-      <span class="kb-section__number">5</span>
+      <span class="kb-section__number">6</span>
       <h2>Battery Upgrade</h2>
     </div>
     <div class="kb-section__summary" style="display:none"></div>
@@ -98,10 +115,10 @@
     </div>
   </div>
 
-  <!-- SECTION 6: Accessories -->
+  <!-- SECTION 7: Accessories -->
   <div class="kb-section kb-section--locked" data-section="accessories" id="sec-accessories" role="region" aria-label="Accessories" aria-expanded="false" aria-disabled="true">
     <div class="kb-section__header">
-      <span class="kb-section__number">6</span>
+      <span class="kb-section__number">7</span>
       <h2>Accessories</h2>
     </div>
     <div class="kb-section__summary" style="display:none"></div>
@@ -116,10 +133,10 @@
     </div>
   </div>
 
-  <!-- SECTION 7: Programming -->
+  <!-- SECTION 8: Programming -->
   <div class="kb-section kb-section--locked" data-section="programming" id="sec-programming" role="region" aria-label="Custom programming" aria-expanded="false" aria-disabled="true">
     <div class="kb-section__header">
-      <span class="kb-section__number">7</span>
+      <span class="kb-section__number">8</span>
       <h2>Custom Programming</h2>
     </div>
     <div class="kb-section__summary" style="display:none"></div>
@@ -134,10 +151,10 @@
     </div>
   </div>
 
-  <!-- SECTION 8: Review & Cart -->
+  <!-- SECTION 9: Review & Cart -->
   <div class="kb-section kb-section--locked" data-section="review" id="sec-review" role="region" aria-label="Review your kit" aria-expanded="false" aria-disabled="true">
     <div class="kb-section__header">
-      <span class="kb-section__number">8</span>
+      <span class="kb-section__number">9</span>
       <h2>Review Your Kit</h2>
     </div>
     <div class="kb-section__summary" style="display:none"></div>
@@ -151,10 +168,10 @@
     </div>
   </div>
 
-  <!-- SECTION 9: Quantity & Volume Discount -->
+  <!-- SECTION 10: Quantity & Volume Discount -->
   <div class="kb-section kb-section--locked" data-section="quantity" id="sec-quantity" role="region" aria-label="Kit quantity" aria-expanded="false" aria-disabled="true">
     <div class="kb-section__header">
-      <span class="kb-section__number">9</span>
+      <span class="kb-section__number">10</span>
       <h2>How Many?</h2>
     </div>
     <div class="kb-section__summary" style="display:none"></div>

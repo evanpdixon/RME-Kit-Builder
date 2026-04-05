@@ -13,11 +13,15 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  */
 function rme_kb_get_product_radio_key( $product_id ) {
     $config = get_option( 'rme_kb_config', rme_kb_default_config() );
-    if ( empty( $config['radioLineup'] ) ) return false;
 
-    foreach ( $config['radioLineup'] as $radio ) {
-        if ( ! empty( $radio['id'] ) && (int) $radio['id'] === (int) $product_id ) {
-            return $radio['key'];
+    // Check all lineups: handheld, mobile, HF, scanner
+    $lineups = array( 'radioLineup', 'mobileRadioLineup', 'hfRadioLineup', 'scannerRadioLineup' );
+    foreach ( $lineups as $lineup_key ) {
+        if ( empty( $config[ $lineup_key ] ) ) continue;
+        foreach ( $config[ $lineup_key ] as $radio ) {
+            if ( ! empty( $radio['id'] ) && (int) $radio['id'] === (int) $product_id ) {
+                return $radio['key'];
+            }
         }
     }
     return false;
@@ -40,6 +44,7 @@ function rme_kb_product_page_hook() {
 
     // Enqueue kit builder assets with product page mode
     rme_kb_enqueue_assets();
+    rme_kb_enqueue_scroll_assets();
 
     // Add product-page-specific JS vars
     wp_localize_script( 'rme-kit-builder', 'rmeKitBuilderProduct', array(
@@ -58,24 +63,8 @@ add_action( 'woocommerce_before_single_product', 'rme_kb_product_page_hook' );
  */
 function rme_kb_render_product_page_wizard() {
     echo '<div id="rme-kb-product-wizard" style="clear:both">';
-    include RME_KB_PATH . 'includes/shortcode-output.php';
+    include RME_KB_PATH . 'includes/shortcode-scroll-output.php';
     echo '</div>';
-    ?>
-    <script>
-    // Product page mode — auto-start wizard with the selected radio
-    document.addEventListener('DOMContentLoaded', function() {
-        if (typeof rmeKitBuilderProduct !== 'undefined' && rmeKitBuilderProduct.productPageMode) {
-            var needsPhase = document.getElementById('needs-phase');
-            var selectorPhase = document.getElementById('selector-phase');
-            if (needsPhase) needsPhase.style.display = 'none';
-            if (selectorPhase) selectorPhase.style.display = 'none';
-            if (typeof confirmRadioSelection === 'function') {
-                confirmRadioSelection(rmeKitBuilderProduct.productRadioKey);
-            }
-        }
-    });
-    </script>
-    <?php
 }
 
 /**
