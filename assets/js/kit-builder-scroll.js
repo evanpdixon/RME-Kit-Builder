@@ -999,6 +999,7 @@
         <div class="opt-card ${selectedAntennas.has(p.key) ? 'selected' : ''}"
              onclick="toggleAntenna('${p.key}')">
           <div class="oc-check">${selectedAntennas.has(p.key) ? '\u2713' : ''}</div>
+          <div class="oc-img">${p.img ? '<img src="' + p.img + '" alt="' + p.name + '">' : '<div class="oc-img--placeholder-icon">A</div>'}</div>
           <div class="oc-body">
             ${p.bestUse ? '<div class="oc-best-use">' + p.bestUse + '</div>' : ''}
             <div class="oc-name">${p.name}</div>
@@ -1021,6 +1022,7 @@
         <div class="opt-card ${selectedBatteries.has(p.key) ? 'selected' : ''}"
              onclick="toggleBattery('${p.key}')">
           <div class="oc-check">${selectedBatteries.has(p.key) ? '\u2713' : ''}</div>
+          <div class="oc-img">${p.img ? '<img src="' + p.img + '" alt="' + p.name + '">' : '<div class="oc-img--placeholder-icon">A</div>'}</div>
           <div class="oc-body">
             <div class="oc-name">${p.name}</div>
             <div class="oc-desc">${p.desc || ''}</div>
@@ -1042,6 +1044,7 @@
         <div class="opt-card ${selectedAccessories.has(a.key) ? 'selected' : ''}"
              onclick="toggleAccessory('${a.key}')">
           <div class="oc-check">${selectedAccessories.has(a.key) ? '\u2713' : ''}</div>
+          <div class="oc-img">${a.img ? '<img src="' + a.img + '" alt="' + a.name + '">' : '<div class="oc-img--placeholder-icon">A</div>'}</div>
           <div class="oc-body">
             <div class="oc-name">${a.name}</div>
             <div class="oc-desc">${a.desc || ''}</div>
@@ -1061,6 +1064,7 @@
         <div class="opt-card ${selectedAntennas.has(a.key) ? 'selected' : ''}"
              onclick="toggleAntenna('${a.key}')">
           <div class="oc-check">${selectedAntennas.has(a.key) ? '\u2713' : ''}</div>
+          <div class="oc-img">${a.img ? '<img src="' + a.img + '" alt="' + a.name + '">' : '<div class="oc-img--placeholder-icon">A</div>'}</div>
           <div class="oc-body">
             <div class="oc-name">${a.name}</div>
             <div class="oc-desc">${a.desc || ''}</div>
@@ -1073,7 +1077,6 @@
       const container = document.getElementById(section === 'battery' ? 'battery-options' : 'accessory-options');
       if (!container || typeof hfProducts === 'undefined') return;
       if (section === 'battery') {
-        // HF uses mobile power options
         renderMobileBaseProducts('battery', 'hf', radioKey);
         return;
       }
@@ -1082,6 +1085,7 @@
         <div class="opt-card ${selectedAccessories.has(a.key) ? 'selected' : ''}"
              onclick="toggleAccessory('${a.key}')">
           <div class="oc-check">${selectedAccessories.has(a.key) ? '\u2713' : ''}</div>
+          <div class="oc-img">${a.img ? '<img src="' + a.img + '" alt="' + a.name + '">' : '<div class="oc-img--placeholder-icon">A</div>'}</div>
           <div class="oc-body">
             <div class="oc-name">${a.name}</div>
             <div class="oc-desc">${a.desc || ''}</div>
@@ -1102,6 +1106,7 @@
         <div class="opt-card ${selectedAntennas.has(a.key) ? 'selected' : ''}"
              onclick="toggleAntenna('${a.key}')">
           <div class="oc-check">${selectedAntennas.has(a.key) ? '\u2713' : ''}</div>
+          <div class="oc-img">${a.img ? '<img src="' + a.img + '" alt="' + a.name + '">' : '<div class="oc-img--placeholder-icon">A</div>'}</div>
           <div class="oc-body">
             <div class="oc-name">${a.name}</div>
             <div class="oc-desc">${a.desc || ''}</div>
@@ -1118,6 +1123,7 @@
         <div class="opt-card ${selectedAccessories.has(a.key) ? 'selected' : ''}"
              onclick="toggleAccessory('${a.key}')">
           <div class="oc-check">${selectedAccessories.has(a.key) ? '\u2713' : ''}</div>
+          <div class="oc-img">${a.img ? '<img src="' + a.img + '" alt="' + a.name + '">' : '<div class="oc-img--placeholder-icon">A</div>'}</div>
           <div class="oc-body">
             <div class="oc-name">${a.name}</div>
             <div class="oc-desc">${a.desc || ''}</div>
