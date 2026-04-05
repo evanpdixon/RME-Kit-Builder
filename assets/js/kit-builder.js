@@ -1017,8 +1017,8 @@ const mobileProducts = {
     { key: 'power-cable-short', name: 'Power Cable OEM-T to Powerpole (Shortened)', desc: 'Shortened power cable for clean installs.', price: 29, id: 7693 },
   ],
   accessories: [
-    { key: 'bs22', name: 'BS-22 Wireless Speakermic', desc: 'Bluetooth wireless speaker-microphone. Clips to gear, pairs via Bluetooth.', price: 59, id: 8491, compatRadios: ['uv50pro'] },
-    { key: 'bt01', name: 'BT-01 Mobile Bluetooth Speaker Mic', desc: 'Bluetooth speaker-microphone for mobile radios. Wireless audio with PTT for hands-free operation.', price: 149, id: 6717, compatRadios: ['d578'] },
+    { key: 'bs22', name: 'BS-22 Wireless Speakermic', desc: 'Bluetooth wireless speaker-microphone. Clips to gear, pairs via Bluetooth.', price: 59, id: 8491, compatRadios: ['uv50pro'], img: S+'2025/12/1000009367.jpg' },
+    { key: 'bt01', name: 'BT-01 Mobile Bluetooth Speaker Mic', desc: 'Bluetooth speaker-microphone for mobile radios. Wireless audio with PTT for hands-free operation.', price: 149, id: 6717, compatRadios: ['d578'], img: S+'2025/02/103ed8b249b56d45d92df2fb25350ab6.jpg' },
     { key: 'relocation', name: 'Antenna Jack Relocation Cable', desc: 'Right-angle PL-259 to SO-239 cable for repositioning the antenna jack.', price: 19, id: 7271 },
     { key: 'so239-pigtail', name: 'SO-239 Antenna Pigtail Adapter', desc: 'Adapter pigtail for connecting SO-239 accessories to your mobile radio.', price: 12, id: null },
   ],
