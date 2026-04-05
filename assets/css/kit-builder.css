@@ -140,7 +140,7 @@
 
 /* Best-use label on antenna cards */
 #rme-kit-builder .oc-best-use {
-  font-size: 11px; font-weight: 600; color: var(--rme-gold); text-transform: uppercase;
+  font-size: 12px; font-weight: 600; color: var(--rme-gold); text-transform: uppercase;
   letter-spacing: 0.5px; margin-bottom: 2px;
 }
 /* Divider between antenna subsections */
@@ -329,11 +329,11 @@
 #rme-kit-builder .prog-lookup-btn:hover { background: var(--rme-gold-dim); }
 #rme-kit-builder .prog-confirmed { font-size: 13px; color: var(--rme-green); margin-top: 6px; padding: 6px 10px; background: #1a2a1a; border-radius: 6px; }
 #rme-kit-builder .prog-radio-row {
-  display: flex; align-items: center; gap: 8px; padding: 6px 0; cursor: pointer; font-size: 14px;
+  display: flex; align-items: center; gap: 10px; padding: 10px 0; min-height: 44px; cursor: pointer; font-size: 14px;
 }
-#rme-kit-builder .prog-radio-row input[type="radio"] { accent-color: var(--rme-gold); width: 16px; height: 16px; cursor: pointer; }
-#rme-kit-builder .prog-included { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 4px; background: #1a2a1a; color: var(--rme-green); margin-left: 8px; }
-#rme-kit-builder .prog-upcharge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 4px; background: #2a2000; color: var(--rme-gold); margin-left: 8px; }
+#rme-kit-builder .prog-radio-row input[type="radio"] { accent-color: var(--rme-gold); width: 20px; height: 20px; cursor: pointer; }
+#rme-kit-builder .prog-included { display: inline-block; font-size: 12px; padding: 2px 8px; border-radius: 4px; background: #1a2a1a; color: var(--rme-green); margin-left: 8px; }
+#rme-kit-builder .prog-upcharge { display: inline-block; font-size: 12px; padding: 2px 8px; border-radius: 4px; background: #2a2000; color: var(--rme-gold); margin-left: 8px; }
 #rme-kit-builder .prog-deemph { opacity: 0.5; }
 #rme-kit-builder .prog-deemph:hover { opacity: 0.8; }
 
@@ -478,7 +478,7 @@
 #rme-kit-builder .result-card.recommended { border-color: var(--rme-gold); }
 #rme-kit-builder .result-badge {
   position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
-  background: var(--rme-gold); color: #111; font-size: 11px; font-weight: 700;
+  background: var(--rme-gold); color: #111; font-size: 12px; font-weight: 700;
   padding: 3px 12px; border-radius: 4px; letter-spacing: 0.5px; text-transform: uppercase;
 }
 #rme-kit-builder .result-card .rc-img { width: 120px; height: 120px; margin: 8px auto 16px; border-radius: 8px; background: #fff; overflow: hidden; border: 2px solid var(--rme-gold); }
@@ -496,8 +496,9 @@
 #rme-kit-builder .rc-btn:hover { background: #ffe87a; transform: translateY(-2px); box-shadow: 0 4px 16px rgba(253,211,81,0.25); }
 #rme-kit-builder .rc-btn:active { transform: translateY(0); box-shadow: none; }
 @media (max-width: 768px) {
-  #rme-kit-builder .rc-btn {
-    display: block; width: 100%; padding: 14px 20px; font-size: 15px; font-weight: 700; text-align: center; margin-top: auto;
+  #rme-kit-builder .rc-btn,
+  #rme-kit-builder-scroll .rc-btn {
+    display: block; width: 100%; padding: 14px 20px; min-height: 44px; font-size: 15px; font-weight: 700; text-align: center; margin-top: auto;
   }
 }
 
@@ -512,7 +513,7 @@
 #rme-kit-builder .radio-pick .rp-img img { width: 100%; height: 100%; object-fit: cover; }
 #rme-kit-builder .radio-pick h4 { font-size: 14px; margin-bottom: 4px; color: var(--rme-gold); }
 #rme-kit-builder .radio-pick .rp-price { color: var(--rme-gold); font-weight: 700; font-size: 16px; margin-bottom: 4px; }
-#rme-kit-builder .radio-pick .rp-tag { font-size: 11px; color: #ccc; }
+#rme-kit-builder .radio-pick .rp-tag { font-size: 12px; color: #ccc; }
 
 /* ── Modals ──────────────────────────────── */
 #rme-kit-builder ~ .modal-overlay,
