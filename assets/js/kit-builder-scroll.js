@@ -1003,15 +1003,29 @@
       hf: { antennas: 'HF Antenna', battery: 'Power', accessories: 'Accessories', programming: 'Programming' },
       scanner: { antennas: 'Antenna', battery: 'Accessories', accessories: 'Additional Gear', programming: 'Programming' },
     };
+    const descriptions = {
+      mobile: { antennas: 'Choose an antenna mount, antenna, and coax cable for your vehicle installation.' },
+      base: { antennas: 'Choose your antenna and feedline for your base station setup.' },
+      hf: { antennas: 'Select an HF antenna for your station.' },
+      scanner: { antennas: 'Add an antenna to improve reception.' },
+    };
     const h = headings[cat];
     if (!h) return;
     Object.keys(h).forEach(sec => {
       const el = document.querySelector('#sec-' + sec + ' .kb-section__header h2');
       if (el) el.textContent = h[sec];
     });
+    const d = descriptions[cat];
+    if (d) {
+      Object.keys(d).forEach(sec => {
+        const p = document.querySelector('#sec-' + sec + ' .kb-section__content > p');
+        if (p) p.textContent = d[sec];
+      });
+    }
   }
 
   // Render category-specific product options in a section
+  window.kbsRenderCategoryProducts = renderCategoryProducts;
   function renderCategoryProducts(section, category, radioKey) {
     if (category === 'mobile' || category === 'base') {
       renderMobileBaseProducts(section, category, radioKey);
@@ -1037,12 +1051,38 @@
         products.push(...quick.items.map(i => ({ ...i, bestUse: 'Best for: Quick Setup' })));
         products.push(...perm.antennas.map(i => ({ ...i, bestUse: 'Best for: Permanent Install' })));
       } else if (typeof mobileProducts !== 'undefined') {
-        // Mobile: antenna mounts + antennas
-        products.push(...(mobileProducts.antennaMounts || []).map(m => ({ ...m, bestUse: m.mountType === 'permanent' ? 'Best for: Permanent Mount' : 'Best for: Temporary Mount' })));
+        // Mobile: universal mounts (exclude fender mounts) + antennas
+        var universalMounts = (mobileProducts.antennaMounts || []).filter(m => !m.isFenderMount);
+        var fenderMounts = (mobileProducts.antennaMounts || []).filter(m => m.isFenderMount);
+        products.push(...universalMounts.map(m => ({ ...m, bestUse: m.mountType === 'permanent' ? 'Best for: Permanent Mount' : 'Best for: Temporary Mount' })));
         products.push(...(mobileProducts.vehicleAntennas || []).map(a => ({ ...a, bestUse: a.recommended ? 'Best for: All-Around Performance' : '' })));
+
+        // Build fender mount picker HTML
+        var fenderHtml = '';
+        if (fenderMounts.length > 0) {
+          var selectedVehicle = window._kbsSelectedVehicle || '';
+          fenderHtml = '<div class="kbs-fender-picker">' +
+            '<div class="kbs-fender-picker__label">Have a supported truck? Add a no-drill fender mount for $29:</div>' +
+            '<select class="kbs-fender-select" onchange="window._kbsSelectedVehicle=this.value;kbsRenderCategoryProducts(\'antennas\',\'' + category + '\',\'' + radioKey + '\')">' +
+            '<option value="">Select your vehicle (optional)</option>';
+          fenderMounts.forEach(function(m) {
+            var label = m.name.replace('NCG ', '').replace(/\s*\(.*\)/, '');
+            fenderHtml += '<option value="' + m.key + '"' + (selectedVehicle === m.key ? ' selected' : '') + '>' + label + '</option>';
+          });
+          fenderHtml += '</select></div>';
+
+          // If a fender mount is selected, add it to products
+          if (selectedVehicle) {
+            var matched = fenderMounts.find(m => m.key === selectedVehicle);
+            if (matched) {
+              products.unshift({ ...matched, bestUse: 'Recommended for Your Vehicle' });
+            }
+          }
+        }
       }
 
-      container.innerHTML = products.map(p => `
+      var prefixHtml = category === 'mobile' ? (fenderHtml || '') : '';
+      container.innerHTML = prefixHtml + products.map(p => `
         <div class="opt-card ${selectedAntennas.has(p.key) ? 'selected' : ''}"
              onclick="toggleAntenna('${p.key}')">
           <div class="oc-check">${selectedAntennas.has(p.key) ? '\u2713' : ''}</div>

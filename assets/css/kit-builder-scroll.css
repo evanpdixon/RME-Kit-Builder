@@ -637,6 +637,22 @@
   #rme-kit-builder-scroll #rme-kit-builder .oc-best-use { font-size: 10px; }
 }
 
+/* ── Vehicle fender mount picker ── */
+.kbs-fender-picker {
+  background: var(--rme-card); border: 1px solid var(--rme-border);
+  border-radius: 8px; padding: 14px 16px; margin-bottom: 16px;
+}
+.kbs-fender-picker__label {
+  font-size: 13px; color: var(--rme-muted); margin-bottom: 8px;
+}
+.kbs-fender-select {
+  width: 100%; padding: 10px 12px; font-size: 14px;
+  background: var(--rme-dark); color: #fff;
+  border: 1px solid var(--rme-border); border-radius: 6px;
+  appearance: auto; cursor: pointer;
+}
+.kbs-fender-select:focus { border-color: var(--rme-gold); outline: none; }
+
 /* ── Placeholder thumbnails for imageless cards ── */
 #rme-kit-builder .oc-img--placeholder-icon,
 #rme-kit-builder .oc-img.oc-img--placeholder {
