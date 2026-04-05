@@ -1334,7 +1334,7 @@
 
         // Universal mounts
         html += universalMounts.map(m =>
-          renderOneCard(m, m.mountType === 'permanent' ? 'Permanent' : 'Temporary / Removable', selectedAntennas.has(m.key))
+          renderOneCard(m, m.mountType === 'permanent' ? 'Bolt-On / No Drill' : 'Temporary / Removable', selectedAntennas.has(m.key))
         ).join('');
 
         container.innerHTML = html;
