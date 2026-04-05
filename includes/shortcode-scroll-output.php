@@ -142,6 +142,10 @@
     <div class="kb-section__summary" style="display:none"></div>
     <div class="kb-section__content">
       <div id="review-list"></div>
+      <div class="kb-section__actions">
+        <button class="kb-btn kb-btn--secondary" onclick="kbsGoBack('review')">Back</button>
+        <a href="#" class="kbs-consult-escape kbs-consult-link" target="_blank">&#128222; Need help? Book a consultation</a>
+      </div>
     </div>
   </div>
 

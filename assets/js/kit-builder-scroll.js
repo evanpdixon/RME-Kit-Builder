@@ -452,11 +452,15 @@
               </div>`;
             }).join('')}
           </div>
-          <div style="margin-top:14px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+          <div style="margin-top:14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+            ${i === 0
+              ? '<button class="kb-btn kb-btn--secondary" onclick="kbsBackToChoices()">Back</button>'
+              : '<button class="kb-btn kb-btn--secondary" onclick="kbsPrevQ()">Back</button>'
+            }
             <button class="kb-btn kb-btn--primary" onclick="kbsNextQ()" ${!hasAnswer ? 'disabled' : ''}>
               ${i === kbsAllQuestions.length - 1 && kbsAllQuestions[i].phase === 'interview' ? 'See Results' : 'Next'}
             </button>
-            <a href="#" class="kbs-consult-escape" target="_blank" class="kbs-consult-link">&#128222; Not sure? Book a consultation</a>
+            <a href="#" class="kbs-consult-escape kbs-consult-link" target="_blank">&#128222; Not sure? Book a consultation</a>
           </div>
         </div>`;
       }
@@ -604,6 +608,31 @@
     // Also populate the radio grid in radio section (hidden until "See All Radios")
     renderScrollRadioGrid();
   }
+
+  window.kbsPrevQ = function() {
+    if (kbsStep > 0) {
+      kbsStep--;
+      // Remove the answer for the question we're going back to
+      buildQuestionList();
+      if (kbsStep < kbsAllQuestions.length) {
+        delete kbsAnswers[kbsAllQuestions[kbsStep].id];
+      }
+      renderInterviewStack();
+      scrollToSection('interview');
+    }
+  };
+
+  window.kbsBackToChoices = function() {
+    // Reset everything and show the choice screen again
+    kbsStep = 0;
+    kbsAnswers = {};
+    kbsInterviewTags = [];
+    kbsGuidedMode = false;
+    document.getElementById('kbs-interview-stack').style.display = 'none';
+    document.getElementById('kbs-interview-stack').innerHTML = '';
+    document.getElementById('kbs-interview-choice').style.display = '';
+    scrollToSection('interview');
+  };
 
   window.kbsRetakeQuiz = function() {
     // Reset interview answers and step, re-render questions
