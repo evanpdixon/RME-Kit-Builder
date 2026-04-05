@@ -67,11 +67,11 @@
         if (next === 'battery') renderBatteryUpgrades();
         if (next === 'accessories') renderAccessories();
         if (next === 'programming') renderProgramming();
-        if (next === 'review') { renderReview(); enableCartBtn(); }
+        if (next === 'review') { renderReview(); fixReviewButtons(); enableCartBtn(); }
       } else {
         renderCategoryProducts(next, kbsCurrentCategory, selectedRadioKey);
         if (next === 'programming' && typeof renderProgramming === 'function') renderProgramming();
-        if (next === 'review') { renderReview(); enableCartBtn(); }
+        if (next === 'review') { renderReview(); fixReviewButtons(); enableCartBtn(); }
       }
     }
     applyAllStates();
@@ -285,9 +285,9 @@
 
   // ── Interview Section ─────────────────────────
   // Combined flow: needsQuestions (usage/distance/location/preferences) then interviewQuestions (radio-specific)
-  let kbsStep = 0;
-  let kbsAnswers = {};
-  let kbsInterviewTags = [];
+  window.kbsStep = 0;
+  window.kbsAnswers = {};
+  window.kbsInterviewTags = [];
   let kbsAllQuestions = []; // built dynamically based on conditional logic
 
   function buildQuestionList() {
@@ -313,7 +313,7 @@
   }
 
   // Determine which radio category the user needs based on their needs answers
-  function kbsDetectCategory() {
+  window.kbsDetectCategory = function() {
     const usage = kbsAnswers['usage'] || [];
     if (usage.includes('vehicle')) return 'mobile';
     if (usage.includes('base')) return 'base';
@@ -331,7 +331,7 @@
   }
 
   // Get the right radio lineup for the detected category
-  function kbsGetRadioLineup() {
+  window.kbsGetRadioLineup = function() {
     const cat = kbsDetectCategory();
     switch (cat) {
       case 'mobile':
@@ -882,6 +882,19 @@
       }
       _origUpdateBottomBar();
     };
+  }
+
+  // ── Fix review buttons for scroll mode ────────
+  // renderReview() from base JS generates buttons with onclick="document.getElementById('btn-next').click()"
+  // which doesn't exist in V2. Replace with kbsAddToCart().
+  function fixReviewButtons() {
+    const reviewList = document.getElementById('review-list');
+    if (!reviewList) return;
+    reviewList.querySelectorAll('button').forEach(function(btn) {
+      if (btn.getAttribute('onclick') && btn.getAttribute('onclick').includes('btn-next')) {
+        btn.setAttribute('onclick', 'kbsAddToCart()');
+      }
+    });
   }
 
   // ── Consult Links ─────────────────────────────
