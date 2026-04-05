@@ -51,6 +51,9 @@
   background: var(--rme-card);
   overflow: hidden;
   transition: opacity 0.8s ease, border-color 0.8s ease, background 0.8s ease;
+  will-change: opacity;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
   scroll-margin-top: 150px;
 }
 
@@ -80,6 +83,7 @@
 .kb-section__content {
   padding: 0 24px 24px;
   transition: opacity 0.8s ease;
+  will-change: opacity;
 }
 .kb-section__content p {
   color: #ccc; font-size: 15px; line-height: 1.6; margin-bottom: 20px;
@@ -150,7 +154,7 @@
 /* Fading out (added by JS before collapsing) */
 #rme-kit-builder-scroll .kb-section.kb-section--fading {
   opacity: 0;
-  transition: opacity 0.8s ease;
+  transition: opacity 1s ease;
 }
 
 /* Active */
@@ -251,9 +255,9 @@
 #rme-kit-builder-scroll #rme-kit-builder .opt-card .oc-img {
   grid-row: 1 / 3; grid-column: 1;
   width: 110px; height: 90px; border-radius: 6px;
-  border: 1px solid var(--rme-border);
+  border: 1px solid var(--rme-border); background: var(--rme-card);
 }
-#rme-kit-builder-scroll #rme-kit-builder .opt-card .oc-img img { padding: 6px; object-fit: contain; }
+#rme-kit-builder-scroll #rme-kit-builder .opt-card .oc-img img { padding: 0; object-fit: cover; }
 #rme-kit-builder-scroll #rme-kit-builder .opt-card:hover .oc-img { transform: none; box-shadow: none; }
 
 /* Check + body + price in top row */
@@ -515,10 +519,10 @@
 #rme-kit-builder-scroll .radio-pick .rp-img {
   grid-row: 1 / 3; grid-column: 1;
   width: 110px; height: 90px; border-radius: 6px;
-  background: #fff; overflow: hidden; border: 1px solid var(--rme-border);
+  background: var(--rme-card); overflow: hidden; border: 1px solid var(--rme-border);
 }
 #rme-kit-builder-scroll .radio-pick .rp-img img {
-  width: 100%; height: 100%; object-fit: contain; padding: 6px;
+  width: 100%; height: 100%; object-fit: cover; padding: 0;
 }
 #rme-kit-builder-scroll .radio-pick .rp-info {
   grid-row: 1; grid-column: 2; align-self: center;
