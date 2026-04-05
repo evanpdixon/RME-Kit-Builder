@@ -229,30 +229,16 @@ const needsQuestions = [
     ]
   },
   {
-    id: 'distance',
-    question: "How far do you need to communicate?",
+    id: 'reach',
+    question: "Who are you trying to reach?",
     sub: "Pick the best match.",
     multi: false,
     condition: (answers) => answers.usage && answers.usage.includes('notsure'),
     options: [
-      { key: 'short', icon: ICO.shortrange, label: 'Short range', detail: '1–5 miles, line of sight', categories: ['handheld'] },
-      { key: 'medium', icon: ICO.midrange, label: 'Medium range', detail: '5–25 miles', categories: ['handheld', 'mobile'] },
-      { key: 'long', icon: ICO.longrange, label: 'Long range', detail: '25+ miles', categories: ['mobile', 'base'] },
-      { key: 'extreme', icon: ICO.extreme, label: 'Extreme range', detail: 'Hundreds or thousands of miles (HF)', categories: ['hf'] },
-    ]
-  },
-  {
-    id: 'where',
-    question: "Where will you use your radios?",
-    sub: "Select all that apply.",
-    multi: true,
-    condition: (answers) => answers.usage && answers.usage.includes('notsure'),
-    options: [
-      { key: 'onfoot', icon: ICO.onfoot, label: 'On foot', detail: 'Hiking, events, walking around', categories: ['handheld'] },
-      { key: 'invehicle', icon: ICO.invehicle, label: 'In a vehicle', detail: 'Car, truck, RV, or boat', categories: ['mobile'] },
-      { key: 'athome', icon: ICO.athome, label: 'Fixed location', detail: 'Home, office, or property', categories: ['base'] },
-      { key: 'offgrid', icon: ICO.offgrid, label: 'Off-grid / backcountry', detail: 'No cell service', categories: ['handheld', 'hf'] },
-      { key: 'monitoring', icon: ICO.monitoring, label: 'Monitoring / listening', detail: 'Police, fire, aircraft, weather', categories: ['scanner'] },
+      { key: 'nearby', icon: ICO.shortrange, label: 'People nearby', detail: 'Same property, event, or neighborhood', categories: ['handheld'] },
+      { key: 'local', icon: ICO.midrange, label: 'Across town or county', detail: 'Local area, nearby cities, via repeaters', categories: ['handheld', 'mobile', 'base'] },
+      { key: 'far', icon: ICO.longrange, label: 'Statewide or beyond', detail: 'Long distance, nationwide, worldwide', categories: ['hf'] },
+      { key: 'listen', icon: ICO.monitoring, label: 'Listen to public safety / aviation', detail: 'Monitor police, fire, EMS, aircraft (receive only)', categories: ['scanner'] },
     ]
   },
 ];
@@ -392,26 +378,13 @@ function computeCategories() {
     });
   }
 
-  // From guided questions (distance + where)
-  if (answers.distance) {
-    const opt = needsQuestions.find(q => q.id === 'distance').options.find(o => o.key === answers.distance);
-    if (opt) opt.categories.forEach(c => cats.add(c));
-  }
-  if (answers.where) {
-    answers.where.forEach(key => {
-      const opt = needsQuestions.find(q => q.id === 'where').options.find(o => o.key === key);
+  // From guided "reach" question (replaces distance + where)
+  if (answers.reach) {
+    const reachQ = needsQuestions.find(q => q.id === 'reach');
+    if (reachQ) {
+      const opt = reachQ.options.find(o => o.key === answers.reach);
       if (opt) opt.categories.forEach(c => cats.add(c));
-    });
-  }
-
-  // Preferences
-  if (answers.preferences) {
-    const prefQ = needsQuestions.find(q => q.id === 'preferences');
-    const prefOpts = prefQ.getOptions ? prefQ.getOptions(answers) : prefQ.options;
-    kitSession.preferences = answers.preferences.map(key => {
-      const opt = prefOpts.find(o => o.key === key);
-      return opt ? opt.pref : key;
-    });
+    }
   }
 
   // Default to handheld if nothing selected

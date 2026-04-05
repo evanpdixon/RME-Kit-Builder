@@ -319,15 +319,12 @@
     if (usage.includes('base')) return 'base';
     if (usage.includes('hf')) return 'hf';
     if (usage.includes('scanner')) return 'scanner';
-    // Check distance/where for "notsure" users
-    const distance = kbsAnswers['distance'];
-    if (distance === 'long') return 'base';
-    if (distance === 'extreme') return 'hf';
-    const where = kbsAnswers['where'] || [];
-    if (where.includes('invehicle')) return 'mobile';
-    if (where.includes('athome')) return 'base';
-    if (where.includes('monitoring')) return 'scanner';
-    return 'handheld'; // default
+    // Check "reach" question for "notsure" users
+    const reach = kbsAnswers['reach'];
+    if (reach === 'local') return 'handheld'; // handheld + repeaters, or mobile/base
+    if (reach === 'far') return 'hf';
+    if (reach === 'listen') return 'scanner';
+    return 'handheld'; // default (nearby or no answer)
   }
 
   // Get the right radio lineup for the detected category
