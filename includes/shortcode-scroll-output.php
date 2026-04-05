@@ -144,7 +144,24 @@
       <div id="review-list"></div>
       <div class="kb-section__actions">
         <button class="kb-btn kb-btn--secondary" onclick="kbsGoBack('review')">Back</button>
+        <button class="kb-btn kb-btn--primary" onclick="kbsCompleteSection('review')">Looks Good</button>
         <a href="#" class="kbs-consult-escape kbs-consult-link" target="_blank">&#128222; Need help? Book a consultation</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 9: Quantity & Volume Discount -->
+  <div class="kb-section kb-section--locked" data-section="quantity" id="sec-quantity" role="region" aria-label="Kit quantity" aria-expanded="false" aria-disabled="true">
+    <div class="kb-section__header">
+      <span class="kb-section__number">9</span>
+      <h2>How Many?</h2>
+    </div>
+    <div class="kb-section__summary" style="display:none"></div>
+    <div class="kb-section__content">
+      <p>Need more than one of this exact kit? Add more to save.</p>
+      <div id="kbs-qty-picker"></div>
+      <div class="kb-section__actions">
+        <button class="kb-btn kb-btn--secondary" onclick="kbsGoBack('quantity')">Back</button>
       </div>
     </div>
   </div>
