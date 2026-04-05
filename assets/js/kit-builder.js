@@ -255,34 +255,6 @@ const needsQuestions = [
       { key: 'monitoring', icon: ICO.monitoring, label: 'Monitoring / listening', detail: 'Police, fire, aircraft, weather', categories: ['scanner'] },
     ]
   },
-  {
-    id: 'preferences',
-    question: "What matters most to you?",
-    sub: "Pick up to two, or skip.",
-    multi: true,
-    getOptions: function(answers) {
-      const usage = answers.usage || [];
-      const hfOnly = usage.length === 1 && usage[0] === 'hf';
-      const hfAndScanner = usage.length <= 2 && usage.includes('hf') && (usage.length === 1 || usage.includes('scanner'));
-      if (hfOnly || hfAndScanner) {
-        return [
-          { key: 'range', icon: ICO.signal, label: 'Maximum power & range', detail: '100W — 5x the power for serious DX', pref: 'range' },
-          { key: 'budget', icon: ICO.dollar, label: 'Budget friendly', detail: 'Get on the air without breaking the bank', pref: 'budget' },
-          { key: 'simple', icon: ICO.thumbsup, label: 'Simple & compact', detail: 'Smaller radio, easier to get started', pref: 'simple' },
-          { key: 'nopreference', icon: ICO.nopref, label: 'No preference', detail: 'Just recommend what works best', pref: '' },
-        ];
-      }
-      return [
-        { key: 'digital', icon: ICO.lock, label: 'Digital / encryption', detail: 'Private, secure comms', pref: 'digital' },
-        { key: 'waterproof', icon: ICO.droplet, label: 'Waterproof / rugged', detail: 'Wet or harsh conditions', pref: 'waterproof' },
-        { key: 'simple', icon: ICO.thumbsup, label: 'Simple & easy', detail: 'Minimal learning curve', pref: 'simple' },
-        { key: 'range', icon: ICO.signal, label: 'Max range & power', detail: 'Reach as far as possible', pref: 'range' },
-        { key: 'budget', icon: ICO.dollar, label: 'Budget friendly', detail: 'Get set up affordably', pref: 'budget' },
-        { key: 'crossband', icon: ICO.crossband, label: 'Crossband repeat', detail: 'Extend handheld range via mobile', pref: 'crossband' },
-        { key: 'nopreference', icon: ICO.nopref, label: 'No preference', detail: 'Just recommend what works best', pref: '' },
-      ];
-    },
-  },
 ];
 
 let needsStep = 0;
@@ -926,41 +898,11 @@ function startHandheldFlow() {
     progBrandmeisterId = prior.brandmeisterId || '';
   }
 
-  // If user came through guided needs assessment with preferences, skip the
-  // selector landing and go straight to recommendations or radio picker
-  const prefs = kitSession.needsAnswers && kitSession.needsAnswers.preferences;
-  const hasGuidedPrefs = prefs && prefs.length > 0 && !prefs.includes('nopreference');
-
-  if (hasGuidedPrefs) {
-    // Map needs preference keys to the new "needs" question keys for scoring
-    const prefMap = { digital: 'encryption', waterproof: 'water', simple: null, range: null, budget: null, crossband: 'repeater' };
-    const mappedNeeds = prefs.filter(p => p !== 'nopreference').map(p => prefMap[p] || p).filter(Boolean);
-    if (mappedNeeds.length > 0) interviewAnswers.needs = mappedNeeds;
-
-    // Map needs "where" answers to needs for richer scoring
-    const whereMap = { onfoot: null, invehicle: null, athome: null, offgrid: 'outdoor', monitoring: null };
-    const where = kitSession.needsAnswers && kitSession.needsAnswers.where;
-    if (where && where.length > 0) {
-      const mapped = whereMap[where[0]];
-      if (mapped && (!interviewAnswers.needs || !interviewAnswers.needs.includes(mapped))) {
-        if (!interviewAnswers.needs) interviewAnswers.needs = [];
-        interviewAnswers.needs.push(mapped);
-      }
-    }
-
-    // Map needs "budget" pref to interview budget tier
-    if (prefs.includes('budget')) interviewAnswers.budget = 'low';
-
-    rmeDebug('SKIP', 'Selector landing — using needs prefs for recommendations');
-    document.getElementById('interview-container').style.display = 'block';
-    showInterviewResults();
-    return;
-  }
-
-  // If came through guided path but no specific preferences, go to radio picker
+  // If user came through needs assessment, go straight to the interview
+  // (budget + needs questions handle all scoring; no more preferences step)
   if (kitSession.needsAnswers && kitSession.needsAnswers.usage) {
-    rmeDebug('SKIP', 'Selector landing — going to radio picker');
-    showRadioPicker();
+    rmeDebug('SKIP', 'Selector landing — starting interview from needs assessment');
+    startInterview();
     return;
   }
 
@@ -4814,9 +4756,9 @@ const interviewQuestions = [
     sub: "This helps us match you with the right tier.",
     multi: false,
     options: [
-      { key: 'low', icon: ICO.budget, label: 'Economical', detail: 'A solid, reliable radio without the extras', tags: ['budget', 'simple', 'compact'] },
-      { key: 'mid', icon: ICO.midprice, label: 'Mid-range', detail: 'More features and durability, the sweet spot for most people', tags: ['waterproof', 'gps', 'bluetooth', 'grow'] },
       { key: 'high', icon: ICO.premium, label: 'No compromises', detail: 'Maximum capability, every feature available', tags: ['encryption', 'digital', 'premium', 'crossband'] },
+      { key: 'mid', icon: ICO.midprice, label: 'Mid-range', detail: 'More features and durability, the sweet spot for most people', tags: ['waterproof', 'gps', 'bluetooth', 'grow'] },
+      { key: 'low', icon: ICO.budget, label: 'Economical', detail: 'A solid, reliable radio without the extras', tags: ['budget', 'simple', 'compact'] },
     ]
   },
   {
