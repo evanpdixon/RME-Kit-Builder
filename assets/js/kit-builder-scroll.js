@@ -605,7 +605,7 @@
         setTimeout(function() {
           var heading = document.querySelector('.kbs-results-heading');
           if (heading) heading.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 400);
+        }, 800);
         return;
       }
       renderInterviewStack();

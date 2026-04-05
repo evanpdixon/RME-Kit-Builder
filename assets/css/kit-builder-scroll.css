@@ -514,7 +514,7 @@
 }
 #rme-kit-builder-scroll .kbs-results-heading {
   text-align: center; padding: 20px 0;
-  scroll-margin-top: 80px;
+  scroll-margin-top: 150px;
 }
 #rme-kit-builder-scroll .kbs-results-heading h3 {
   font-size: 20px; color: var(--rme-gold); margin-bottom: 6px;
