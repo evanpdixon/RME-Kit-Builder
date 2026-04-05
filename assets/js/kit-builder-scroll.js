@@ -493,11 +493,10 @@
     if (kbsKitQty > 1) kitName += ' x' + kbsKitQty;
 
     // Track completed category
+    var catMap = { vehicle: 'mobile', mobile: 'mobile', handheld: 'handheld', base: 'base', hf: 'hf', scanner: 'scanner' };
     if (!kbsCompletedCategories.includes(kbsCurrentCategory)) {
       kbsCompletedCategories.push(kbsCurrentCategory);
     }
-    // Map category keys for comparison (direct uses 'vehicle', detect returns 'mobile')
-    var catMap = { vehicle: 'mobile', mobile: 'mobile', handheld: 'handheld', base: 'base', hf: 'hf', scanner: 'scanner' };
     var completedMapped = kbsCompletedCategories.map(function(c) { return catMap[c] || c; });
 
     // Check for remaining categories
@@ -506,9 +505,10 @@
     });
 
     if (remaining.length > 0) {
-      // Add to cart, then prompt for next category
+      // Suppress the cart redirect: add items via AJAX but stay on page
+      window._kbsSuppressCartRedirect = true;
       rmeKbAddToCart(items, kitName);
-      setTimeout(function() { kbsPromptNextCategory(remaining); }, 1500);
+      // The redirect is blocked by our patch; show prompt after AJAX completes
     } else {
       rmeKbAddToCart(items, kitName);
     }
@@ -680,8 +680,8 @@
   window.kbsDirectProceed = function() {
     // Set usage answers so category detection works
     kbsAnswers['usage'] = kbsDirectCategories;
-    // Track all selected categories for multi-kit flow
-    kbsAllCategories = kbsDirectCategories.slice();
+    // Track all selected categories in canonical order for multi-kit flow
+    kbsAllCategories = CATEGORY_ORDER.filter(function(c) { return kbsDirectCategories.includes(c); });
     // Pre-render radio grid before transition
     renderScrollRadioGrid();
     // Use the standard animated transition
@@ -765,25 +765,27 @@
     }
   }
 
+  // Canonical category display order (matches the option lists in UI)
+  var CATEGORY_ORDER = ['handheld', 'vehicle', 'base', 'hf', 'scanner'];
+  var CAT_KEY_MAP = { vehicle: 'mobile', handheld: 'handheld', base: 'base', hf: 'hf', scanner: 'scanner' };
+
   // Determine which radio category the user needs based on their needs answers
   window.kbsDetectCategory = function() {
     // Direct path uses 'usage' from category multi-select
     const usage = kbsAnswers['usage'] || [];
     if (usage.length > 0) {
-      if (usage.includes('vehicle')) return 'mobile';
-      if (usage.includes('base')) return 'base';
-      if (usage.includes('hf')) return 'hf';
-      if (usage.includes('scanner')) return 'scanner';
+      // Return first selected category in canonical order
+      for (var i = 0; i < CATEGORY_ORDER.length; i++) {
+        if (usage.includes(CATEGORY_ORDER[i])) return CAT_KEY_MAP[CATEGORY_ORDER[i]];
+      }
       return 'handheld';
     }
     // Guided path uses 'setup' from the new radio type question
     const setup = kbsAnswers['setup'] || [];
     if (setup.length > 0) {
-      // Priority: vehicle > base > hf > scanner > handheld
-      if (setup.includes('vehicle')) return 'mobile';
-      if (setup.includes('base')) return 'base';
-      if (setup.includes('hf')) return 'hf';
-      if (setup.includes('scanner')) return 'scanner';
+      for (var j = 0; j < CATEGORY_ORDER.length; j++) {
+        if (setup.includes(CATEGORY_ORDER[j])) return CAT_KEY_MAP[CATEGORY_ORDER[j]];
+      }
       return 'handheld';
     }
     // Fallback: infer from reach answers
@@ -922,11 +924,12 @@
     const category = kbsDetectCategory();
     const lineup = kbsGetRadioLineup();
 
-    // Track all selected categories for multi-kit flow (guided path)
+    // Track all selected categories in canonical order (guided path)
     if (kbsAllCategories.length === 0) {
       var setup = kbsAnswers['setup'] || [];
       var usage = kbsAnswers['usage'] || [];
-      kbsAllCategories = (setup.length > 0 ? setup : usage).slice();
+      var selected = setup.length > 0 ? setup : usage;
+      kbsAllCategories = CATEGORY_ORDER.filter(function(c) { return selected.includes(c); });
     }
 
     // For non-handheld categories, the wizard steps are different (vehicle setup, coax, etc.)
@@ -1631,6 +1634,55 @@
       _origUpdateBottomBar();
     };
   }
+
+  // Monkey-patch rmeKbAddToCart to suppress cart redirect when building multiple categories.
+  // The base JS redirects to cart on success (window.location.href = cartUrl).
+  // When there are remaining categories, we intercept the redirect and show the
+  // "build next kit" prompt instead.
+  var _origRmeKbAddToCart = window.rmeKbAddToCart;
+  window.rmeKbAddToCart = function(items, kitName) {
+    if (!window._kbsSuppressCartRedirect) {
+      return _origRmeKbAddToCart(items, kitName);
+    }
+    // Same AJAX call but no redirect on success
+    window._kbsSuppressCartRedirect = false;
+    if (typeof rmeKitBuilder === 'undefined' || !rmeKitBuilder.ajaxUrl) return;
+    var normalized = [];
+    items.forEach(function(item) {
+      if (item.id) {
+        var existing = normalized.find(function(n) { return n.id === item.id; });
+        if (existing) existing.qty += (item.qty || 1);
+        else normalized.push({ id: item.id, qty: item.qty || 1 });
+      }
+    });
+    if (normalized.length === 0) return;
+    fetch(rmeKitBuilder.ajaxUrl + '?action=rme_kb_add_to_cart&nonce=' + rmeKitBuilder.nonce, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ items: normalized, kitName: kitName || '' })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.success) {
+        // Update cart badge
+        var badge = document.querySelector('.rme-cart-count, .cart-count');
+        if (badge && data.data.cartCount) badge.textContent = data.data.cartCount;
+        // Update WC cart fragments if available
+        if (typeof jQuery !== 'undefined') jQuery(document.body).trigger('wc_fragment_refresh');
+        if (typeof markLeadCompleted === 'function') markLeadCompleted();
+        // Show prompt for next category
+        var catMap = { vehicle: 'mobile', mobile: 'mobile', handheld: 'handheld', base: 'base', hf: 'hf', scanner: 'scanner' };
+        var completedMapped = kbsCompletedCategories.map(function(c) { return catMap[c] || c; });
+        var remaining = kbsAllCategories.filter(function(c) {
+          return !completedMapped.includes(catMap[c] || c);
+        });
+        kbsPromptNextCategory(remaining);
+      }
+    })
+    .catch(function() {
+      window._kbsSuppressCartRedirect = false;
+    });
+  };
 
   // Monkey-patch toggle functions for non-handheld categories.
   // Base JS toggleAntenna/toggleBattery/toggleAccessory call handheld render
