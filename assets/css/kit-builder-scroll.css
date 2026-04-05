@@ -75,7 +75,7 @@
 
 .kb-section__content {
   padding: 0 24px 24px;
-  transition: max-height 0.6s ease, opacity 0.5s ease, padding 0.5s ease;
+  transition: max-height 0.8s ease, opacity 0.7s ease, padding 0.6s ease;
 }
 .kb-section__content p {
   color: #ccc; font-size: 15px; line-height: 1.6; margin-bottom: 20px;
@@ -103,6 +103,51 @@
 
 /* ── Section States ────────────────────── */
 
+/* Loading (thinking animation between steps) */
+.kb-section--loading {
+  opacity: 1;
+  border-color: var(--rme-gold-dim);
+  pointer-events: none;
+}
+.kb-section--loading .kb-section__header h2 {
+  color: var(--rme-gold);
+}
+.kb-section--loading .kb-section__number {
+  background: var(--rme-gold);
+  color: #111;
+  animation: kbs-pulse 1s ease-in-out infinite;
+}
+.kb-section--loading .kb-section__content {
+  max-height: 60px; opacity: 1; overflow: hidden;
+  padding: 0 24px 20px;
+}
+.kb-section--loading .kb-section__content::before {
+  content: '';
+  display: block;
+  height: 8px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--rme-border) 25%, var(--rme-gold-dim) 50%, var(--rme-border) 75%);
+  background-size: 200% 100%;
+  animation: kbs-shimmer 1.5s ease-in-out infinite;
+}
+/* Hide actual content during loading */
+.kb-section--loading .kb-section__content > * {
+  opacity: 0;
+}
+
+@keyframes kbs-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); box-shadow: 0 0 12px rgba(253,211,81,0.4); }
+}
+@keyframes kbs-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+@keyframes kbs-section-enter {
+  0% { opacity: 0.5; transform: translateY(8px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
 /* Locked */
 .kb-section--locked {
   opacity: 0.35;
@@ -120,6 +165,7 @@
 .kb-section--active {
   border-color: var(--rme-gold-dim);
   border-left: 3px solid var(--rme-gold);
+  animation: kbs-section-enter 0.6s ease-out;
 }
 .kb-section--active .kb-section__number {
   background: var(--rme-gold);

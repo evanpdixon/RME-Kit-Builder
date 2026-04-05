@@ -58,10 +58,24 @@
     sectionState[name] = 'complete';
     renderSummary(name);
     const nextIdx = SECTIONS.indexOf(name) + 1;
-    if (nextIdx < SECTIONS.length) {
-      const next = SECTIONS[nextIdx];
-      sectionState[next] = 'active';
-      // Trigger render for product sections (category-aware)
+    if (nextIdx >= SECTIONS.length) { applyAllStates(); updateScrollPriceBar(); return; }
+
+    const next = SECTIONS[nextIdx];
+
+    // Phase 1: Collapse current section (CSS transition handles animation)
+    applyAllStates();
+
+    // Phase 2: Show thinking indicator on next section
+    const nextEl = document.getElementById('sec-' + next);
+    if (nextEl) {
+      nextEl.classList.remove('kb-section--locked');
+      nextEl.classList.add('kb-section--loading');
+    }
+    scrollToSection(next);
+
+    // Phase 3: After a beat, render content and reveal
+    setTimeout(function() {
+      // Render product content while "loading"
       if (kbsCurrentCategory === 'handheld') {
         if (next === 'antennas') renderAllAntennas();
         if (next === 'battery') renderBatteryUpgrades();
@@ -73,11 +87,16 @@
         if (next === 'programming' && typeof renderProgramming === 'function') renderProgramming();
         if (next === 'review') { renderReview(); fixReviewButtons(); enableCartBtn(); }
       }
-    }
-    applyAllStates();
-    if (nextIdx < SECTIONS.length) scrollToSection(SECTIONS[nextIdx]);
-    updateScrollPriceBar();
-    updateConsultLinks();
+
+      // Phase 4: Transition from loading to active
+      setTimeout(function() {
+        sectionState[next] = 'active';
+        if (nextEl) nextEl.classList.remove('kb-section--loading');
+        applyAllStates();
+        updateScrollPriceBar();
+        updateConsultLinks();
+      }, 300);
+    }, 600);
   };
 
   // ── Public: Go back to previous section ────────
