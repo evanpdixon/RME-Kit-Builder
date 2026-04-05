@@ -566,10 +566,10 @@
     // Guided path uses 'setup' from the new radio type question
     const setup = kbsAnswers['setup'] || [];
     if (setup.length > 0) {
-      // Priority: vehicle > base > scanner > handheld
-      // (first non-handheld category wins for routing; multi-kit is future)
+      // Priority: vehicle > base > hf > scanner > handheld
       if (setup.includes('vehicle')) return 'mobile';
       if (setup.includes('base')) return 'base';
+      if (setup.includes('hf')) return 'hf';
       if (setup.includes('scanner')) return 'scanner';
       return 'handheld';
     }
