@@ -61,16 +61,23 @@
     if (nextIdx < SECTIONS.length) {
       const next = SECTIONS[nextIdx];
       sectionState[next] = 'active';
-      // Trigger render for product sections
-      if (next === 'antennas') renderAllAntennas();
-      if (next === 'battery') renderBatteryUpgrades();
-      if (next === 'accessories') renderAccessories();
-      if (next === 'programming') renderProgramming();
-      if (next === 'review') { renderReview(); enableCartBtn(); }
+      // Trigger render for product sections (category-aware)
+      if (kbsCurrentCategory === 'handheld') {
+        if (next === 'antennas') renderAllAntennas();
+        if (next === 'battery') renderBatteryUpgrades();
+        if (next === 'accessories') renderAccessories();
+        if (next === 'programming') renderProgramming();
+        if (next === 'review') { renderReview(); enableCartBtn(); }
+      } else {
+        renderCategoryProducts(next, kbsCurrentCategory, selectedRadioKey);
+        if (next === 'programming' && typeof renderProgramming === 'function') renderProgramming();
+        if (next === 'review') { renderReview(); enableCartBtn(); }
+      }
     }
     applyAllStates();
     if (nextIdx < SECTIONS.length) scrollToSection(SECTIONS[nextIdx]);
     updateScrollPriceBar();
+    updateConsultLinks();
   };
 
   // ── Public: Go back to previous section ────────
@@ -135,8 +142,9 @@
         break;
       }
       case 'radio': {
-        const r = radioLineup.find(x => x.key === selectedRadioKey);
-        if (r) html = `<span class="kbs-sel">${r.name.replace(' Essentials Kit', '')} - $${r.price}</span>`;
+        const lineup = kbsGetRadioLineup();
+        const r = lineup.find(x => x.key === selectedRadioKey) || radioLineup.find(x => x.key === selectedRadioKey);
+        if (r) html = `<span class="kbs-sel">${r.name.replace(' Essentials Kit', '').replace(' Mobile Radio Kit', '')} - $${r.price}</span>`;
         break;
       }
       case 'antennas': {
@@ -380,7 +388,7 @@
             <button class="kb-btn kb-btn--primary" onclick="kbsNextQ()" ${!hasAnswer ? 'disabled' : ''}>
               ${i === kbsAllQuestions.length - 1 ? 'See Results' : 'Next'}
             </button>
-            <a href="#" class="kbs-consult-escape" target="_blank" onclick="this.href=typeof getCalendlyUrl==='function'?getCalendlyUrl():''">&#128222; Not sure? Book a free consultation</a>
+            <a href="#" class="kbs-consult-escape" target="_blank" class="kbs-consult-link">&#128222; Not sure? Book a consultation</a>
           </div>
         </div>`;
       }
@@ -643,16 +651,220 @@
     document.getElementById('kbs-interview-stack').innerHTML = html;
   }
 
-  // Handle non-handheld radio selection: route to V1's category-specific wizard
+  // Handle non-handheld radio selection: stay in V2, adapt sections
   window.kbsSelectNonHandheld = function(radioKey, category) {
-    // V1 handles mobile/base/HF/scanner flows with specialized wizards
-    // (vehicle YMM, antenna paths, coax calculation, etc.)
-    // Route there with the radio pre-selected via URL params
-    const v1Url = (typeof rmeKitBuilder !== 'undefined' && rmeKitBuilder.config)
-      ? '/kit-builder/'
-      : '/kit-builder/';
-    window.location.href = v1Url + '?category=' + encodeURIComponent(category) + '&radio=' + encodeURIComponent(radioKey);
+    kbsCurrentCategory = category;
+
+    // Find radio in the appropriate lineup
+    const lineup = kbsGetRadioLineup();
+    const radio = lineup.find(r => r.key === radioKey);
+    if (!radio) return;
+
+    selectedRadioKey = radioKey;
+    kbsRadioSelected = true;
+    BASE_PRICE = radio.price;
+
+    // Reset selections
+    selectedAntennas = new Set();
+    selectedAddlAntennas = new Set();
+    selectedBatteries = new Map();
+    selectedAccessories = new Set();
+    programmingChoice = 'standard';
+
+    // Complete interview + radio sections
+    if (sectionState['interview'] !== 'complete') {
+      sectionState['interview'] = 'complete';
+      renderSummary('interview');
+    }
+    sectionState['radio'] = 'complete';
+    renderSummary('radio');
+
+    // Adapt section labels for this category
+    adaptSectionsForCategory(category);
+
+    // Unlock first product section
+    sectionState['antennas'] = 'active';
+    renderCategoryProducts('antennas', category, radioKey);
+
+    applyAllStates();
+    scrollToSection('antennas');
+    updateScrollPriceBar();
+    updateConsultLinks();
   };
+
+  let kbsCurrentCategory = 'handheld';
+
+  // Adapt section headings and descriptions for the selected category
+  function adaptSectionsForCategory(cat) {
+    const headings = {
+      mobile: { antennas: 'Antenna & Mount', battery: 'Power Setup', accessories: 'Accessories', programming: 'Custom Programming' },
+      base: { antennas: 'Antenna Setup', battery: 'Power Supply', accessories: 'Accessories', programming: 'Custom Programming' },
+      hf: { antennas: 'HF Antenna', battery: 'Power', accessories: 'Accessories', programming: 'Programming' },
+      scanner: { antennas: 'Antenna', battery: 'Accessories', accessories: 'Additional Gear', programming: 'Programming' },
+    };
+    const h = headings[cat];
+    if (!h) return;
+    Object.keys(h).forEach(sec => {
+      const el = document.querySelector('#sec-' + sec + ' .kb-section__header h2');
+      if (el) el.textContent = h[sec];
+    });
+  }
+
+  // Render category-specific product options in a section
+  function renderCategoryProducts(section, category, radioKey) {
+    if (category === 'mobile' || category === 'base') {
+      renderMobileBaseProducts(section, category, radioKey);
+    } else if (category === 'hf') {
+      renderHfProducts(section, radioKey);
+    } else if (category === 'scanner') {
+      renderScannerProducts(section, radioKey);
+    }
+  }
+
+  // Mobile / Base station products
+  function renderMobileBaseProducts(section, category, radioKey) {
+    if (section === 'antennas') {
+      const container = document.getElementById('antenna-options');
+      if (!container) return;
+      const isBase = category === 'base';
+      let products = [];
+
+      if (isBase && typeof baseProducts !== 'undefined') {
+        // Base: antenna path options
+        const quick = baseProducts.antennaPath.quick;
+        const perm = baseProducts.antennaPath.permanent;
+        products.push(...quick.items.map(i => ({ ...i, bestUse: 'Best for: Quick Setup' })));
+        products.push(...perm.antennas.map(i => ({ ...i, bestUse: 'Best for: Permanent Install' })));
+      } else if (typeof mobileProducts !== 'undefined') {
+        // Mobile: antenna mounts + antennas
+        products.push(...(mobileProducts.antennaMounts || []).map(m => ({ ...m, bestUse: m.mountType === 'permanent' ? 'Best for: Permanent Mount' : 'Best for: Temporary Mount' })));
+        products.push(...(mobileProducts.vehicleAntennas || []).map(a => ({ ...a, bestUse: a.recommended ? 'Best for: All-Around Performance' : '' })));
+      }
+
+      container.innerHTML = products.map(p => `
+        <div class="opt-card ${selectedAntennas.has(p.key) ? 'selected' : ''}"
+             onclick="toggleAntenna('${p.key}')">
+          <div class="oc-check">${selectedAntennas.has(p.key) ? '\u2713' : ''}</div>
+          <div class="oc-body">
+            ${p.bestUse ? '<div class="oc-best-use">' + p.bestUse + '</div>' : ''}
+            <div class="oc-name">${p.name}</div>
+            <div class="oc-desc">${p.desc || ''}</div>
+          </div>
+          <div class="oc-price">+$${p.price}</div>
+        </div>
+      `).join('');
+    }
+
+    if (section === 'battery') {
+      const container = document.getElementById('battery-options');
+      if (!container || typeof mobileProducts === 'undefined') return;
+      const powerOpts = mobileProducts.power || [];
+      container.innerHTML = powerOpts.map(p => `
+        <div class="opt-card ${selectedBatteries.has(p.key) ? 'selected' : ''}"
+             onclick="toggleBattery('${p.key}')">
+          <div class="oc-check">${selectedBatteries.has(p.key) ? '\u2713' : ''}</div>
+          <div class="oc-body">
+            <div class="oc-name">${p.name}</div>
+            <div class="oc-desc">${p.desc || ''}</div>
+          </div>
+          <div class="oc-price">+$${p.price}</div>
+        </div>
+      `).join('') || '<p style="color:var(--rme-muted)">Standard power setup included.</p>';
+    }
+
+    if (section === 'accessories') {
+      const container = document.getElementById('accessory-options');
+      if (!container || typeof mobileProducts === 'undefined') return;
+      const acc = (mobileProducts.accessories || []).filter(a => !a.compatRadios || a.compatRadios.includes(radioKey));
+      container.innerHTML = acc.map(a => `
+        <div class="opt-card ${selectedAccessories.has(a.key) ? 'selected' : ''}"
+             onclick="toggleAccessory('${a.key}')">
+          <div class="oc-check">${selectedAccessories.has(a.key) ? '\u2713' : ''}</div>
+          <div class="oc-body">
+            <div class="oc-name">${a.name}</div>
+            <div class="oc-desc">${a.desc || ''}</div>
+          </div>
+          <div class="oc-price">${a.price ? '+$' + a.price : 'Included'}</div>
+        </div>
+      `).join('') || '<p style="color:var(--rme-muted)">No additional accessories available.</p>';
+    }
+  }
+
+  // HF products
+  function renderHfProducts(section, radioKey) {
+    if (section === 'antennas') {
+      const container = document.getElementById('antenna-options');
+      if (!container || typeof hfProducts === 'undefined') return;
+      container.innerHTML = (hfProducts.antennas || []).map(a => `
+        <div class="opt-card ${selectedAntennas.has(a.key) ? 'selected' : ''}"
+             onclick="toggleAntenna('${a.key}')">
+          <div class="oc-check">${selectedAntennas.has(a.key) ? '\u2713' : ''}</div>
+          <div class="oc-body">
+            <div class="oc-name">${a.name}</div>
+            <div class="oc-desc">${a.desc || ''}</div>
+          </div>
+          <div class="oc-price">+$${a.price}</div>
+        </div>
+      `).join('');
+    }
+    if (section === 'accessories' || section === 'battery') {
+      const container = document.getElementById(section === 'battery' ? 'battery-options' : 'accessory-options');
+      if (!container || typeof hfProducts === 'undefined') return;
+      if (section === 'battery') {
+        // HF uses mobile power options
+        renderMobileBaseProducts('battery', 'hf', radioKey);
+        return;
+      }
+      const acc = (hfProducts.accessories || []).filter(a => !a.radioMatch || a.radioMatch === radioKey);
+      container.innerHTML = acc.map(a => `
+        <div class="opt-card ${selectedAccessories.has(a.key) ? 'selected' : ''}"
+             onclick="toggleAccessory('${a.key}')">
+          <div class="oc-check">${selectedAccessories.has(a.key) ? '\u2713' : ''}</div>
+          <div class="oc-body">
+            <div class="oc-name">${a.name}</div>
+            <div class="oc-desc">${a.desc || ''}</div>
+          </div>
+          <div class="oc-price">+$${a.price}</div>
+        </div>
+      `).join('');
+    }
+  }
+
+  // Scanner products
+  function renderScannerProducts(section, radioKey) {
+    if (typeof scannerProducts === 'undefined') return;
+    if (section === 'antennas') {
+      const container = document.getElementById('antenna-options');
+      if (!container) return;
+      container.innerHTML = (scannerProducts.antennas || []).map(a => `
+        <div class="opt-card ${selectedAntennas.has(a.key) ? 'selected' : ''}"
+             onclick="toggleAntenna('${a.key}')">
+          <div class="oc-check">${selectedAntennas.has(a.key) ? '\u2713' : ''}</div>
+          <div class="oc-body">
+            <div class="oc-name">${a.name}</div>
+            <div class="oc-desc">${a.desc || ''}</div>
+          </div>
+          <div class="oc-price">+$${a.price}</div>
+        </div>
+      `).join('');
+    }
+    if (section === 'battery' || section === 'accessories') {
+      const container = document.getElementById(section === 'battery' ? 'battery-options' : 'accessory-options');
+      if (!container) return;
+      const acc = (scannerProducts.accessories || []).filter(a => !a.compatRadios || a.compatRadios.includes(radioKey));
+      container.innerHTML = acc.map(a => `
+        <div class="opt-card ${selectedAccessories.has(a.key) ? 'selected' : ''}"
+             onclick="toggleAccessory('${a.key}')">
+          <div class="oc-check">${selectedAccessories.has(a.key) ? '\u2713' : ''}</div>
+          <div class="oc-body">
+            <div class="oc-name">${a.name}</div>
+            <div class="oc-desc">${a.desc || ''}</div>
+          </div>
+          <div class="oc-price">${a.price ? '+$' + a.price : 'Included'}</div>
+        </div>
+      `).join('') || '<p style="color:var(--rme-muted)">No additional accessories for this model.</p>';
+    }
+  }
 
   // ── Override existing render callbacks ────────
   // The existing toggle functions (toggleAntenna, toggleAddlAntenna, toggleBattery, etc.)
@@ -672,12 +884,21 @@
     };
   }
 
+  // ── Consult Links ─────────────────────────────
+  function updateConsultLinks() {
+    const url = typeof getCalendlyUrl === 'function' ? getCalendlyUrl() : 'https://calendly.com/radiomadeeasy/radio-consultation';
+    document.querySelectorAll('.kbs-consult-link').forEach(function(a) {
+      a.href = url;
+    });
+  }
+
   // ── Init ──────────────────────────────────────
   document.addEventListener('DOMContentLoaded', function() {
     // Reset any leftover state from base JS
     selectedRadioKey = '';
     applyAllStates();
     attachHeaderClicks();
+    updateConsultLinks();
   });
 
 })();

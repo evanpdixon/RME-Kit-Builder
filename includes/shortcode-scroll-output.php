@@ -1,4 +1,6 @@
-<div id="rme-kit-builder-scroll">
+<div id="rme-kit-builder-scroll" class="rme-kit-builder-scroll">
+<!-- Inner wrapper provides #rme-kit-builder scope so base CSS component styles apply -->
+<div id="rme-kit-builder">
 
   <!-- SECTION 1: Email Capture -->
   <div class="kb-section kb-section--active" data-section="email" id="sec-email">
@@ -37,7 +39,7 @@
         </div>
       </div>
       <div style="text-align:center;margin-top:16px">
-        <a href="#" class="kbs-consult-escape" target="_blank" onclick="this.href=typeof getCalendlyUrl==='function'?getCalendlyUrl():''">&#128222; Not sure where to start? Book a free consultation</a>
+        <a href="#" class="kbs-consult-escape" target="_blank" class="kbs-consult-link">&#128222; Not sure where to start? Book a consultation</a>
       </div>
       <div id="kbs-interview-stack" style="display:none"></div>
     </div>
@@ -69,7 +71,7 @@
       <div class="kb-section__actions">
         <button class="kb-btn kb-btn--secondary" onclick="kbsGoBack('antennas')">Back</button>
         <button class="kb-btn kb-btn--primary" onclick="kbsCompleteSection('antennas')">Continue</button>
-        <a href="#" class="kbs-consult-escape" target="_blank" onclick="this.href=typeof getCalendlyUrl==='function'?getCalendlyUrl():''">&#128222; Not sure? Book a free consultation</a>
+        <a href="#" class="kbs-consult-escape" target="_blank" class="kbs-consult-link">&#128222; Not sure? Book a consultation</a>
       </div>
     </div>
   </div>
@@ -86,7 +88,7 @@
       <div class="kb-section__actions">
         <button class="kb-btn kb-btn--secondary" onclick="kbsGoBack('battery')">Back</button>
         <button class="kb-btn kb-btn--primary" onclick="kbsCompleteSection('battery')">Continue</button>
-        <a href="#" class="kbs-consult-escape" target="_blank" onclick="this.href=typeof getCalendlyUrl==='function'?getCalendlyUrl():''">&#128222; Not sure? Book a free consultation</a>
+        <a href="#" class="kbs-consult-escape" target="_blank" class="kbs-consult-link">&#128222; Not sure? Book a consultation</a>
       </div>
     </div>
   </div>
@@ -104,7 +106,7 @@
       <div class="kb-section__actions">
         <button class="kb-btn kb-btn--secondary" onclick="kbsGoBack('accessories')">Back</button>
         <button class="kb-btn kb-btn--primary" onclick="kbsCompleteSection('accessories')">Continue</button>
-        <a href="#" class="kbs-consult-escape" target="_blank" onclick="this.href=typeof getCalendlyUrl==='function'?getCalendlyUrl():''">&#128222; Not sure? Book a free consultation</a>
+        <a href="#" class="kbs-consult-escape" target="_blank" class="kbs-consult-link">&#128222; Not sure? Book a consultation</a>
       </div>
     </div>
   </div>
@@ -122,7 +124,7 @@
       <div class="kb-section__actions">
         <button class="kb-btn kb-btn--secondary" onclick="kbsGoBack('programming')">Back</button>
         <button class="kb-btn kb-btn--primary" onclick="kbsCompleteSection('programming')">Continue</button>
-        <a href="#" class="kbs-consult-escape" target="_blank" onclick="this.href=typeof getCalendlyUrl==='function'?getCalendlyUrl():''">&#128222; Not sure? Book a free consultation</a>
+        <a href="#" class="kbs-consult-escape" target="_blank" class="kbs-consult-link">&#128222; Not sure? Book a consultation</a>
       </div>
     </div>
   </div>
@@ -175,6 +177,7 @@
     <div class="lb-caption"></div>
   </div>
 
+</div><!-- /rme-kit-builder (inner wrapper for base CSS scope) -->
 </div><!-- /rme-kit-builder-scroll -->
 
 <!-- Sticky Price Bar -->
@@ -183,7 +186,7 @@
     <span class="kbp-label" id="kbs-radio-name"></span>
     <span class="kbp-total" id="kbs-total"></span>
   </div>
-  <a href="#" id="kbs-consult-btn" class="kbp-consult" target="_blank">&#128222; <span>Book a free consultation</span></a>
+  <a href="#" id="kbs-consult-btn" class="kbp-consult kbs-consult-link" target="_blank">&#128222; <span>Book a consultation</span></a>
   <button class="kb-btn kb-btn--primary kb-btn--cart" id="kbs-cart-btn" disabled onclick="kbsAddToCart()">
     &#128722; Add to Cart
   </button>

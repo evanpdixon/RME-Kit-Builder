@@ -1,5 +1,12 @@
 /* RME Kit Builder - Scroll Variant Styles */
 
+/* The scroll variant wraps content in #rme-kit-builder so base component
+   styles (opt-card, oc-check, review-item, etc.) apply without duplication.
+   We override the container layout here since scroll uses its own structure. */
+#rme-kit-builder-scroll #rme-kit-builder {
+  max-width: none; padding: 0; margin: 0; background: none;
+}
+
 #rme-kit-builder-scroll {
   --rme-gold: #fdd351;
   --rme-gold-dim: #d4af37;
