@@ -294,8 +294,6 @@
 
   window.kbsStartGuided = function() {
     kbsGuidedMode = true;
-    // Default to handheld for guided path; interview answers will refine
-    kbsAnswers['usage'] = ['handheld'];
     document.getElementById('kbs-interview-choice').style.display = 'none';
     document.getElementById('kbs-interview-stack').style.display = '';
     renderInterviewStack();
@@ -358,12 +356,22 @@
   function buildQuestionList() {
     kbsAllQuestions = [];
     if (kbsGuidedMode) {
-      // Guided path: skip needs assessment, go straight to interview questions
-      // (assumes handheld; user chose "Help Me Choose")
+      // Guided path: budget → reach → features (category-aware)
       if (typeof interviewQuestions !== 'undefined') {
+        // Always include budget and reach
         interviewQuestions.forEach(q => {
-          kbsAllQuestions.push({ ...q, phase: 'interview' });
+          if (q.id === 'budget' || q.id === 'reach') {
+            kbsAllQuestions.push({ ...q, phase: 'interview' });
+          }
         });
+        // Only include features (needs) for handheld category
+        // Other categories have too few radios for features to matter
+        var guidedCat = kbsDetectCategory();
+        if (guidedCat === 'handheld') {
+          interviewQuestions.forEach(q => {
+            if (q.id === 'needs') kbsAllQuestions.push({ ...q, phase: 'interview' });
+          });
+        }
       }
     } else {
       // Direct/needs path: show needs assessment questions first
