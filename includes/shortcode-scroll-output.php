@@ -67,6 +67,7 @@
       <p>Your kit includes the factory antenna. Upgrade for better performance, or add antennas for specific setups.</p>
       <div class="options-grid" id="antenna-options"></div>
       <div class="kb-section__actions">
+        <button class="kb-btn kb-btn--secondary" onclick="kbsGoBack('antennas')">Back</button>
         <button class="kb-btn kb-btn--primary" onclick="kbsCompleteSection('antennas')">Continue</button>
         <a href="#" class="kbs-consult-escape" target="_blank" onclick="this.href=typeof getCalendlyUrl==='function'?getCalendlyUrl():''">&#128222; Not sure? Book a free consultation</a>
       </div>
@@ -83,6 +84,7 @@
     <div class="kb-section__content">
       <div class="options-grid" id="battery-options"></div>
       <div class="kb-section__actions">
+        <button class="kb-btn kb-btn--secondary" onclick="kbsGoBack('battery')">Back</button>
         <button class="kb-btn kb-btn--primary" onclick="kbsCompleteSection('battery')">Continue</button>
         <a href="#" class="kbs-consult-escape" target="_blank" onclick="this.href=typeof getCalendlyUrl==='function'?getCalendlyUrl():''">&#128222; Not sure? Book a free consultation</a>
       </div>
@@ -100,6 +102,7 @@
       <p>Speakermics, cables, protective gear, and more.</p>
       <div class="options-grid" id="accessory-options"></div>
       <div class="kb-section__actions">
+        <button class="kb-btn kb-btn--secondary" onclick="kbsGoBack('accessories')">Back</button>
         <button class="kb-btn kb-btn--primary" onclick="kbsCompleteSection('accessories')">Continue</button>
         <a href="#" class="kbs-consult-escape" target="_blank" onclick="this.href=typeof getCalendlyUrl==='function'?getCalendlyUrl():''">&#128222; Not sure? Book a free consultation</a>
       </div>
@@ -117,6 +120,7 @@
       <p>Every Radio Made Easy kit comes custom programmed with GMRS, FRS, NOAA weather, and local repeaters for your area.</p>
       <div class="options-grid" id="programming-options"></div>
       <div class="kb-section__actions">
+        <button class="kb-btn kb-btn--secondary" onclick="kbsGoBack('programming')">Back</button>
         <button class="kb-btn kb-btn--primary" onclick="kbsCompleteSection('programming')">Continue</button>
         <a href="#" class="kbs-consult-escape" target="_blank" onclick="this.href=typeof getCalendlyUrl==='function'?getCalendlyUrl():''">&#128222; Not sure? Book a free consultation</a>
       </div>

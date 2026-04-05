@@ -39,7 +39,7 @@
   border: 1px solid var(--rme-border);
   background: var(--rme-card);
   overflow: hidden;
-  transition: opacity 0.3s ease, border-color 0.3s ease;
+  transition: opacity 0.6s ease, border-color 0.6s ease, background 0.6s ease;
   scroll-margin-top: 130px;
 }
 
@@ -56,19 +56,19 @@
   font-family: var(--rme-font-heading); font-size: 15px; font-weight: 700;
   background: var(--rme-border); color: var(--rme-muted);
   flex-shrink: 0;
-  transition: background 0.3s, color 0.3s;
+  transition: background 0.5s ease, color 0.5s ease, transform 0.5s ease;
 }
 .kb-section__header h2 {
   font-family: var(--rme-font-heading);
   font-size: 18px; font-weight: 600; color: var(--rme-muted);
   text-transform: uppercase; letter-spacing: 1.5px;
   margin: 0;
-  transition: color 0.3s;
+  transition: color 0.5s ease, font-size 0.5s ease;
 }
 
 .kb-section__content {
   padding: 0 24px 24px;
-  transition: max-height 0.4s ease, opacity 0.3s ease, padding 0.3s ease;
+  transition: max-height 0.6s ease, opacity 0.5s ease, padding 0.5s ease;
 }
 .kb-section__content p {
   color: #ccc; font-size: 15px; line-height: 1.6; margin-bottom: 20px;
@@ -123,26 +123,46 @@
 
 /* Complete */
 .kb-section--complete {
-  opacity: 0.45;
-  background: #050505;
-  border-color: #1a1a1a;
+  opacity: 0.5;
+  background: #040404;
+  border-color: #151515;
 }
 .kb-section--complete:hover {
-  opacity: 0.7;
+  opacity: 0.75;
+  border-color: #252525;
 }
 .kb-section--complete .kb-section__number {
   background: var(--rme-green);
   color: #111;
+  transform: scale(0.85);
 }
 .kb-section--complete .kb-section__number::after {
   content: '\2713';
 }
 .kb-section--complete .kb-section__number span { display: none; }
 .kb-section--complete .kb-section__header h2 {
-  color: var(--rme-green);
+  color: #5a7a5a;
+  font-size: 14px;
 }
 .kb-section--complete .kb-section__header {
   cursor: pointer;
+  padding: 14px 24px;
+}
+.kb-section--complete .kb-section__summary {
+  padding: 0 24px 12px;
+}
+.kb-section--complete .kb-section__summary .kbs-sel {
+  background: transparent; border-color: #2a3a2a;
+  color: #6a8a6a; font-size: 12px;
+}
+.kb-section--complete .kb-section__summary .kbs-none {
+  color: #556; font-size: 12px;
+}
+.kb-section--complete .kb-section__summary .kbs-edit {
+  color: #6a8a6a; font-size: 11px;
+}
+.kb-section--complete .kb-section__summary .kbs-edit:hover {
+  color: var(--rme-gold);
 }
 .kb-section--complete .kb-section__content {
   max-height: 0;
@@ -159,32 +179,11 @@
   gap: 12px;
 }
 
-/* ── Product Grid: multi-column ─────────── */
+/* ── Product Grid: single column (matches V1 card layout) ── */
 #rme-kit-builder-scroll .options-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr;
   gap: 12px;
-}
-#rme-kit-builder-scroll .options-grid .antenna-section-divider {
-  grid-column: 1 / -1;
-}
-/* Full-width cards for items without images or contextual notes */
-#rme-kit-builder-scroll .options-grid > div[style*="background"] {
-  grid-column: 1 / -1;
-}
-@media (min-width: 768px) {
-  #rme-kit-builder-scroll .options-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-@media (max-width: 767px) {
-  #rme-kit-builder-scroll .options-grid {
-    grid-template-columns: 1fr;
-  }
-}
-/* Make card images smaller in grid layout */
-#rme-kit-builder-scroll .opt-card .oc-img {
-  width: 60px; height: 60px;
 }
 
 /* ── Consultation Escape Link ──────────── */

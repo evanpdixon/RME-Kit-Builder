@@ -47,9 +47,10 @@
     const el = document.getElementById('sec-' + name);
     if (!el) return;
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // Delay scroll to let section transition animations begin first
     setTimeout(() => {
       el.scrollIntoView({ behavior: prefersReduced ? 'auto' : 'smooth', block: 'start' });
-    }, 200);
+    }, 400);
   }
 
   // ── Public: Complete a section ─────────────────
@@ -70,6 +71,17 @@
     applyAllStates();
     if (nextIdx < SECTIONS.length) scrollToSection(SECTIONS[nextIdx]);
     updateScrollPriceBar();
+  };
+
+  // ── Public: Go back to previous section ────────
+  window.kbsGoBack = function(currentName) {
+    const idx = SECTIONS.indexOf(currentName);
+    if (idx <= 0) return;
+    // Find the most recent completed section before this one
+    let prevIdx = idx - 1;
+    while (prevIdx >= 0 && sectionState[SECTIONS[prevIdx]] !== 'complete') prevIdx--;
+    if (prevIdx < 0) return;
+    kbsEditSection(SECTIONS[prevIdx]);
   };
 
   // ── Public: Edit a completed section ──────────
