@@ -33,27 +33,13 @@
       const content = el.querySelector('.kb-section__content');
       if (sectionState[s] === 'complete') {
         if (summary) summary.style.display = '';
-        if (content) { content.style.height = '0'; content.style.opacity = '0'; content.style.paddingBottom = '0'; }
+        if (content) content.style.display = 'none';
       } else if (sectionState[s] === 'active') {
         if (summary) summary.style.display = 'none';
-        if (content) {
-          // Measure natural height then animate to it
-          content.style.height = 'auto';
-          content.style.opacity = '1';
-          content.style.paddingBottom = '';
-          const naturalHeight = content.scrollHeight;
-          content.style.height = '0';
-          // Force reflow then animate
-          content.offsetHeight; // trigger reflow
-          requestAnimationFrame(function() {
-            content.style.height = naturalHeight + 'px';
-            // After transition completes, set to auto for responsive resizing
-            setTimeout(function() { content.style.height = 'auto'; }, 900);
-          });
-        }
+        if (content) { content.style.display = ''; }
       } else {
         if (summary) summary.style.display = 'none';
-        if (content) { content.style.height = '0'; content.style.opacity = '0'; content.style.paddingBottom = '0'; }
+        if (content) content.style.display = 'none';
       }
     });
   }
@@ -70,48 +56,68 @@
 
   // ── Public: Complete a section ─────────────────
   window.kbsCompleteSection = function(name) {
-    sectionState[name] = 'complete';
-    renderSummary(name);
+    const currentEl = document.getElementById('sec-' + name);
     const nextIdx = SECTIONS.indexOf(name) + 1;
-    if (nextIdx >= SECTIONS.length) { applyAllStates(); updateScrollPriceBar(); return; }
+    if (nextIdx >= SECTIONS.length) {
+      sectionState[name] = 'complete';
+      renderSummary(name);
+      applyAllStates();
+      updateScrollPriceBar();
+      return;
+    }
 
     const next = SECTIONS[nextIdx];
-
-    // Phase 1: Collapse current section (CSS transition handles animation)
-    applyAllStates();
-
-    // Phase 2: Show thinking indicator on next section
     const nextEl = document.getElementById('sec-' + next);
-    if (nextEl) {
-      nextEl.classList.remove('kb-section--locked');
-      nextEl.classList.add('kb-section--loading');
-    }
-    scrollToSection(next);
 
-    // Phase 3: After loading animation plays, render content and reveal
+    // Phase 1: Fade out current section (800ms)
+    if (currentEl) currentEl.style.opacity = '0';
+
     setTimeout(function() {
-      // Render product content while "loading"
-      if (kbsCurrentCategory === 'handheld') {
-        if (next === 'antennas') renderAllAntennas();
-        if (next === 'battery') renderBatteryUpgrades();
-        if (next === 'accessories') renderAccessories();
-        if (next === 'programming') renderProgramming();
-        if (next === 'review') { renderReview(); fixReviewButtons(); enableCartBtn(); }
-      } else {
-        renderCategoryProducts(next, kbsCurrentCategory, selectedRadioKey);
-        if (next === 'programming' && typeof renderProgramming === 'function') renderProgramming();
-        if (next === 'review') { renderReview(); fixReviewButtons(); enableCartBtn(); }
-      }
+      // Phase 2: Collapse current, show spinner on next
+      sectionState[name] = 'complete';
+      renderSummary(name);
+      applyAllStates();
 
-      // Phase 4: Transition from loading to active
+      if (nextEl) {
+        nextEl.classList.remove('kb-section--locked');
+        nextEl.classList.add('kb-section--loading');
+        nextEl.style.opacity = '1';
+        // Ensure content is hidden, spinner shows
+        const content = nextEl.querySelector('.kb-section__content');
+        if (content) content.style.display = 'none';
+      }
+      scrollToSection(next);
+
+      // Phase 3: Render content in background while spinner plays (1200ms)
       setTimeout(function() {
-        sectionState[next] = 'active';
-        if (nextEl) nextEl.classList.remove('kb-section--loading');
-        applyAllStates();
-        updateScrollPriceBar();
-        updateConsultLinks();
-      }, 500);
-    }, 1000);
+        if (kbsCurrentCategory === 'handheld') {
+          if (next === 'antennas') renderAllAntennas();
+          if (next === 'battery') renderBatteryUpgrades();
+          if (next === 'accessories') renderAccessories();
+          if (next === 'programming') renderProgramming();
+          if (next === 'review') { renderReview(); fixReviewButtons(); enableCartBtn(); }
+        } else {
+          renderCategoryProducts(next, kbsCurrentCategory, selectedRadioKey);
+          if (next === 'programming' && typeof renderProgramming === 'function') renderProgramming();
+          if (next === 'review') { renderReview(); fixReviewButtons(); enableCartBtn(); }
+        }
+
+        // Phase 4: Fade out spinner, fade in content (800ms)
+        if (nextEl) nextEl.style.opacity = '0';
+
+        setTimeout(function() {
+          sectionState[next] = 'active';
+          if (nextEl) nextEl.classList.remove('kb-section--loading');
+          applyAllStates();
+          // Fade in
+          requestAnimationFrame(function() {
+            if (nextEl) nextEl.style.opacity = '1';
+          });
+          updateScrollPriceBar();
+          updateConsultLinks();
+        }, 400);
+      }, 1200);
+    }, 800);
   };
 
   // ── Public: Go back to previous section ────────
@@ -307,8 +313,47 @@
   };
 
   window.kbsStartDirect = function() {
-    // Skip interview, go straight to radio grid
+    // Show category multi-select before radio grid
     document.getElementById('kbs-interview-choice').style.display = 'none';
+    document.getElementById('kbs-interview-stack').style.display = '';
+    document.getElementById('kbs-interview-stack').innerHTML = `
+      <div class="kbs-iq">
+        <h3>What type of radio do you need?</h3>
+        <p>Select all that apply.</p>
+        <div class="kbs-iq-options">
+          ${[
+            { key: 'handheld', icon: ICO.handheld, label: 'Handheld', detail: 'Portable, carried on your person' },
+            { key: 'vehicle', icon: ICO.vehicle, label: 'Vehicle / Mobile', detail: 'Mounted in a car, truck, or RV' },
+            { key: 'base', icon: ICO.base, label: 'Base Station', detail: 'Fixed location with outdoor antenna' },
+            { key: 'hf', icon: ICO.hf, label: 'HF (Long-Distance)', detail: 'Nationwide or worldwide' },
+            { key: 'scanner', icon: ICO.scanner, label: 'Scanner / SDR', detail: 'Listen only, no license required' },
+          ].map(o => '<div class="kbs-iq-opt" onclick="kbsDirectToggleCat(this,\\''+o.key+'\\')">' +
+            (o.icon ? '<span style="margin-right:6px">'+o.icon+'</span>' : '') + o.label +
+            '<span style="display:block;font-size:12px;color:#888;margin-top:2px">'+o.detail+'</span></div>'
+          ).join('')}
+        </div>
+        <div style="margin-top:14px">
+          <button class="kb-btn kb-btn--primary" id="kbs-direct-next" disabled onclick="kbsDirectProceed()">Next</button>
+        </div>
+      </div>
+    `;
+    kbsDirectCategories = [];
+  };
+
+  let kbsDirectCategories = [];
+
+  window.kbsDirectToggleCat = function(el, cat) {
+    const idx = kbsDirectCategories.indexOf(cat);
+    if (idx >= 0) { kbsDirectCategories.splice(idx, 1); el.classList.remove('selected'); }
+    else { kbsDirectCategories.push(cat); el.classList.add('selected'); }
+    const btn = document.getElementById('kbs-direct-next');
+    if (btn) btn.disabled = kbsDirectCategories.length === 0;
+  };
+
+  window.kbsDirectProceed = function() {
+    // Set usage answers so category detection works
+    kbsAnswers['usage'] = kbsDirectCategories;
+    // Complete interview, activate radio
     sectionState['interview'] = 'complete';
     renderSummary('interview');
     sectionState['radio'] = 'active';
@@ -510,8 +555,8 @@
     function resultCard(radio, reasons, isPrimary) {
       const name = radio.name.replace(' Essentials Kit', '');
       const reasonsHtml = reasons.length > 0
-        ? '<ul style="list-style:none;padding:0;margin:0">' + reasons.map(r => '<li style="padding:3px 0">&#9989; ' + r + '</li>').join('') + '</ul>'
-        : '<ul>' + radio.features.map(f => '<li>&#10003; ' + f + '</li>').join('') + '</ul>';
+        ? '<ul style="list-style:none;padding:0;margin:0">' + reasons.map(r => '<li style="padding:3px 0">&#10003; ' + r + '</li>').join('') + '</ul>'
+        : '<ul style="list-style:none;padding:0;margin:0">' + radio.features.map(f => '<li style="padding:3px 0">&#10003; ' + f + '</li>').join('') + '</ul>';
       return `
         <div class="result-card ${isPrimary ? 'recommended' : ''}" onclick="kbsSelectRadio('${radio.key}')">
           ${isPrimary ? '<div class="result-badge">Best Match</div>' : ''}
@@ -671,7 +716,7 @@
                 <div class="rc-img"><img src="${r.img}" alt="${r.name}"></div>
                 <h3>${name}</h3>
                 <div class="rc-price">$${r.price}</div>
-                <div class="rc-why"><ul>${r.features.map(f => '<li>&#10003; ' + f + '</li>').join('')}</ul></div>
+                <div class="rc-why"><ul style="list-style:none;padding:0;margin:0">${r.features.map(f => '<li style="padding:3px 0">&#10003; ' + f + '</li>').join('')}</ul></div>
                 <p style="font-size:13px;color:var(--rme-muted);margin-bottom:16px">${r.pitch || ''}</p>
                 <button class="rc-btn" onclick="event.stopPropagation();kbsSelectNonHandheld('${r.key}','${category}')">${i === 0 ? 'Build This Kit' : 'Choose This'}</button>
               </div>`;
