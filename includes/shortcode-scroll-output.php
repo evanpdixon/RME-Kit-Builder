@@ -37,9 +37,9 @@
           <h3>I Know What I Want</h3>
           <p>Jump straight to our lineup and pick your radio.</p>
         </div>
-      </div>
-      <div style="text-align:center;margin-top:16px">
-        <a href="#" class="kbs-consult-escape" target="_blank" class="kbs-consult-link">&#128222; Not sure where to start? Book a consultation</a>
+        <div style="text-align:center;margin-top:16px;grid-column:1/-1">
+          <a href="#" class="kbs-consult-escape" target="_blank" class="kbs-consult-link">&#128222; Not sure where to start? Book a consultation</a>
+        </div>
       </div>
       <div id="kbs-interview-stack" style="display:none"></div>
     </div>
@@ -55,6 +55,10 @@
     <div class="kb-section__content">
       <div id="kbs-recommendation"></div>
       <div id="kbs-radio-grid" class="radio-grid"></div>
+      <div class="kb-section__actions">
+        <button class="kb-btn kb-btn--secondary" onclick="kbsGoBack('radio')">Back</button>
+        <a href="#" class="kbs-consult-escape kbs-consult-link" target="_blank">&#128222; Not sure? Book a consultation</a>
+      </div>
     </div>
   </div>
 

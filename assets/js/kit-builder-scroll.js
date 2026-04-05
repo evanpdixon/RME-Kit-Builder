@@ -383,7 +383,7 @@
           </div>
           <div style="margin-top:14px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
             <button class="kb-btn kb-btn--primary" onclick="kbsNextQ()" ${!hasAnswer ? 'disabled' : ''}>
-              ${i === kbsAllQuestions.length - 1 ? 'See Results' : 'Next'}
+              ${i === kbsAllQuestions.length - 1 && kbsAllQuestions[i].phase === 'interview' ? 'See Results' : 'Next'}
             </button>
             <a href="#" class="kbs-consult-escape" target="_blank" class="kbs-consult-link">&#128222; Not sure? Book a consultation</a>
           </div>

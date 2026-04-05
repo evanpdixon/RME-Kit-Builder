@@ -241,7 +241,7 @@ const needsQuestions = [
       { key: 'nearby', icon: ICO.nearby, label: 'Nearby', detail: 'Same property, group, or event', categories: ['handheld'] },
       { key: 'local', icon: ICO.local, label: 'Local', detail: 'Across town, neighboring cities, through repeaters', categories: ['handheld', 'mobile', 'base'] },
       { key: 'far', icon: ICO.farreach, label: 'Long distance', detail: 'Statewide, cross-country, or worldwide', categories: ['hf'] },
-      { key: 'listen', icon: ICO.monitoring, label: 'Monitoring', detail: 'Listen to police, fire, EMS, or aircraft', categories: ['scanner'] },
+      { key: 'listen', icon: ICO.monitoring, label: 'Listen only', detail: 'Monitor police, fire, EMS, or aircraft', categories: ['scanner'] },
     ]
   },
 ];
@@ -4735,7 +4735,7 @@ const interviewQuestions = [
     sub: "This helps us match you with the right tier.",
     multi: false,
     options: [
-      { key: 'high', icon: ICO.premium, label: 'No compromises', detail: 'Maximum capability, every feature available', tags: ['encryption', 'digital', 'premium', 'crossband'] },
+      { key: 'high', icon: ICO.premium, label: 'Best of the best', detail: 'Maximum capability, every feature available', tags: ['encryption', 'digital', 'premium', 'crossband'] },
       { key: 'mid', icon: ICO.midprice, label: 'Mid-range', detail: 'More features and durability, the sweet spot for most people', tags: ['waterproof', 'gps', 'bluetooth', 'grow'] },
       { key: 'low', icon: ICO.budget, label: 'Economical', detail: 'A solid, reliable radio without the extras', tags: ['budget', 'simple', 'compact'] },
     ]
