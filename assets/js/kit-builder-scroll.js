@@ -170,9 +170,12 @@
       }
       case 'interview': {
         const usage = kbsAnswers['usage'] || [];
+        const setup = kbsAnswers['setup'] || [];
         const prefs = kbsInterviewTags.slice(0, 3);
         const parts = [];
-        if (usage.length) parts.push(usage.map(u => u.charAt(0).toUpperCase() + u.slice(1)).join(', '));
+        const typeLabels = { handheld: 'Handheld', vehicle: 'Vehicle', base: 'Base Station', scanner: 'Scanner' };
+        if (setup.length) parts.push(setup.map(s => typeLabels[s] || s).join(', '));
+        else if (usage.length) parts.push(usage.map(u => u.charAt(0).toUpperCase() + u.slice(1)).join(', '));
         if (prefs.length) parts.push(prefs.join(', '));
         html = `<span class="kbs-sel">${parts.join(' / ') || 'General use'}</span>`;
         break;
@@ -400,10 +403,36 @@
   window.kbsInterviewTags = [];
   let kbsAllQuestions = []; // built dynamically based on conditional logic
 
+  // Radio type question inserted after budget + reach in guided flow
+  const setupQuestion = {
+    id: 'setup',
+    question: "What type of setup do you need?",
+    sub: "Select all that apply.",
+    multi: true,
+    options: [
+      { key: 'handheld', icon: ICO.handheld, label: 'Handheld', detail: 'Portable, carried on your person', tags: [] },
+      { key: 'vehicle', icon: ICO.vehicle, label: 'Vehicle / Mobile', detail: 'Mounted in a car, truck, or RV', tags: [] },
+      { key: 'base', icon: ICO.base, label: 'Base Station', detail: 'Fixed location with outdoor antenna', tags: [] },
+      { key: 'scanner', icon: ICO.scanner, label: 'Scanner / SDR', detail: 'Listen only, no license required', tags: [] },
+    ]
+  };
+
+  // Pre-select setup options based on reach answers
+  function preSelectSetup() {
+    if (kbsAnswers['setup']) return; // already answered
+    const reach = kbsAnswers['reach'] || [];
+    var preSelected = [];
+    if (reach.includes('nearby') || reach.includes('local')) preSelected.push('handheld');
+    if (reach.includes('far')) preSelected.push('handheld'); // HF is niche, default handheld; user can change
+    if (reach.includes('listen')) preSelected.push('scanner');
+    if (preSelected.length === 0) preSelected.push('handheld');
+    kbsAnswers['setup'] = preSelected;
+  }
+
   function buildQuestionList() {
     kbsAllQuestions = [];
     if (kbsGuidedMode) {
-      // Guided path: budget → reach → features (category-aware)
+      // Guided path: budget → reach → setup type → features (handheld only)
       if (typeof interviewQuestions !== 'undefined') {
         // Always include budget and reach
         interviewQuestions.forEach(q => {
@@ -411,8 +440,13 @@
             kbsAllQuestions.push({ ...q, phase: 'interview' });
           }
         });
+
+        // Insert setup type question after reach
+        // Pre-select based on reach when we arrive at this step
+        if (kbsStep >= 2 && !kbsAnswers['setup']) preSelectSetup();
+        kbsAllQuestions.push({ ...setupQuestion, phase: 'interview' });
+
         // Only include features (needs) for handheld category
-        // Other categories have too few radios for features to matter
         var guidedCat = kbsDetectCategory();
         if (guidedCat === 'handheld') {
           interviewQuestions.forEach(q => {
@@ -440,17 +474,30 @@
 
   // Determine which radio category the user needs based on their needs answers
   window.kbsDetectCategory = function() {
+    // Direct path uses 'usage' from category multi-select
     const usage = kbsAnswers['usage'] || [];
-    if (usage.includes('vehicle')) return 'mobile';
-    if (usage.includes('base')) return 'base';
-    if (usage.includes('hf')) return 'hf';
-    if (usage.includes('scanner')) return 'scanner';
-    // Check "reach" question for "notsure" users (multi-select)
+    if (usage.length > 0) {
+      if (usage.includes('vehicle')) return 'mobile';
+      if (usage.includes('base')) return 'base';
+      if (usage.includes('hf')) return 'hf';
+      if (usage.includes('scanner')) return 'scanner';
+      return 'handheld';
+    }
+    // Guided path uses 'setup' from the new radio type question
+    const setup = kbsAnswers['setup'] || [];
+    if (setup.length > 0) {
+      // Priority: vehicle > base > scanner > handheld
+      // (first non-handheld category wins for routing; multi-kit is future)
+      if (setup.includes('vehicle')) return 'mobile';
+      if (setup.includes('base')) return 'base';
+      if (setup.includes('scanner')) return 'scanner';
+      return 'handheld';
+    }
+    // Fallback: infer from reach answers
     const reach = kbsAnswers['reach'] || [];
     if (reach.includes('far')) return 'hf';
     if (reach.includes('listen')) return 'scanner';
-    if (reach.includes('local')) return 'handheld';
-    return 'handheld'; // default (nearby or no answer)
+    return 'handheld';
   }
 
   // Get the right radio lineup for the detected category
