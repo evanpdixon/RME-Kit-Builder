@@ -3556,7 +3556,7 @@ function renderProgramming(opts) {
           <div class="oc-name">Skip Programming. Ship Immediately</div>
           <div class="oc-desc" style="max-height:none">Radio ships with factory default channels only. Choose this if you plan to program it yourself via CHIRP or another method.</div>
         </div>
-        <div class="oc-price free" style="color:var(--muted)">-</div>
+        <div class="oc-price free" style="color:var(--muted);font-size:12px">No extra cost</div>
       </div>
     </div>
   `;
