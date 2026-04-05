@@ -212,11 +212,58 @@
   flex-basis: 100%;
 }
 
-/* ── Product Grid: single column (matches V1 card layout) ── */
+/* ── Product Grid: 2-col card grid (T-Rex Arms style) ── */
 #rme-kit-builder-scroll .options-grid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(2, 1fr);
   gap: 12px;
+}
+/* Vertical image-first cards for scroll variant */
+#rme-kit-builder-scroll #rme-kit-builder .opt-card {
+  display: flex; flex-direction: column; padding: 0;
+  border: 1px solid var(--rme-border); gap: 0;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+#rme-kit-builder-scroll #rme-kit-builder .opt-card .oc-check {
+  position: absolute; top: 8px; right: 8px; z-index: 1;
+}
+#rme-kit-builder-scroll #rme-kit-builder .opt-card .oc-img {
+  width: 100%; height: auto; aspect-ratio: 4/3; border-radius: 0;
+  border: none; border-bottom: 1px solid var(--rme-border);
+}
+#rme-kit-builder-scroll #rme-kit-builder .opt-card .oc-img img {
+  padding: 10px; object-fit: contain;
+}
+#rme-kit-builder-scroll #rme-kit-builder .opt-card .oc-body {
+  padding: 10px 12px 4px;
+}
+#rme-kit-builder-scroll #rme-kit-builder .opt-card .oc-name { font-size: 13px; }
+#rme-kit-builder-scroll #rme-kit-builder .opt-card .oc-desc {
+  font-size: 11px; max-height: none; overflow: visible; color: #888;
+}
+#rme-kit-builder-scroll #rme-kit-builder .opt-card .oc-price {
+  padding: 0 12px 10px; font-size: 15px; margin: 0;
+}
+/* Full-width items (dividers, notes) */
+#rme-kit-builder-scroll .options-grid .antenna-section-divider,
+#rme-kit-builder-scroll .options-grid > div[style*="background"] {
+  grid-column: 1 / -1;
+}
+/* Cards without images stay horizontal */
+#rme-kit-builder-scroll #rme-kit-builder .opt-card:not(:has(.oc-img)) {
+  flex-direction: row; padding: 12px 14px; gap: 12px; align-items: center;
+}
+#rme-kit-builder-scroll #rme-kit-builder .opt-card:not(:has(.oc-img)) .oc-check {
+  position: static;
+}
+#rme-kit-builder-scroll #rme-kit-builder .opt-card:not(:has(.oc-img)) .oc-price {
+  padding: 0; margin-left: auto;
+}
+@media (max-width: 374px) {
+  #rme-kit-builder-scroll .options-grid { grid-template-columns: 1fr; }
+}
+@media (min-width: 700px) {
+  #rme-kit-builder-scroll .options-grid { grid-template-columns: repeat(3, 1fr); }
 }
 
 /* ── Consultation Escape Link ──────────── */
@@ -419,34 +466,44 @@
 }
 #rme-kit-builder-scroll .rc-btn:hover { background: #ffe87a; transform: translateY(-2px); box-shadow: 0 4px 16px rgba(253,211,81,0.25); }
 
-/* ── Radio Grid ────────────────────────── */
-#rme-kit-builder-scroll .radio-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 16px; }
+/* ── Radio Grid (T-Rex Arms inspired: image-first cards) ── */
+#rme-kit-builder-scroll .radio-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 16px;
+}
 #rme-kit-builder-scroll .radio-pick {
-  display: flex; align-items: center; gap: 16px;
-  background: var(--rme-card); border: 2px solid var(--rme-border); border-radius: var(--rme-radius);
-  padding: 14px 18px; cursor: pointer; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex; flex-direction: column;
+  background: var(--rme-card); border: 1px solid var(--rme-border); border-radius: var(--rme-radius);
+  padding: 0; cursor: pointer; transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
 }
-#rme-kit-builder-scroll .radio-pick:hover { border-color: var(--rme-gold-dim); background: var(--rme-card-hover); }
+#rme-kit-builder-scroll .radio-pick:hover {
+  border-color: var(--rme-gold-dim);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+}
 #rme-kit-builder-scroll .radio-pick .rp-img {
-  width: 80px; height: 80px; flex-shrink: 0; border-radius: 8px;
-  background: #fff; overflow: hidden; border: 2px solid var(--rme-gold);
+  width: 100%; aspect-ratio: 4/3; background: #fff; overflow: hidden;
+  border-bottom: 1px solid var(--rme-border);
 }
-#rme-kit-builder-scroll .radio-pick .rp-img img { width: 100%; height: 100%; object-fit: cover; }
-#rme-kit-builder-scroll .radio-pick .rp-info { flex: 1; min-width: 0; }
+#rme-kit-builder-scroll .radio-pick .rp-img img {
+  width: 100%; height: 100%; object-fit: contain; padding: 12px;
+}
+#rme-kit-builder-scroll .radio-pick .rp-info { padding: 12px 14px 14px; }
 #rme-kit-builder-scroll .radio-pick h4 {
-  font-size: 16px; margin: 0 0 2px; color: var(--rme-gold); white-space: nowrap;
-  overflow: hidden; text-overflow: ellipsis;
+  font-size: 14px; margin: 0 0 4px; color: var(--rme-text);
+  font-weight: 600; line-height: 1.3;
 }
 #rme-kit-builder-scroll .radio-pick .rp-price {
-  color: var(--rme-gold); font-weight: 700; font-size: 18px; margin-bottom: 4px;
+  color: var(--rme-gold); font-weight: 700; font-size: 17px; margin-bottom: 4px;
 }
-#rme-kit-builder-scroll .radio-pick .rp-tag { font-size: 13px; color: #aaa; line-height: 1.4; }
-@media (max-width: 500px) {
-  #rme-kit-builder-scroll .radio-pick { padding: 12px 14px; gap: 12px; }
-  #rme-kit-builder-scroll .radio-pick .rp-img { width: 64px; height: 64px; }
-  #rme-kit-builder-scroll .radio-pick h4 { font-size: 15px; }
-  #rme-kit-builder-scroll .radio-pick .rp-price { font-size: 16px; }
-  #rme-kit-builder-scroll .radio-pick .rp-tag { font-size: 12px; }
+#rme-kit-builder-scroll .radio-pick .rp-tag {
+  font-size: 12px; color: #888; line-height: 1.4;
+}
+@media (min-width: 600px) {
+  #rme-kit-builder-scroll .radio-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 374px) {
+  #rme-kit-builder-scroll .radio-grid { grid-template-columns: 1fr; }
+  #rme-kit-builder-scroll .radio-pick .rp-img { aspect-ratio: 3/2; }
 }
 
 /* ── Sticky Price Bar ──────────────────── */

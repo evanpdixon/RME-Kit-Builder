@@ -297,11 +297,13 @@
   };
 
   window.kbsSkipEmail = function() {
-    if (typeof kitSession !== 'undefined') {
-      kitSession.email = '';
-      kitSession.name = '';
-    }
-    if (typeof initConsultationFeatures === 'function') initConsultationFeatures();
+    try {
+      if (typeof kitSession !== 'undefined') {
+        kitSession.email = '';
+        kitSession.name = '';
+      }
+      if (typeof initConsultationFeatures === 'function') initConsultationFeatures();
+    } catch(e) { console.warn('kbsSkipEmail init error:', e); }
     kbsCompleteSection('email');
   };
 
