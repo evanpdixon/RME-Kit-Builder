@@ -33,12 +33,27 @@
       const content = el.querySelector('.kb-section__content');
       if (sectionState[s] === 'complete') {
         if (summary) summary.style.display = '';
-        if (content) { content.style.maxHeight = '0'; content.style.opacity = '0'; content.style.paddingBottom = '0'; }
+        if (content) { content.style.height = '0'; content.style.opacity = '0'; content.style.paddingBottom = '0'; }
       } else if (sectionState[s] === 'active') {
         if (summary) summary.style.display = 'none';
-        if (content) { content.style.maxHeight = ''; content.style.opacity = ''; content.style.paddingBottom = ''; }
+        if (content) {
+          // Measure natural height then animate to it
+          content.style.height = 'auto';
+          content.style.opacity = '1';
+          content.style.paddingBottom = '';
+          const naturalHeight = content.scrollHeight;
+          content.style.height = '0';
+          // Force reflow then animate
+          content.offsetHeight; // trigger reflow
+          requestAnimationFrame(function() {
+            content.style.height = naturalHeight + 'px';
+            // After transition completes, set to auto for responsive resizing
+            setTimeout(function() { content.style.height = 'auto'; }, 900);
+          });
+        }
       } else {
         if (summary) summary.style.display = 'none';
+        if (content) { content.style.height = '0'; content.style.opacity = '0'; content.style.paddingBottom = '0'; }
       }
     });
   }
@@ -73,7 +88,7 @@
     }
     scrollToSection(next);
 
-    // Phase 3: After a beat, render content and reveal
+    // Phase 3: After loading animation plays, render content and reveal
     setTimeout(function() {
       // Render product content while "loading"
       if (kbsCurrentCategory === 'handheld') {
@@ -95,8 +110,8 @@
         applyAllStates();
         updateScrollPriceBar();
         updateConsultLinks();
-      }, 300);
-    }, 600);
+      }, 500);
+    }, 1000);
   };
 
   // ── Public: Go back to previous section ────────
