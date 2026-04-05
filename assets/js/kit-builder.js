@@ -932,16 +932,20 @@ function startHandheldFlow() {
   const hasGuidedPrefs = prefs && prefs.length > 0 && !prefs.includes('nopreference');
 
   if (hasGuidedPrefs) {
-    // Map needs preference keys to interview feature keys for scoring
-    const prefMap = { digital: 'encryption', waterproof: 'waterproof', simple: 'compact', range: 'channels', budget: 'price', crossband: 'crossband' };
-    interviewAnswers.features = prefs.filter(p => p !== 'nopreference').map(p => prefMap[p] || p);
+    // Map needs preference keys to the new "needs" question keys for scoring
+    const prefMap = { digital: 'encryption', waterproof: 'water', simple: null, range: null, budget: null, crossband: 'repeater' };
+    const mappedNeeds = prefs.filter(p => p !== 'nopreference').map(p => prefMap[p] || p).filter(Boolean);
+    if (mappedNeeds.length > 0) interviewAnswers.needs = mappedNeeds;
 
-    // Map needs "where" answers to interview "use" for richer scoring
-    const whereMap = { onfoot: 'general', invehicle: 'general', athome: 'general', offgrid: 'outdoor', monitoring: null };
-    const where = kitSession.needsAnswers.where;
+    // Map needs "where" answers to needs for richer scoring
+    const whereMap = { onfoot: null, invehicle: null, athome: null, offgrid: 'outdoor', monitoring: null };
+    const where = kitSession.needsAnswers && kitSession.needsAnswers.where;
     if (where && where.length > 0) {
       const mapped = whereMap[where[0]];
-      if (mapped) interviewAnswers.use = mapped;
+      if (mapped && (!interviewAnswers.needs || !interviewAnswers.needs.includes(mapped))) {
+        if (!interviewAnswers.needs) interviewAnswers.needs = [];
+        interviewAnswers.needs.push(mapped);
+      }
     }
 
     // Map needs "budget" pref to interview budget tier
@@ -4808,41 +4812,28 @@ const interviewQuestions = [
     sub: "This helps us match you with the right tier.",
     multi: false,
     options: [
-      { key: 'low', icon: ICO.budget, label: 'Economical', detail: 'A solid, reliable radio without the extras', tags: ['budget'] },
+      { key: 'low', icon: ICO.budget, label: 'Economical', detail: 'A solid, reliable radio without the extras', tags: ['budget', 'simple', 'compact'] },
       { key: 'mid', icon: ICO.midprice, label: 'Mid-range', detail: 'More features and durability, the sweet spot for most people', tags: ['waterproof', 'gps', 'bluetooth', 'grow'] },
-      { key: 'high', icon: ICO.premium, label: 'The best of the best', detail: 'Maximum capability, no compromises', tags: ['encryption', 'digital', 'premium', 'crossband'] },
+      { key: 'high', icon: ICO.premium, label: 'No compromises', detail: 'Maximum capability, every feature available', tags: ['encryption', 'digital', 'premium', 'crossband'] },
     ]
   },
   {
-    id: 'use',
-    question: "Where will you use it most?",
-    sub: "Pick the one that fits best.",
-    multi: false,
-    options: [
-      { key: 'general', icon: ICO.town, label: 'Around town', detail: 'Family, neighborhood, local', tags: ['budget', 'simple'] },
-      { key: 'outdoor', icon: ICO.outdoor, label: 'Outdoors', detail: 'Hiking, camping, overlanding', tags: ['gps', 'grow', 'waterproof'] },
-      { key: 'water', icon: ICO.water, label: 'On or near water', detail: 'Boating, beach, wet conditions', tags: ['waterproof'] },
-      { key: 'professional', icon: ICO.work, label: 'Work / business', detail: 'Worksite, security, events', tags: ['professional', 'commercial', 'waterproof', 'gps'] },
-      { key: 'emergency', icon: ICO.emergency, label: 'Emergency prep', detail: 'Disaster readiness, backup comms', tags: ['channels', 'durable'] },
-    ]
-  },
-  {
-    id: 'features',
-    question: "What matters most to you?",
-    sub: "Pick up to two, or skip.",
+    id: 'needs',
+    question: "What do you need?",
+    sub: "Select all that apply. Skip if you just want a general-purpose radio.",
     multi: true,
     options: [
-      { key: 'price', icon: ICO.tag, label: 'Lowest price', detail: 'Most affordable option', tags: ['budget'] },
-      { key: 'waterproof', icon: ICO.droplet, label: 'Waterproof', detail: 'Will get wet', tags: ['waterproof'] },
-      { key: 'encryption', icon: ICO.lock, label: 'Privacy / encryption', detail: 'Secure, encrypted comms', tags: ['encryption', 'digital'] },
-      { key: 'channels', icon: ICO.channels, label: 'Max channels', detail: 'Lots of repeaters and memory', tags: ['channels'] },
+      { key: 'emergency', icon: ICO.emergency, label: 'Emergency / disaster prep', detail: 'Backup comms when cell networks fail', tags: ['channels', 'grow', 'noaa'] },
+      { key: 'professional', icon: ICO.work, label: 'Work / business use', detail: 'Worksite, security, events, farms', tags: ['professional', 'commercial', 'gps'] },
+      { key: 'outdoor', icon: ICO.outdoor, label: 'Outdoor / overlanding', detail: 'Hiking, camping, off-road', tags: ['gps', 'grow', 'waterproof'] },
+      { key: 'water', icon: ICO.droplet, label: 'Wet conditions', detail: 'Rain, boating, submersion', tags: ['waterproof'] },
+      { key: 'encryption', icon: ICO.lock, label: 'Private / encrypted comms', detail: 'Secure digital communication', tags: ['encryption', 'digital'] },
+      { key: 'gps', icon: ICO.signal, label: 'GPS location sharing', detail: 'Track and share positions via APRS', tags: ['gps'] },
+      { key: 'texting', icon: ICO.channels, label: 'Text messaging over radio', detail: 'Send text without cell service', tags: ['grow', 'digital'] },
       { key: 'airband', icon: ICO.plane, label: 'Listen to aircraft', detail: 'Monitor aviation frequencies', tags: ['airband'] },
-      { key: 'bluetooth', icon: ICO.bluetooth, label: 'Bluetooth', detail: 'Wireless headset / hands-free', tags: ['bluetooth'] },
-      { key: 'grow', icon: ICO.grow, label: 'Room to grow', detail: 'New now, advanced later', tags: ['grow'] },
-      { key: 'noaa', icon: ICO.cloud, label: 'Weather alerts', detail: 'Automatic severe weather notifications', tags: ['noaa'] },
-      { key: 'compact', icon: ICO.compact, label: 'Small & light', detail: 'Most compact, pocketable', tags: ['compact'] },
-      { key: 'compatible', icon: ICO.compat, label: 'UV-5R compatible', detail: 'Already have UV-5R gear', tags: ['compatible', 'budget'] },
-      { key: 'nopreference', icon: ICO.nopref, label: 'No preference', detail: 'Just recommend what works best', tags: [] },
+      { key: 'repeater', icon: ICO.crossband, label: 'Repeater capability', detail: 'Simplex or crossband repeat to extend range', tags: ['crossband', 'grow'] },
+      { key: 'bluetooth', icon: ICO.bluetooth, label: 'Bluetooth connectivity', detail: 'Wireless speakermic or phone control', tags: ['bluetooth'] },
+      { key: 'nopreference', icon: ICO.nopref, label: 'No specific needs', detail: 'Just recommend what works best', tags: [] },
     ]
   },
 ];
@@ -4985,26 +4976,23 @@ function getPersonalizedReasons(radio) {
   if (a.use === 'water' && radio.tags.includes('waterproof')) reasons.push('IP67 waterproof, fully submersible for the wet environments you described');
   if (a.use === 'water' && !radio.tags.includes('waterproof') && radio.tags.includes('water-resistant')) reasons.push('IP54 water resistant. Handles rain and splashes');
   if (a.use === 'outdoor' && radio.tags.includes('gps')) reasons.push('GPS & APRS, perfect for the outdoor use you mentioned');
-  if (a.use === 'professional' && radio.tags.includes('commercial')) reasons.push('FCC Part 90 commercial certified, approved for business and commercial use');
-  if (a.use === 'professional' && radio.tags.includes('professional') && !radio.tags.includes('commercial')) reasons.push('Feature-rich and reliable for professional use');
-  if (a.use === 'general' && radio.tags.includes('budget')) reasons.push('Simple and reliable. Great for everyday neighborhood use');
-  if (a.use === 'emergency' && radio.tags.includes('channels')) reasons.push('Lots of channels. Covers more repeaters for emergency readiness');
-
-  // Feature matches
-  if (a.features) {
-    if (a.features.includes('waterproof') && radio.tags.includes('waterproof')) reasons.push('IP67 waterproof, fully submersible for the conditions you need');
-    if (a.features.includes('waterproof') && !radio.tags.includes('waterproof') && radio.tags.includes('water-resistant')) reasons.push('IP54 water resistant. Rated for rain and splashes');
-    if (a.features.includes('encryption') && radio.tags.includes('encryption')) reasons.push('Encryption capable. Supports private, encrypted communications');
-    if (a.features.includes('airband') && radio.tags.includes('airband')) reasons.push('Airband receive. Listen to aircraft like you wanted');
-    if (a.features.includes('bluetooth') && radio.tags.includes('bluetooth')) reasons.push('Bluetooth headset support. Pairs with helmet comms, earpieces, or wireless PTT');
-    if (a.features.includes('channels') && radio.tags.includes('channels')) reasons.push('Extra memory channels for the wide coverage area you need');
-    if (a.features.includes('grow') && radio.tags.includes('grow')) reasons.push('Room to grow. Simple now, with advanced features when you\'re ready');
-    if (a.features.includes('noaa') && radio.tags.includes('noaa')) reasons.push('Automatic NOAA weather alerts. Get warned before severe weather hits');
-    if (a.features.includes('noaa') && !radio.tags.includes('noaa')) reasons.push('Can tune NOAA frequencies manually, but lacks automatic weather alerts');
-    if (a.features.includes('compact') && radio.tags.includes('compact')) reasons.push('Compact and lightweight. Easy to pocket or pack');
-    if (a.features.includes('compatible') && radio.tags.includes('compatible')) reasons.push('UV-5R compatible. Works with your existing batteries, chargers, and accessories');
-    if (a.features.includes('price') && radio.tags.includes('budget')) reasons.push('Most affordable option. Best value for getting on the air');
-  }
+  // Needs-based reasons (from combined question)
+  const needs = a.needs || [];
+  if (needs.includes('professional') && radio.tags.includes('commercial')) reasons.push('FCC Part 90 commercial certified, approved for business and commercial use');
+  if (needs.includes('professional') && radio.tags.includes('professional')) reasons.push('Feature-rich and reliable for professional use');
+  if (needs.includes('emergency') && radio.tags.includes('channels')) reasons.push('Lots of channels. Covers more repeaters for emergency readiness');
+  if (needs.includes('emergency') && radio.tags.includes('noaa')) reasons.push('Automatic NOAA weather alerts. Get warned before severe weather hits');
+  if (needs.includes('water') && radio.tags.includes('waterproof')) reasons.push('IP67 waterproof, fully submersible for the conditions you need');
+  if (needs.includes('water') && !radio.tags.includes('waterproof') && radio.tags.includes('water-resistant')) reasons.push('IP54 water resistant. Rated for rain and splashes');
+  if (needs.includes('outdoor') && radio.tags.includes('gps')) reasons.push('Built-in GPS for position tracking in the field');
+  if (needs.includes('outdoor') && radio.tags.includes('waterproof')) reasons.push('Waterproof build for outdoor conditions');
+  if (needs.includes('encryption') && radio.tags.includes('encryption')) reasons.push('Encryption capable. Supports private, encrypted communications');
+  if (needs.includes('gps') && radio.tags.includes('gps')) reasons.push('GPS location sharing via APRS. Track and share positions');
+  if (needs.includes('texting') && radio.tags.includes('digital')) reasons.push('Digital text messaging over radio, no cell service needed');
+  if (needs.includes('airband') && radio.tags.includes('airband')) reasons.push('Airband receive. Listen to aircraft frequencies');
+  if (needs.includes('repeater') && radio.tags.includes('crossband')) reasons.push('Crossband repeat capability. Extend your range using this radio as a relay');
+  if (needs.includes('repeater') && !radio.tags.includes('crossband') && radio.tags.includes('grow')) reasons.push('Simplex repeater mode available');
+  if (needs.includes('bluetooth') && radio.tags.includes('bluetooth')) reasons.push('Bluetooth connectivity for wireless speakermic or phone control');
 
   // Deduplicate similar reasons
   return [...new Set(reasons)].slice(0, 4);
@@ -5015,9 +5003,9 @@ function showInterviewResults() {
   const scores = {};
   radioLineup.forEach(r => { scores[r.key] = 0; });
 
-  // Track water-related needs: explicit (water use / waterproof feature) vs indirect (outdoors)
-  let waterExplicit = false; // "On or near water" or "Waterproof" feature checkbox
-  let waterIndirect = false; // Outdoors -rain likely but not primary concern
+  // Track water-related needs from the combined "needs" question
+  let waterExplicit = false;
+  let waterIndirect = false;
 
   interviewQuestions.forEach(q => {
     const answer = interviewAnswers[q.id];
@@ -5026,10 +5014,10 @@ function showInterviewResults() {
     keys.forEach(k => {
       const opt = q.options.find(o => o.key === k);
       if (!opt) return;
-      // Explicit: water use or waterproof feature selection
-      if (opt.key === 'water' || opt.key === 'waterproof') waterExplicit = true;
-      // Indirect: outdoors implies weather exposure
-      else if (opt.key === 'outdoor' && opt.tags.includes('waterproof')) waterIndirect = true;
+      // Explicit: selected "wet conditions"
+      if (opt.key === 'water') waterExplicit = true;
+      // Indirect: outdoor use implies weather exposure
+      else if (opt.key === 'outdoor') waterIndirect = true;
       const _sc = _adminConfig && _adminConfig.scoring || null;
       const _baseW = _sc ? (_sc.baseWeight || 1) : 1;
       const _cw = _sc ? (_sc.customWeights || {}) : {};
@@ -5113,70 +5101,59 @@ function showInterviewResults() {
 // radio lacks that capability, warn them and suggest a better fit.
 const mismatchRules = [
   {
-    // User wants waterproof but radio has no water protection at all
     check: (answers, radio) => {
-      const wantsWater = answers.use === 'water' || (answers.features && answers.features.includes('waterproof'));
-      const hasWaterProtection = radio.tags.includes('waterproof') || radio.tags.includes('water-resistant');
-      return wantsWater && !hasWaterProtection;
+      const needs = answers.needs || [];
+      const wantsWater = needs.includes('water');
+      return wantsWater && !radio.tags.includes('waterproof') && !radio.tags.includes('water-resistant');
     },
     warning: "has no water resistance rating",
-    need: "you mentioned water use or waterproofing is important to you",
+    need: "you mentioned wet conditions",
     suggestTags: ['waterproof', 'water-resistant'],
   },
   {
-    // User wants encryption but radio doesn't have it
     check: (answers, radio) => {
-      const wantsEncryption = answers.features && answers.features.includes('encryption');
-      const hasEncryption = radio.tags.includes('encryption');
-      return wantsEncryption && !hasEncryption;
+      const needs = answers.needs || [];
+      return needs.includes('encryption') && !radio.tags.includes('encryption');
     },
     warning: "does not have encryption capability. Only DMR radios support encrypted communications",
-    need: "you mentioned privacy or encryption is important",
+    need: "you mentioned private/encrypted comms",
     suggestTags: ['encryption'],
   },
   {
-    // User selected commercial/business use but picked a consumer-grade radio
     check: (answers, radio) => {
-      const wantsPro = answers.use === 'professional';
-      const isPro = radio.tags.includes('professional');
-      return wantsPro && !isPro;
+      const needs = answers.needs || [];
+      return needs.includes('professional') && !radio.tags.includes('professional');
     },
     warning: "is a great radio for personal use, but may not hold up to the demands of commercial or business use",
-    need: "you mentioned this is for work or business",
+    need: "you mentioned work or business use",
     suggestTags: ['professional'],
   },
   {
-    // User wants airband but radio doesn't have it
     check: (answers, radio) => {
-      const wantsAirband = answers.features && answers.features.includes('airband');
-      const hasAirband = radio.tags.includes('airband');
-      return wantsAirband && !hasAirband;
+      const needs = answers.needs || [];
+      return needs.includes('airband') && !radio.tags.includes('airband');
     },
     warning: "cannot receive aircraft/aviation frequencies",
     need: "you said listening to aircraft is important",
     suggestTags: ['airband'],
   },
   {
-    // User wants Bluetooth/app control but radio doesn't have it
     check: (answers, radio) => {
-      const wantsBT = answers.features && answers.features.includes('bluetooth');
-      const hasBT = radio.tags.includes('bluetooth');
-      return wantsBT && !hasBT;
+      const needs = answers.needs || [];
+      return needs.includes('bluetooth') && !radio.tags.includes('bluetooth');
     },
-    warning: "does not support Bluetooth headsets",
-    need: "you mentioned Bluetooth headset connectivity is important",
+    warning: "does not support Bluetooth",
+    need: "you mentioned Bluetooth connectivity",
     suggestTags: ['bluetooth'],
   },
   {
-    // User wants max channels but picked a low-channel radio
     check: (answers, radio) => {
-      const wantsChannels = answers.features && answers.features.includes('channels');
-      const hasChannels = radio.tags.includes('channels');
-      return wantsChannels && !hasChannels;
+      const needs = answers.needs || [];
+      return needs.includes('repeater') && !radio.tags.includes('crossband') && !radio.tags.includes('grow');
     },
-    warning: "has limited memory channels compared to other options",
-    need: "you said maximum channels/coverage is important",
-    suggestTags: ['channels'],
+    warning: "has limited repeater capability",
+    need: "you mentioned repeater capability",
+    suggestTags: ['crossband'],
   },
 ];
 
