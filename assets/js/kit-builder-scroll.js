@@ -419,7 +419,7 @@
     renderInterviewStack();
     setTimeout(() => {
       const qs = document.querySelectorAll('.kbs-iq:not(.kbs-iq--answered)');
-      if (qs.length) qs[qs.length - 1].scrollIntoView({ behavior: 'smooth', block: 'center' });
+      if (qs.length) qs[qs.length - 1].scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 100);
   };
 
