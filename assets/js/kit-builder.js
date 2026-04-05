@@ -4763,8 +4763,8 @@ const interviewQuestions = [
       { key: 'bluetooth', icon: ICO.bluetooth, label: 'Bluetooth', detail: 'Wireless speakermic or phone control', tags: ['bluetooth'] },
       { key: 'texting', icon: ICO.channels, label: 'Text messaging', detail: 'Send text over radio without cell service', tags: ['grow', 'digital'] },
       { key: 'encryption', icon: ICO.lock, label: 'Secure / encryption capable', detail: 'Private, encrypted communications', tags: ['encryption', 'digital', 'professional', 'commercial'] },
-      { key: 'repeater', icon: ICO.crossband, label: 'Repeater capable', detail: 'Crossband or simplex repeat to extend range', tags: ['crossband', 'grow'] },
-      { key: 'channels', icon: ICO.channels, label: 'High memory capacity', detail: 'Hundreds or thousands of programmable channels', tags: ['channels'] },
+      { key: 'repeater', icon: ICO.crossband, label: 'Built-in repeater mode', detail: 'Your radio becomes a relay to extend range for others', tags: ['crossband', 'grow'] },
+      { key: 'channels', icon: ICO.channels, label: 'Increased channel capacity', detail: 'Program repeaters across multiple locations and regions', tags: ['channels'] },
       { key: 'nopreference', icon: ICO.nopref, label: 'No specific needs', detail: 'Just recommend what works best', tags: [] },
     ]
   },
