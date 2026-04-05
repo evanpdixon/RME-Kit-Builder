@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kit Builder V2 - Recommendation Logic Map</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #111; color: #ddd; padding: 24px; line-height: 1.5; }
+  h1 { color: #d4a843; margin-bottom: 8px; font-size: 24px; }
+  .subtitle { color: #888; margin-bottom: 32px; font-size: 14px; }
+  h2 { color: #d4a843; margin: 32px 0 12px; font-size: 18px; border-bottom: 1px solid #333; padding-bottom: 6px; }
+  h3 { color: #ccc; margin: 20px 0 8px; font-size: 15px; }
+
+  .radio-section { margin-bottom: 40px; }
+  .radio-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+  .radio-name { font-size: 20px; font-weight: 700; color: #fff; }
+  .radio-price { color: #d4a843; font-size: 16px; }
+  .radio-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+  .tag { background: #222; border: 1px solid #333; border-radius: 4px; padding: 2px 8px; font-size: 11px; color: #999; }
+  .tag.matched { background: #2a2000; border-color: #d4a843; color: #d4a843; }
+
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  th { text-align: left; background: #1a1a1a; color: #d4a843; padding: 8px 10px; border: 1px solid #333; font-weight: 600; }
+  td { padding: 6px 10px; border: 1px solid #282828; vertical-align: top; }
+  tr:nth-child(even) { background: #161616; }
+  tr:hover { background: #1a1800; }
+  .score { color: #d4a843; font-weight: 700; font-size: 14px; }
+  .winner { background: #1a2a00 !important; }
+  .combo-tags { display: flex; gap: 4px; flex-wrap: wrap; }
+  .combo-tag { background: #1a1a1a; border-radius: 3px; padding: 1px 6px; font-size: 11px; color: #aaa; }
+
+  .category-badge { display: inline-block; padding: 3px 10px; border-radius: 4px; font-size: 12px; font-weight: 600; }
+  .cat-handheld { background: #1a2a00; color: #8c5; }
+  .cat-mobile { background: #2a1a00; color: #d4a843; }
+  .cat-base { background: #001a2a; color: #5ac; }
+  .cat-hf { background: #2a002a; color: #c5a; }
+  .cat-scanner { background: #0a1a2a; color: #5ca; }
+
+  .path-section { margin: 24px 0; padding: 16px; background: #1a1a1a; border: 1px solid #333; border-radius: 8px; }
+  .path-title { font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 12px; }
+
+  .legend { display: flex; gap: 16px; flex-wrap: wrap; margin: 16px 0; padding: 12px; background: #1a1a1a; border-radius: 6px; font-size: 12px; }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+
+  #filter-bar { margin: 16px 0; display: flex; gap: 12px; flex-wrap: wrap; }
+  #filter-bar select { background: #222; color: #ddd; border: 1px solid #444; padding: 6px 10px; border-radius: 4px; font-size: 13px; }
+  #filter-bar label { font-size: 13px; color: #888; }
+
+  .toc { margin: 16px 0 32px; }
+  .toc a { color: #d4a843; text-decoration: none; font-size: 14px; }
+  .toc a:hover { text-decoration: underline; }
+  .toc li { margin: 4px 0; }
+</style>
+</head>
+<body>
+
+<h1>Kit Builder V2 - Recommendation Logic Map</h1>
+<p class="subtitle">Every unique combination of guided interview answers and the resulting recommendation. Generated from live scoring logic.</p>
+
+<div class="toc">
+  <h3>Table of Contents</h3>
+  <ol>
+    <li><a href="#category-routing">Category Routing (Setup Type)</a></li>
+    <li><a href="#handheld-combos">Handheld Recommendations (All Combinations)</a></li>
+    <li><a href="#mobile-combos">Vehicle / Mobile Recommendations</a></li>
+    <li><a href="#base-combos">Base Station Recommendations</a></li>
+    <li><a href="#hf-combos">HF Recommendations</a></li>
+    <li><a href="#scanner-combos">Scanner Lineup</a></li>
+    <li><a href="#tag-reference">Tag Reference</a></li>
+  </ol>
+</div>
+
+<div id="content"></div>
+
+<script>
+// ── Radio Data ──
+const handhelds = [
+  { key: 'uv5r', name: 'UV-5R', price: 59, tags: ['budget','simple','compatible','compact'] },
+  { key: 'uv5r-mini', name: 'UV-5R Mini', price: 39, tags: ['budget','simple','channels','airband','usbc','compact','noaa'] },
+  { key: 'uv-pro', name: 'UV-PRO', price: 159, tags: ['waterproof','gps','bluetooth','airband','grow','professional','usbc','channels','noaa','commercial'] },
+  { key: 'dmr-6x2', name: 'DMR 6X2 PRO', price: 249, tags: ['encryption','digital','channels','gps','professional','bluetooth','water-resistant','usbc','grow','noaa','commercial'] },
+  { key: 'da-7x2', name: 'DA-7X2', price: 299, tags: ['encryption','digital','crossband','airband','professional','premium','bluetooth','water-resistant','usbc','gps','grow','channels','noaa','commercial'] },
+];
+
+const mobileRadios = [
+  { key: 'uv50pro', name: 'UV-50PRO', price: 329, tags: ['waterproof','gps','bluetooth','simple','professional'] },
+  { key: 'd578', name: 'D578', price: 549, tags: ['encryption','digital','crossband','gps','bluetooth','professional'] },
+];
+
+const hfRadios = [
+  { key: 'g90', name: 'Xiegu G90', price: 549, tags: ['budget','hf','portable'] },
+  { key: 'ft891', name: 'Yaesu FT-891', price: 899, tags: ['premium','hf','power'], outOfStock: true },
+];
+
+const scannerRadios = [
+  { key: 'sds200', name: 'Uniden SDS200', price: 799, form: 'base' },
+  { key: 'sds100', name: 'Uniden SDS100', price: 749, form: 'handheld' },
+  { key: 'sdr-kit', name: 'SDR Essentials Kit', price: 99, form: 'accessory' },
+  { key: 'sds150', name: 'Uniden SDS150', price: 1049, form: 'base' },
+];
+
+// ── Question Options & Tags ──
+const budgetOptions = [
+  { key: 'high', label: 'High-end', tags: ['encryption','digital','premium','crossband'] },
+  { key: 'mid', label: 'Mid-range', tags: ['waterproof','gps','bluetooth','grow'] },
+  { key: 'low', label: 'Budget', tags: ['budget','simple','compact'] },
+];
+
+const reachOptions = [
+  { key: 'nearby', label: 'Nearby', tags: ['budget','simple'] },
+  { key: 'local', label: 'Local', tags: ['channels','grow'] },
+  { key: 'far', label: 'Long distance', tags: [] },
+  { key: 'listen', label: 'Listen only', tags: [] },
+];
+
+const setupOptions = [
+  { key: 'handheld', label: 'Handheld' },
+  { key: 'vehicle', label: 'Vehicle / Mobile' },
+  { key: 'base', label: 'Base Station' },
+  { key: 'scanner', label: 'Scanner / SDR' },
+];
+
+const needsOptions = [
+  { key: 'water', label: 'Waterproof', tags: ['waterproof'] },
+  { key: 'gps', label: 'GPS', tags: ['gps'] },
+  { key: 'bluetooth', label: 'Bluetooth', tags: ['bluetooth'] },
+  { key: 'texting', label: 'Text messaging', tags: ['grow','digital'] },
+  { key: 'encryption', label: 'Encryption', tags: ['encryption','digital','professional','commercial'] },
+  { key: 'repeater', label: 'Repeater mode', tags: ['crossband','grow'] },
+  { key: 'channels', label: 'Extra channels', tags: ['channels'] },
+  { key: 'nopreference', label: 'No preference', tags: [] },
+];
+
+// ── Scoring ──
+function scoreRadios(lineup, allTags) {
+  const scores = {};
+  lineup.forEach(r => { scores[r.key] = 0; });
+  allTags.forEach(tag => {
+    lineup.forEach(r => {
+      if (r.tags && r.tags.includes(tag)) scores[r.key] += 10;
+    });
+  });
+  const ranked = lineup.filter(r => !r.outOfStock).slice().sort((a, b) => scores[b.key] - scores[a.key]);
+  return { scores, ranked };
+}
+
+function collectTags(budget, reachKeys, needKeys) {
+  let tags = [];
+  const b = budgetOptions.find(o => o.key === budget);
+  if (b) tags.push(...b.tags);
+  reachKeys.forEach(rk => {
+    const r = reachOptions.find(o => o.key === rk);
+    if (r) tags.push(...r.tags);
+  });
+  needKeys.forEach(nk => {
+    const n = needsOptions.find(o => o.key === nk);
+    if (n) tags.push(...n.tags);
+  });
+  return [...new Set(tags)];
+}
+
+// ── Generate All Handheld Combinations ──
+// Budget: 3 options, Reach: subsets of [nearby, local] (relevant for handheld), Needs: subsets
+// For handheld: reach is multi-select. Relevant reach combos for handheld: nearby, local, nearby+local
+// Needs: to keep manageable, enumerate each individual need + no preference + common combos
+
+function generateHandheldCombos() {
+  const results = [];
+  const budgets = ['high', 'mid', 'low'];
+  // Reach combos relevant to handheld (nearby, local, or both)
+  const reachCombos = [['nearby'], ['local'], ['nearby','local']];
+  // Individual needs (skip nopreference combos, just show single needs + no pref)
+  const needCombos = [
+    ['nopreference'],
+    ['water'],
+    ['gps'],
+    ['bluetooth'],
+    ['texting'],
+    ['encryption'],
+    ['repeater'],
+    ['channels'],
+    ['water','gps'],
+    ['water','bluetooth'],
+    ['gps','bluetooth'],
+    ['encryption','texting'],
+    ['water','gps','bluetooth'],
+    ['encryption','repeater'],
+    ['water','gps','bluetooth','texting'],
+    ['encryption','texting','repeater','channels'],
+  ];
+
+  budgets.forEach(budget => {
+    reachCombos.forEach(reach => {
+      needCombos.forEach(needs => {
+        const tags = collectTags(budget, reach, needs);
+        const { scores, ranked } = scoreRadios(handhelds, tags);
+        results.push({
+          budget: budgetOptions.find(o => o.key === budget).label,
+          reach: reach.map(r => reachOptions.find(o => o.key === r).label).join(' + '),
+          needs: needs.map(n => needsOptions.find(o => o.key === n).label).join(' + '),
+          tags,
+          scores: Object.entries(scores).map(([k, s]) => ({ key: k, name: handhelds.find(r => r.key === k).name, score: s })).sort((a, b) => b.score - a.score),
+          winner: ranked[0]?.name,
+          runner: ranked[1]?.name,
+          winnerScore: scores[ranked[0]?.key],
+          runnerScore: scores[ranked[1]?.key],
+        });
+      });
+    });
+  });
+  return results;
+}
+
+function generateMobileCombos() {
+  const results = [];
+  const budgets = ['high', 'mid', 'low'];
+  // For mobile, reach is answered but no needs question
+  const reachCombos = [['nearby'], ['local'], ['nearby','local']];
+
+  budgets.forEach(budget => {
+    reachCombos.forEach(reach => {
+      const tags = collectTags(budget, reach, []);
+      const { scores, ranked } = scoreRadios(mobileRadios, tags);
+      results.push({
+        budget: budgetOptions.find(o => o.key === budget).label,
+        reach: reach.map(r => reachOptions.find(o => o.key === r).label).join(' + '),
+        tags,
+        scores: Object.entries(scores).map(([k, s]) => ({ key: k, name: mobileRadios.find(r => r.key === k).name, score: s })).sort((a, b) => b.score - a.score),
+        winner: ranked[0]?.name,
+        runner: ranked[1]?.name,
+      });
+    });
+  });
+  return results;
+}
+
+// ── Render ──
+function render() {
+  let html = '';
+
+  // ── Section 1: Category Routing ──
+  html += '<h2 id="category-routing">Category Routing (Setup Type)</h2>';
+  html += '<div class="path-section">';
+  html += '<p style="margin-bottom:12px;color:#aaa">The setup question appears after budget + reach. Setup type determines which radio lineup is shown.</p>';
+  html += '<table><thead><tr><th>Reach Answer</th><th>Pre-selected Setup</th><th>Category</th><th>Radio Lineup</th></tr></thead><tbody>';
+  const routingRows = [
+    ['Nearby', 'Handheld', 'handheld', 'UV-5R, UV-5R Mini, UV-PRO, DMR 6X2 PRO, DA-7X2'],
+    ['Local', 'Handheld', 'handheld', 'UV-5R, UV-5R Mini, UV-PRO, DMR 6X2 PRO, DA-7X2'],
+    ['Nearby + Local', 'Handheld', 'handheld', 'UV-5R, UV-5R Mini, UV-PRO, DMR 6X2 PRO, DA-7X2'],
+    ['Long distance', 'Handheld', 'handheld', 'UV-5R, UV-5R Mini, UV-PRO, DMR 6X2 PRO, DA-7X2'],
+    ['Listen only', 'Scanner', 'scanner', 'SDS200, SDS100, SDR Kit, SDS150'],
+    ['Any (user changes to Vehicle)', '-', 'mobile', 'UV-50PRO, D578'],
+    ['Any (user changes to Base)', '-', 'base', 'UV-50PRO, D578'],
+    ['Any (user changes to Scanner)', '-', 'scanner', 'SDS200, SDS100, SDR Kit, SDS150'],
+  ];
+  routingRows.forEach(r => {
+    const catClass = r[2] === 'handheld' ? 'cat-handheld' : r[2] === 'mobile' ? 'cat-mobile' : r[2] === 'base' ? 'cat-base' : r[2] === 'hf' ? 'cat-hf' : 'cat-scanner';
+    html += `<tr><td>${r[0]}</td><td>${r[1]}</td><td><span class="category-badge ${catClass}">${r[2]}</span></td><td>${r[3]}</td></tr>`;
+  });
+  html += '</tbody></table>';
+  html += '<p style="margin-top:12px;color:#888;font-size:12px"><strong>Note:</strong> Setup is multi-select. Priority for category detection: vehicle &gt; base &gt; scanner &gt; handheld. Only the first non-handheld category is used for routing.</p>';
+  html += '</div>';
+
+  // ── Section 2: Handheld Combos ──
+  html += '<h2 id="handheld-combos">Handheld Recommendations (All Combinations)</h2>';
+  html += '<p style="color:#888;margin-bottom:8px;font-size:13px">Guided path: Budget + Reach + Setup=Handheld + Needs. Scoring: +10 per tag match. Highest score wins.</p>';
+
+  const handheldCombos = generateHandheldCombos();
+
+  // Group by winner
+  const byWinner = {};
+  handheldCombos.forEach(c => {
+    if (!byWinner[c.winner]) byWinner[c.winner] = [];
+    byWinner[c.winner].push(c);
+  });
+
+  Object.keys(byWinner).forEach(winner => {
+    const combos = byWinner[winner];
+    html += `<div class="radio-section">`;
+    const radio = handhelds.find(r => r.name === winner);
+    html += `<div class="radio-header"><span class="radio-name">${winner}</span><span class="radio-price">$${radio?.price}</span></div>`;
+    html += `<div class="radio-tags">${(radio?.tags || []).map(t => `<span class="tag">${t}</span>`).join('')}</div>`;
+    html += `<p style="color:#888;margin:8px 0;font-size:13px">${combos.length} combination${combos.length !== 1 ? 's' : ''} lead to this recommendation.</p>`;
+    html += '<table><thead><tr><th>Budget</th><th>Reach</th><th>Needs</th><th>Tags Collected</th><th>Winner Score</th><th>Runner-up</th><th>Runner Score</th></tr></thead><tbody>';
+    combos.forEach(c => {
+      html += `<tr>`;
+      html += `<td>${c.budget}</td>`;
+      html += `<td>${c.reach}</td>`;
+      html += `<td>${c.needs}</td>`;
+      html += `<td><div class="combo-tags">${c.tags.map(t => `<span class="combo-tag">${t}</span>`).join('')}</div></td>`;
+      html += `<td class="score">${c.winnerScore}</td>`;
+      html += `<td>${c.runner}</td>`;
+      html += `<td class="score">${c.runnerScore}</td>`;
+      html += `</tr>`;
+    });
+    html += '</tbody></table></div>';
+  });
+
+  // ── Section 3: Mobile Combos ──
+  html += '<h2 id="mobile-combos">Vehicle / Mobile Recommendations</h2>';
+  html += '<p style="color:#888;margin-bottom:8px;font-size:13px">Guided path: Budget + Reach + Setup=Vehicle. No needs question. Scoring: +10 per tag match.</p>';
+
+  const mobileCombos = generateMobileCombos();
+  const byMobileWinner = {};
+  mobileCombos.forEach(c => {
+    if (!byMobileWinner[c.winner]) byMobileWinner[c.winner] = [];
+    byMobileWinner[c.winner].push(c);
+  });
+
+  Object.keys(byMobileWinner).forEach(winner => {
+    const combos = byMobileWinner[winner];
+    const radio = mobileRadios.find(r => r.name === winner);
+    html += `<div class="radio-section">`;
+    html += `<div class="radio-header"><span class="radio-name">${winner}</span><span class="radio-price">$${radio?.price}</span></div>`;
+    html += `<div class="radio-tags">${(radio?.tags || []).map(t => `<span class="tag">${t}</span>`).join('')}</div>`;
+    html += `<p style="color:#888;margin:8px 0;font-size:13px">${combos.length} combination${combos.length !== 1 ? 's' : ''} lead to this recommendation.</p>`;
+    html += '<table><thead><tr><th>Budget</th><th>Reach</th><th>Tags Collected</th><th>All Scores</th></tr></thead><tbody>';
+    combos.forEach(c => {
+      const scoreStr = c.scores.map(s => `${s.name}: ${s.score}`).join(', ');
+      html += `<tr><td>${c.budget}</td><td>${c.reach}</td>`;
+      html += `<td><div class="combo-tags">${c.tags.map(t => `<span class="combo-tag">${t}</span>`).join('')}</div></td>`;
+      html += `<td>${scoreStr}</td></tr>`;
+    });
+    html += '</tbody></table></div>';
+  });
+
+  // ── Section 4: Base Station ──
+  html += '<h2 id="base-combos">Base Station Recommendations</h2>';
+  html += '<div class="path-section">';
+  html += '<p style="color:#aaa">Base station uses the same radio lineup as vehicle (UV-50PRO, D578). The scoring and recommendations are identical to the vehicle path above. The difference is in the accessory/antenna steps (base station antennas, power supply, etc.).</p>';
+  html += '</div>';
+
+  // ── Section 5: HF ──
+  html += '<h2 id="hf-combos">HF Recommendations</h2>';
+  html += '<div class="path-section">';
+  html += '<p style="color:#aaa;margin-bottom:12px">HF path is reached when user selects "Long distance" for reach OR manually selects HF in direct path. Currently only one HF radio available (FT-891 is out of stock).</p>';
+  html += '<table><thead><tr><th>Radio</th><th>Price</th><th>Tags</th><th>Status</th></tr></thead><tbody>';
+  hfRadios.forEach(r => {
+    html += `<tr><td>${r.name}</td><td>$${r.price}</td><td>${r.tags.join(', ')}</td><td>${r.outOfStock ? '<span style="color:#c55">Out of stock</span>' : '<span style="color:#5c5">Available</span>'}</td></tr>`;
+  });
+  html += '</tbody></table>';
+  html += '<p style="color:#888;margin-top:8px;font-size:12px">With FT-891 out of stock, G90 is always the only recommendation regardless of budget/reach answers.</p>';
+  html += '</div>';
+
+  // ── Section 6: Scanner ──
+  html += '<h2 id="scanner-combos">Scanner Lineup</h2>';
+  html += '<div class="path-section">';
+  html += '<p style="color:#aaa;margin-bottom:12px">Scanner path shows all available scanners. No tag-based scoring. Users choose directly from the lineup.</p>';
+  html += '<table><thead><tr><th>Radio</th><th>Price</th><th>Form Factor</th></tr></thead><tbody>';
+  scannerRadios.forEach(r => {
+    html += `<tr><td>${r.name}</td><td>$${r.price}</td><td>${r.form}</td></tr>`;
+  });
+  html += '</tbody></table></div>';
+
+  // ── Section 7: Tag Reference ──
+  html += '<h2 id="tag-reference">Tag Reference</h2>';
+  html += '<div class="path-section">';
+  html += '<h3>Answer Tags (what the user generates)</h3>';
+  html += '<table><thead><tr><th>Question</th><th>Answer</th><th>Tags Generated</th></tr></thead><tbody>';
+  budgetOptions.forEach(o => {
+    html += `<tr><td>Budget</td><td>${o.label}</td><td>${o.tags.join(', ') || '(none)'}</td></tr>`;
+  });
+  reachOptions.forEach(o => {
+    html += `<tr><td>Reach</td><td>${o.label}</td><td>${o.tags.join(', ') || '(none)'}</td></tr>`;
+  });
+  needsOptions.forEach(o => {
+    html += `<tr><td>Needs</td><td>${o.label}</td><td>${o.tags.join(', ') || '(none)'}</td></tr>`;
+  });
+  html += '</tbody></table>';
+
+  html += '<h3 style="margin-top:20px">Radio Tags (what radios have)</h3>';
+  html += '<table><thead><tr><th>Radio</th><th>Category</th><th>Tags</th></tr></thead><tbody>';
+  handhelds.forEach(r => {
+    html += `<tr><td>${r.name}</td><td><span class="category-badge cat-handheld">handheld</span></td><td>${r.tags.join(', ')}</td></tr>`;
+  });
+  mobileRadios.forEach(r => {
+    html += `<tr><td>${r.name}</td><td><span class="category-badge cat-mobile">mobile</span></td><td>${r.tags.join(', ')}</td></tr>`;
+  });
+  hfRadios.forEach(r => {
+    html += `<tr><td>${r.name}</td><td><span class="category-badge cat-hf">HF</span></td><td>${r.tags.join(', ')}</td></tr>`;
+  });
+  html += '</tbody></table>';
+  html += '</div>';
+
+  // ── Summary Stats ──
+  html += '<h2>Summary Statistics</h2>';
+  html += '<div class="path-section">';
+  const stats = {};
+  handheldCombos.forEach(c => { stats[c.winner] = (stats[c.winner] || 0) + 1; });
+  const total = handheldCombos.length;
+  html += `<p style="color:#aaa;margin-bottom:12px">Out of ${total} handheld answer combinations tested:</p>`;
+  html += '<table><thead><tr><th>Radio</th><th>Times Recommended</th><th>Percentage</th></tr></thead><tbody>';
+  Object.entries(stats).sort((a, b) => b[1] - a[1]).forEach(([name, count]) => {
+    html += `<tr><td>${name}</td><td>${count}</td><td>${(count / total * 100).toFixed(1)}%</td></tr>`;
+  });
+  html += '</tbody></table>';
+
+  // Tie analysis
+  const ties = handheldCombos.filter(c => c.winnerScore === c.runnerScore);
+  if (ties.length > 0) {
+    html += `<p style="color:#c85;margin-top:16px"><strong>${ties.length} combinations result in a tie</strong> (resolved by array order: UV-5R wins ties with UV-5R Mini, etc.)</p>`;
+    html += '<table><thead><tr><th>Budget</th><th>Reach</th><th>Needs</th><th>Tied Radios</th><th>Score</th></tr></thead><tbody>';
+    ties.forEach(c => {
+      const tiedRadios = c.scores.filter(s => s.score === c.winnerScore).map(s => s.name).join(', ');
+      html += `<tr><td>${c.budget}</td><td>${c.reach}</td><td>${c.needs}</td><td>${tiedRadios}</td><td class="score">${c.winnerScore}</td></tr>`;
+    });
+    html += '</tbody></table>';
+  }
+
+  html += '</div>';
+
+  document.getElementById('content').innerHTML = html;
+}
+
+render();
+</script>
+</body>
+</html>
