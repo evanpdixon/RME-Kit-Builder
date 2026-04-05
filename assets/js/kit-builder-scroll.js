@@ -290,7 +290,12 @@
   };
 
   // ── Interview Choice (Help Me Choose vs I Know What I Want) ──
+  let kbsGuidedMode = false;
+
   window.kbsStartGuided = function() {
+    kbsGuidedMode = true;
+    // Default to handheld for guided path; interview answers will refine
+    kbsAnswers['usage'] = ['handheld'];
     document.getElementById('kbs-interview-choice').style.display = 'none';
     document.getElementById('kbs-interview-stack').style.display = '';
     renderInterviewStack();
@@ -352,23 +357,29 @@
 
   function buildQuestionList() {
     kbsAllQuestions = [];
-    // Phase 1: Needs assessment questions (with condition checks)
-    if (typeof needsQuestions !== 'undefined') {
-      needsQuestions.forEach(q => {
-        // Check condition
-        if (q.condition && !q.condition(kbsAnswers)) return;
-        // Resolve dynamic options
-        const opts = q.getOptions ? q.getOptions(kbsAnswers) : q.options;
-        kbsAllQuestions.push({ ...q, options: opts, phase: 'needs' });
-      });
-    }
-    // Phase 2: Radio interview questions (handheld only)
-    // Other categories (mobile, base, HF, scanner) skip interview and go straight to radio selection
-    const detectedCategory = kbsDetectCategory();
-    if (detectedCategory === 'handheld' && typeof interviewQuestions !== 'undefined') {
-      interviewQuestions.forEach(q => {
-        kbsAllQuestions.push({ ...q, phase: 'interview' });
-      });
+    if (kbsGuidedMode) {
+      // Guided path: skip needs assessment, go straight to interview questions
+      // (assumes handheld; user chose "Help Me Choose")
+      if (typeof interviewQuestions !== 'undefined') {
+        interviewQuestions.forEach(q => {
+          kbsAllQuestions.push({ ...q, phase: 'interview' });
+        });
+      }
+    } else {
+      // Direct/needs path: show needs assessment questions first
+      if (typeof needsQuestions !== 'undefined') {
+        needsQuestions.forEach(q => {
+          if (q.condition && !q.condition(kbsAnswers)) return;
+          var opts = q.getOptions ? q.getOptions(kbsAnswers) : q.options;
+          kbsAllQuestions.push({ ...q, options: opts, phase: 'needs' });
+        });
+      }
+      var detectedCategory = kbsDetectCategory();
+      if (detectedCategory === 'handheld' && typeof interviewQuestions !== 'undefined') {
+        interviewQuestions.forEach(q => {
+          kbsAllQuestions.push({ ...q, phase: 'interview' });
+        });
+      }
     }
   }
 
