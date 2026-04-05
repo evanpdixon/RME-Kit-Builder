@@ -15,3 +15,8 @@ __pycache__/
 *.db-wal
 .env
 *.xml
+
+# Debug screenshots and temp artifacts
+*.png
+audit-screenshots/
+empty_cart()
