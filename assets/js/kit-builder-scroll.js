@@ -17,6 +17,10 @@
   // Track whether a radio has been selected in THIS flow (not leftover from base JS)
   let kbsRadioSelected = false;
 
+  // Multi-category tracking: all categories the user selected, and which are done
+  let kbsAllCategories = [];    // e.g. ['handheld', 'vehicle', 'base']
+  let kbsCompletedCategories = [];
+
   // ── Section State Machine ──────────────────────
   const SECTIONS = ['email', 'interview', 'radio', 'antennas', 'battery', 'accessories', 'programming', 'review', 'quantity'];
   const sectionState = {};
@@ -487,7 +491,100 @@
     var radio = lineup.find(function(r) { return r.key === selectedRadioKey; }) || radioLineup.find(function(r) { return r.key === selectedRadioKey; });
     var kitName = radio ? radio.name.replace(' Essentials Kit', '').replace(' Mobile Radio Kit', '') : 'Kit';
     if (kbsKitQty > 1) kitName += ' x' + kbsKitQty;
-    rmeKbAddToCart(items, kitName);
+
+    // Track completed category
+    if (!kbsCompletedCategories.includes(kbsCurrentCategory)) {
+      kbsCompletedCategories.push(kbsCurrentCategory);
+    }
+    // Map category keys for comparison (direct uses 'vehicle', detect returns 'mobile')
+    var catMap = { vehicle: 'mobile', mobile: 'mobile', handheld: 'handheld', base: 'base', hf: 'hf', scanner: 'scanner' };
+    var completedMapped = kbsCompletedCategories.map(function(c) { return catMap[c] || c; });
+
+    // Check for remaining categories
+    var remaining = kbsAllCategories.filter(function(c) {
+      return !completedMapped.includes(catMap[c] || c);
+    });
+
+    if (remaining.length > 0) {
+      // Add to cart, then prompt for next category
+      rmeKbAddToCart(items, kitName);
+      setTimeout(function() { kbsPromptNextCategory(remaining); }, 1500);
+    } else {
+      rmeKbAddToCart(items, kitName);
+    }
+  };
+
+  // ── Multi-category: prompt to build next kit type ──
+  function kbsPromptNextCategory(remaining) {
+    var catLabels = { handheld: 'Handheld', vehicle: 'Vehicle / Mobile', base: 'Base Station', hf: 'HF', scanner: 'Scanner' };
+    var nextCat = remaining[0];
+    var nextLabel = catLabels[nextCat] || nextCat;
+    var moreCount = remaining.length;
+
+    // Show prompt in the quantity section content area
+    var container = document.getElementById('kbs-qty-picker');
+    if (!container) return;
+    container.innerHTML =
+      '<div style="text-align:center;padding:20px 0">' +
+        '<div style="font-size:18px;color:var(--rme-gold);margin-bottom:8px;font-family:var(--rme-font-heading);text-transform:uppercase;letter-spacing:1px">Kit Added to Cart</div>' +
+        '<p style="color:#ccc;font-size:15px;margin-bottom:20px">You also selected <strong style="color:var(--rme-gold)">' + nextLabel + '</strong>' +
+          (moreCount > 1 ? ' and ' + (moreCount - 1) + ' more type' + (moreCount > 2 ? 's' : '') : '') + '. Ready to build ' + (moreCount === 1 ? 'it' : 'the next one') + '?</p>' +
+        '<div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">' +
+          '<button class="kb-btn kb-btn--primary" onclick="kbsStartNextCategory(\'' + nextCat + '\')">Build ' + nextLabel + ' Kit</button>' +
+          '<a href="/cart/" class="kb-btn kb-btn--secondary" style="text-decoration:none;display:inline-flex;align-items:center">Go to Cart</a>' +
+        '</div>' +
+      '</div>';
+
+    // Hide the cart button since we already added
+    disableCartBtn();
+    var cartBtn = document.getElementById('kbs-cart-btn');
+    if (cartBtn) cartBtn.style.display = 'none';
+    // Hide the back button
+    var backBtn = document.querySelector('#sec-quantity .kb-btn--secondary');
+    if (backBtn) backBtn.style.display = 'none';
+  }
+
+  window.kbsStartNextCategory = function(catKey) {
+    // Map direct category keys to internal ones
+    var catMap = { vehicle: 'mobile', handheld: 'handheld', base: 'base', hf: 'hf', scanner: 'scanner' };
+    kbsCurrentCategory = catMap[catKey] || catKey;
+
+    // Reset product selections
+    selectedAntennas = new Set();
+    selectedAddlAntennas = new Set();
+    selectedBatteries = new Map();
+    selectedAccessories = new Set();
+    programmingChoice = 'standard';
+    adapterSuppressed = false;
+    kbsRadioSelected = false;
+    kbsKitQty = 1;
+    selectedRadioKey = '';
+
+    // Set answers so category detection returns the right type
+    kbsAnswers['usage'] = [catKey];
+
+    // Reset sections 3-9 to locked, activate radio section
+    ['radio', 'antennas', 'battery', 'accessories', 'programming', 'review', 'quantity'].forEach(function(s) {
+      sectionState[s] = 'locked';
+    });
+    sectionState['radio'] = 'active';
+
+    // Adapt section headings for the new category
+    adaptSectionsForCategory(kbsCurrentCategory);
+
+    // Render radio grid for the new category
+    renderScrollRadioGrid();
+
+    // Show cart button again
+    var cartBtn = document.getElementById('kbs-cart-btn');
+    if (cartBtn) { cartBtn.style.display = ''; cartBtn.disabled = true; }
+    // Show back button again
+    var backBtns = document.querySelectorAll('#sec-quantity .kb-btn--secondary');
+    backBtns.forEach(function(b) { b.style.display = ''; });
+
+    applyAllStates();
+    scrollToSection('radio');
+    updateScrollPriceBar();
   };
 
   // ── Email Section ─────────────────────────────
@@ -583,6 +680,8 @@
   window.kbsDirectProceed = function() {
     // Set usage answers so category detection works
     kbsAnswers['usage'] = kbsDirectCategories;
+    // Track all selected categories for multi-kit flow
+    kbsAllCategories = kbsDirectCategories.slice();
     // Pre-render radio grid before transition
     renderScrollRadioGrid();
     // Use the standard animated transition
@@ -822,6 +921,13 @@
     pushSectionState('interview-results');
     const category = kbsDetectCategory();
     const lineup = kbsGetRadioLineup();
+
+    // Track all selected categories for multi-kit flow (guided path)
+    if (kbsAllCategories.length === 0) {
+      var setup = kbsAnswers['setup'] || [];
+      var usage = kbsAnswers['usage'] || [];
+      kbsAllCategories = (setup.length > 0 ? setup : usage).slice();
+    }
 
     // For non-handheld categories, the wizard steps are different (vehicle setup, coax, etc.)
     // Route to V1's category-specific flow for now
