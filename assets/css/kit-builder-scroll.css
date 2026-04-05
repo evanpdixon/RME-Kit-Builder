@@ -1,5 +1,9 @@
 /* RME Kit Builder - Scroll Variant Styles */
 
+/* Suppress Mailchimp popup on kit builder pages: it covers interactive
+   elements and blocks the purchase flow. */
+.mcforms-wrapper { display: none !important; }
+
 /* The scroll variant wraps content in #rme-kit-builder so base component
    styles (opt-card, oc-check, review-item, etc.) apply without duplication.
    We override the container layout here since scroll uses its own structure. */
