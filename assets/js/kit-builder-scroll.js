@@ -1222,6 +1222,27 @@
     }
   }
 
+  // ── Shared card renderer ───────────────────────
+  function renderOneCard(p, badge, isSelected) {
+    return '<div class="opt-card ' + (isSelected ? 'selected' : '') + '"' +
+      ' onclick="toggleAntenna(\'' + p.key + '\')">' +
+      '<div class="oc-check">' + (isSelected ? '\u2713' : '') + '</div>' +
+      '<div class="oc-img">' + (p.img ? '<img src="' + p.img + '" alt="' + p.name + '">' : '<div class="oc-img--placeholder-icon">A</div>') + '</div>' +
+      '<div class="oc-body">' +
+        (badge ? '<div class="oc-best-use">' + badge + '</div>' : '') +
+        '<div class="oc-name">' + p.name + '</div>' +
+        '<div class="oc-desc">' + (p.desc || '') + '</div>' +
+      '</div>' +
+      '<div class="oc-price">+$' + p.price + '</div>' +
+    '</div>';
+  }
+
+  function renderProductCards(products) {
+    return products.map(function(p) {
+      return renderOneCard(p, p.bestUse || '', selectedAntennas.has(p.key));
+    }).join('');
+  }
+
   // Render category-specific product options in a section
   window.kbsRenderCategoryProducts = renderCategoryProducts;
   function renderCategoryProducts(section, category, radioKey) {
@@ -1240,59 +1261,58 @@
       const container = document.getElementById('antenna-options');
       if (!container) return;
       const isBase = category === 'base';
-      let products = [];
 
       if (isBase && typeof baseProducts !== 'undefined') {
-        // Base: antenna path options
-        const quick = baseProducts.antennaPath.quick;
-        const perm = baseProducts.antennaPath.permanent;
+        // Base: antenna path options (unchanged)
+        var products = [];
+        var quick = baseProducts.antennaPath.quick;
+        var perm = baseProducts.antennaPath.permanent;
         products.push(...quick.items.map(i => ({ ...i, bestUse: 'Best for: Quick Setup' })));
         products.push(...perm.antennas.map(i => ({ ...i, bestUse: 'Best for: Permanent Install' })));
+        container.innerHTML = renderProductCards(products);
       } else if (typeof mobileProducts !== 'undefined') {
-        // Mobile: universal mounts (exclude fender mounts) + antennas
+        // Mobile: Antenna first, then mount
+        var antennas = mobileProducts.vehicleAntennas || [];
         var universalMounts = (mobileProducts.antennaMounts || []).filter(m => !m.isFenderMount);
         var fenderMounts = (mobileProducts.antennaMounts || []).filter(m => m.isFenderMount);
-        products.push(...universalMounts.map(m => ({ ...m, bestUse: m.mountType === 'permanent' ? 'Best for: Permanent Mount' : 'Best for: Temporary Mount' })));
-        products.push(...(mobileProducts.vehicleAntennas || []).map(a => ({ ...a, bestUse: a.recommended ? 'Best for: All-Around Performance' : '' })));
 
-        // Build fender mount picker HTML
-        var fenderHtml = '';
+        var html = '';
+
+        // ── Group 1: Choose your antenna ──
+        html += '<div class="kbs-group-label">Choose Your Antenna</div>';
+        html += antennas.map(a => renderOneCard(a, a.recommended ? 'Recommended' : '', selectedAntennas.has(a.key))).join('');
+
+        // ── Group 2: Choose a mount ──
+        html += '<div class="kbs-group-label" style="margin-top:24px">Choose a Mount</div>';
+
+        // Fender mount picker (vehicle-specific, shown first)
         if (fenderMounts.length > 0) {
           var selectedVehicle = window._kbsSelectedVehicle || '';
-          fenderHtml = '<div class="kbs-fender-picker">' +
+          html += '<div class="kbs-fender-picker">' +
             '<div class="kbs-fender-picker__label">Have a supported truck? Add a no-drill fender mount for $29:</div>' +
             '<select class="kbs-fender-select" onchange="window._kbsSelectedVehicle=this.value;kbsRenderCategoryProducts(\'antennas\',\'' + category + '\',\'' + radioKey + '\')">' +
             '<option value="">Select your vehicle (optional)</option>';
           fenderMounts.forEach(function(m) {
             var label = m.name.replace('NCG ', '').replace(/\s*\(.*\)/, '');
-            fenderHtml += '<option value="' + m.key + '"' + (selectedVehicle === m.key ? ' selected' : '') + '>' + label + '</option>';
+            html += '<option value="' + m.key + '"' + (selectedVehicle === m.key ? ' selected' : '') + '>' + label + '</option>';
           });
-          fenderHtml += '</select></div>';
+          html += '</select></div>';
 
-          // If a fender mount is selected, add it to products
           if (selectedVehicle) {
             var matched = fenderMounts.find(m => m.key === selectedVehicle);
             if (matched) {
-              products.unshift({ ...matched, bestUse: 'Recommended for Your Vehicle' });
+              html += renderOneCard(matched, 'Recommended for Your Vehicle', selectedAntennas.has(matched.key));
             }
           }
         }
-      }
 
-      var prefixHtml = category === 'mobile' ? (fenderHtml || '') : '';
-      container.innerHTML = prefixHtml + products.map(p => `
-        <div class="opt-card ${selectedAntennas.has(p.key) ? 'selected' : ''}"
-             onclick="toggleAntenna('${p.key}')">
-          <div class="oc-check">${selectedAntennas.has(p.key) ? '\u2713' : ''}</div>
-          <div class="oc-img">${p.img ? '<img src="' + p.img + '" alt="' + p.name + '">' : '<div class="oc-img--placeholder-icon">A</div>'}</div>
-          <div class="oc-body">
-            ${p.bestUse ? '<div class="oc-best-use">' + p.bestUse + '</div>' : ''}
-            <div class="oc-name">${p.name}</div>
-            <div class="oc-desc">${p.desc || ''}</div>
-          </div>
-          <div class="oc-price">+$${p.price}</div>
-        </div>
-      `).join('');
+        // Universal mounts
+        html += universalMounts.map(m =>
+          renderOneCard(m, m.mountType === 'permanent' ? 'Permanent' : 'Temporary / Removable', selectedAntennas.has(m.key))
+        ).join('');
+
+        container.innerHTML = html;
+      }
     }
 
     if (section === 'battery') {

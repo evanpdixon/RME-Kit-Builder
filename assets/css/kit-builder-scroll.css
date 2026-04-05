@@ -637,6 +637,17 @@
   #rme-kit-builder-scroll #rme-kit-builder .oc-best-use { font-size: 10px; }
 }
 
+/* ── Antenna group labels ────────── */
+.kbs-group-label {
+  font-family: var(--rme-font-heading);
+  font-size: 14px; font-weight: 600;
+  color: var(--rme-gold-dim);
+  text-transform: uppercase; letter-spacing: 1.5px;
+  padding: 12px 0 8px;
+  border-bottom: 1px solid var(--rme-border);
+  margin-bottom: 0;
+}
+
 /* ── Vehicle fender mount picker ── */
 .kbs-fender-picker {
   background: var(--rme-card); border: 1px solid var(--rme-border);
