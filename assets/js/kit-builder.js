@@ -3610,7 +3610,7 @@ function renderProgramming(opts) {
 function renderProgLocationFields() {
   const shipChecked = progUseShipping ? 'checked' : '';
   const diffChecked = !progUseShipping ? 'checked' : '';
-  const confirmedHtml = progConfirmedPrimary ? `<div class="prog-confirmed">✅ ${progConfirmedPrimary}</div>` : '';
+  const confirmedHtml = progConfirmedPrimary ? `<div class="prog-confirmed">\u2705 ${progConfirmedPrimary}</div>` : '';
   return `
     <div class="prog-section" onclick="event.stopPropagation()" style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
       <div class="prog-field">
@@ -3629,7 +3629,7 @@ function renderProgLocationFields() {
             <input type="text" maxlength="60" placeholder="e.g. 90210 or Denver, CO" value="${progZipPrimary}"
                    oninput="progZipPrimary=this.value;clearProgConfirm('primary')" onfocus="event.stopPropagation()"
                    onkeydown="if(event.key==='Enter'){event.preventDefault();lookupLocation('primary')}">
-            <button class="prog-lookup-btn" onclick="event.stopPropagation();lookupLocation('primary')">Verify</button>
+            <button class="prog-lookup-btn${progConfirmedPrimary ? ' prog-lookup-done' : ''}" onclick="event.stopPropagation();lookupLocation('primary')">${progConfirmedPrimary ? '\u2713 Verified' : 'Verify'}</button>
           </div>
           ${confirmedHtml}
           <div class="prog-note">We use this as the center point of our repeater search, pulling in repeaters from the surrounding area. One central location usually covers a wide radius, no need to add nearby cities separately.</div>
@@ -3656,7 +3656,7 @@ function renderProgMultiFields() {
         <input type="text" maxlength="60" placeholder="Zip code or City, State" value="${progZipPrimary}"
                oninput="progZipPrimary=this.value;clearProgConfirm('primary')" onfocus="event.stopPropagation()"
                onkeydown="if(event.key==='Enter'){event.preventDefault();lookupLocation('primary')}">
-        <button class="prog-lookup-btn" onclick="event.stopPropagation();lookupLocation('primary')">Verify</button>
+        <button class="prog-lookup-btn${progConfirmedPrimary ? ' prog-lookup-done' : ''}" onclick="event.stopPropagation();lookupLocation('primary')">${progConfirmedPrimary ? '\u2713 Verified' : 'Verify'}</button>
       </div>
       ${confirmedPri}
     </div>
@@ -3674,7 +3674,7 @@ function renderProgMultiFields() {
           <input type="text" maxlength="60" placeholder="Zip code or City, State" value="${progZipsExtra[i]}"
                  oninput="progZipsExtra[${i}]=this.value;clearProgConfirm('extra',${i})" onfocus="event.stopPropagation()"
                  onkeydown="if(event.key==='Enter'){event.preventDefault();lookupLocation('extra',${i})}">
-          <button class="prog-lookup-btn" onclick="event.stopPropagation();lookupLocation('extra',${i})">Verify</button>
+          <button class="prog-lookup-btn${progConfirmedExtras[i] ? ' prog-lookup-done' : ''}" onclick="event.stopPropagation();lookupLocation('extra',${i})">${progConfirmedExtras[i] ? '\u2713 Verified' : 'Verify'}</button>
           <button class="prog-zip-remove" onclick="event.stopPropagation();removeProgZip(${i})" title="Remove">&times;</button>
         </div>
         ${confirmedExtra}

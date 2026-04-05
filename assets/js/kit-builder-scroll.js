@@ -1222,12 +1222,38 @@
     }
   }
 
+  // ── SVG line-art placeholders for imageless products ──
+  var PLACEHOLDER_SVG = {
+    antenna: '<svg viewBox="0 0 40 40" fill="none" stroke="#555" stroke-width="1.5"><line x1="20" y1="4" x2="20" y2="36"/><line x1="12" y1="10" x2="20" y2="18"/><line x1="28" y1="10" x2="20" y2="18"/><circle cx="20" cy="36" r="2"/></svg>',
+    mount: '<svg viewBox="0 0 40 40" fill="none" stroke="#555" stroke-width="1.5"><rect x="8" y="24" width="24" height="4" rx="1"/><line x1="20" y1="24" x2="20" y2="12"/><circle cx="20" cy="10" r="3"/><line x1="6" y1="32" x2="34" y2="32"/></svg>',
+    cable: '<svg viewBox="0 0 40 40" fill="none" stroke="#555" stroke-width="1.5"><path d="M10 8 C10 20 30 20 30 32"/><circle cx="10" cy="6" r="2"/><circle cx="30" cy="34" r="2"/></svg>',
+    battery: '<svg viewBox="0 0 40 40" fill="none" stroke="#555" stroke-width="1.5"><rect x="10" y="10" width="20" height="24" rx="2"/><rect x="15" y="6" width="10" height="4" rx="1"/><line x1="20" y1="17" x2="20" y2="27"/><line x1="15" y1="22" x2="25" y2="22"/></svg>',
+    accessory: '<svg viewBox="0 0 40 40" fill="none" stroke="#555" stroke-width="1.5"><rect x="8" y="8" width="24" height="24" rx="4"/><circle cx="20" cy="20" r="6"/><circle cx="20" cy="20" r="2"/></svg>',
+    power: '<svg viewBox="0 0 40 40" fill="none" stroke="#555" stroke-width="1.5"><path d="M22 6 L14 22 H20 L18 34 L28 16 H21 Z"/></svg>',
+  };
+
+  function getPlaceholderSvg(product) {
+    var name = (product.name || '').toLowerCase();
+    var key = (product.key || '').toLowerCase();
+    if (name.includes('mount') || key.includes('mount')) return PLACEHOLDER_SVG.mount;
+    if (name.includes('antenna') || name.includes('whip') || name.includes('stick') || name.includes('stubby') || name.includes('discone')) return PLACEHOLDER_SVG.antenna;
+    if (name.includes('cable') || name.includes('coax') || name.includes('harness') || name.includes('pigtail') || name.includes('adapter')) return PLACEHOLDER_SVG.cable;
+    if (name.includes('battery') || name.includes('eliminator')) return PLACEHOLDER_SVG.battery;
+    if (name.includes('power') || name.includes('charger') || name.includes('supply')) return PLACEHOLDER_SVG.power;
+    return PLACEHOLDER_SVG.accessory;
+  }
+
+  function productImgHtml(p) {
+    return p.img ? '<img src="' + p.img + '" alt="' + (p.name || '') + '">' : '<div class="oc-img--placeholder-icon">' + getPlaceholderSvg(p) + '</div>';
+  }
+
   // ── Shared card renderer ───────────────────────
   function renderOneCard(p, badge, isSelected) {
+    var imgHtml = productImgHtml(p);
     return '<div class="opt-card ' + (isSelected ? 'selected' : '') + '"' +
       ' onclick="toggleAntenna(\'' + p.key + '\')">' +
       '<div class="oc-check">' + (isSelected ? '\u2713' : '') + '</div>' +
-      '<div class="oc-img">' + (p.img ? '<img src="' + p.img + '" alt="' + p.name + '">' : '<div class="oc-img--placeholder-icon">A</div>') + '</div>' +
+      '<div class="oc-img">' + imgHtml + '</div>' +
       '<div class="oc-body">' +
         (badge ? '<div class="oc-best-use">' + badge + '</div>' : '') +
         '<div class="oc-name">' + p.name + '</div>' +
@@ -1340,7 +1366,7 @@
           html += '<div class="opt-card ' + (selectedBatteries.has(spareHarness.key) ? 'selected' : '') + '"' +
             ' onclick="toggleBattery(\'' + spareHarness.key + '\')">' +
             '<div class="oc-check">' + (selectedBatteries.has(spareHarness.key) ? '\u2713' : '') + '</div>' +
-            '<div class="oc-img"><div class="oc-img--placeholder-icon">P</div></div>' +
+            '<div class="oc-img">' + productImgHtml({name:'Spare Wiring Harness',key:'wiring-harness'}) + '</div>' +
             '<div class="oc-body">' +
               '<div class="oc-name">Spare Wiring Harness</div>' +
               '<div class="oc-desc">Extra direct-wire harness. Handy if you move the radio between vehicles.</div>' +
@@ -1363,7 +1389,7 @@
         return '<div class="opt-card ' + (selectedBatteries.has(p.key) ? 'selected' : '') + '"' +
              ' onclick="toggleBattery(\'' + p.key + '\')">' +
           '<div class="oc-check">' + (selectedBatteries.has(p.key) ? '\u2713' : '') + '</div>' +
-          '<div class="oc-img">' + (p.img ? '<img src="' + p.img + '" alt="' + p.name + '">' : '<div class="oc-img--placeholder-icon">A</div>') + '</div>' +
+          '<div class="oc-img">' + productImgHtml(p) + '</div>' +
           '<div class="oc-body">' +
             '<div class="oc-name">' + p.name + '</div>' +
             '<div class="oc-desc">' + (p.desc || '') + '</div>' +
@@ -1385,7 +1411,7 @@
         <div class="opt-card ${selectedAccessories.has(a.key) ? 'selected' : ''}"
              onclick="toggleAccessory('${a.key}')">
           <div class="oc-check">${selectedAccessories.has(a.key) ? '\u2713' : ''}</div>
-          <div class="oc-img">${a.img ? '<img src="' + a.img + '" alt="' + a.name + '">' : '<div class="oc-img--placeholder-icon">A</div>'}</div>
+          <div class="oc-img">${productImgHtml(a)}</div>
           <div class="oc-body">
             <div class="oc-name">${a.name}</div>
             <div class="oc-desc">${a.desc || ''}</div>
@@ -1405,7 +1431,7 @@
         <div class="opt-card ${selectedAntennas.has(a.key) ? 'selected' : ''}"
              onclick="toggleAntenna('${a.key}')">
           <div class="oc-check">${selectedAntennas.has(a.key) ? '\u2713' : ''}</div>
-          <div class="oc-img">${a.img ? '<img src="' + a.img + '" alt="' + a.name + '">' : '<div class="oc-img--placeholder-icon">A</div>'}</div>
+          <div class="oc-img">${productImgHtml(a)}</div>
           <div class="oc-body">
             <div class="oc-name">${a.name}</div>
             <div class="oc-desc">${a.desc || ''}</div>
@@ -1427,7 +1453,7 @@
         <div class="opt-card ${selectedAccessories.has(a.key) ? 'selected' : ''}"
              onclick="toggleAccessory('${a.key}')">
           <div class="oc-check">${selectedAccessories.has(a.key) ? '\u2713' : ''}</div>
-          <div class="oc-img">${a.img ? '<img src="' + a.img + '" alt="' + a.name + '">' : '<div class="oc-img--placeholder-icon">A</div>'}</div>
+          <div class="oc-img">${productImgHtml(a)}</div>
           <div class="oc-body">
             <div class="oc-name">${a.name}</div>
             <div class="oc-desc">${a.desc || ''}</div>
@@ -1448,7 +1474,7 @@
         <div class="opt-card ${selectedAntennas.has(a.key) ? 'selected' : ''}"
              onclick="toggleAntenna('${a.key}')">
           <div class="oc-check">${selectedAntennas.has(a.key) ? '\u2713' : ''}</div>
-          <div class="oc-img">${a.img ? '<img src="' + a.img + '" alt="' + a.name + '">' : '<div class="oc-img--placeholder-icon">A</div>'}</div>
+          <div class="oc-img">${productImgHtml(a)}</div>
           <div class="oc-body">
             <div class="oc-name">${a.name}</div>
             <div class="oc-desc">${a.desc || ''}</div>
@@ -1471,7 +1497,7 @@
         <div class="opt-card ${selectedAccessories.has(a.key) ? 'selected' : ''}"
              onclick="toggleAccessory('${a.key}')">
           <div class="oc-check">${selectedAccessories.has(a.key) ? '\u2713' : ''}</div>
-          <div class="oc-img">${a.img ? '<img src="' + a.img + '" alt="' + a.name + '">' : '<div class="oc-img--placeholder-icon">A</div>'}</div>
+          <div class="oc-img">${productImgHtml(a)}</div>
           <div class="oc-body">
             <div class="oc-name">${a.name}</div>
             <div class="oc-desc">${a.desc || ''}</div>

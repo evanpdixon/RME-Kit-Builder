@@ -324,11 +324,11 @@
 }
 #rme-kit-builder .prog-zip-remove:hover { border-color: var(--rme-red); color: var(--rme-red); }
 #rme-kit-builder .prog-add-zip {
-  display: inline-block; padding: 6px 14px; font-size: 13px; color: var(--rme-gold);
-  background: transparent; border: 1px dashed var(--rme-border); border-radius: 6px;
-  cursor: pointer; transition: all 0.2s;
+  display: inline-block; padding: 10px 20px; font-size: 13px; font-weight: 600; color: var(--rme-gold);
+  background: transparent; border: 2px solid var(--rme-gold); border-radius: 8px;
+  cursor: pointer; transition: all 0.2s; text-transform: uppercase; letter-spacing: 1px;
 }
-#rme-kit-builder .prog-add-zip:hover { border-color: var(--rme-gold-dim); background: #1a1800; }
+#rme-kit-builder .prog-add-zip:hover { background: rgba(253,211,81,0.1); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(253,211,81,0.15); }
 #rme-kit-builder .prog-note { font-size: 12px; color: var(--rme-muted); margin-top: 6px; line-height: 1.5; }
 #rme-kit-builder .prog-lookup-btn {
   padding: 8px 16px; background: var(--rme-gold); color: #111; border: none; border-radius: 6px;
@@ -336,6 +336,11 @@
   text-transform: uppercase; letter-spacing: 1px;
 }
 #rme-kit-builder .prog-lookup-btn:hover { background: var(--rme-gold-dim); }
+#rme-kit-builder .prog-lookup-btn.prog-lookup-done {
+  background: #1a2a1a; color: #4caf50; border: 1px solid #2a3a2a;
+  opacity: 0.7; cursor: default;
+}
+#rme-kit-builder .prog-lookup-btn.prog-lookup-done:hover { background: #1a2a1a; }
 #rme-kit-builder .prog-confirmed { font-size: 13px; color: var(--rme-green); margin-top: 6px; padding: 6px 10px; background: #1a2a1a; border-radius: 6px; }
 #rme-kit-builder .prog-radio-row {
   display: flex; align-items: center; gap: 10px; padding: 10px 0; min-height: 44px; cursor: pointer; font-size: 14px;

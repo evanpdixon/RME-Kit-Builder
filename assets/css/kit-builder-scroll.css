@@ -681,13 +681,14 @@
 #rme-kit-builder .oc-img--placeholder-icon,
 #rme-kit-builder .oc-img.oc-img--placeholder {
   display: flex; align-items: center; justify-content: center;
-  color: #333; font-size: 24px; font-weight: 700;
-  font-family: var(--rme-font-heading, 'Barlow Semi Condensed', sans-serif);
   background: #0a0a0a; border: 1px solid var(--rme-border);
   border-radius: 6px;
 }
 #rme-kit-builder .oc-img--placeholder-icon {
   width: 100%; height: 100%;
+}
+#rme-kit-builder .oc-img--placeholder-icon svg {
+  width: 40px; height: 40px; opacity: 0.3;
 }
 
 /* ── Programming: equal weight for all options ── */
