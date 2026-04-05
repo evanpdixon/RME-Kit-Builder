@@ -2,7 +2,7 @@
 /**
  * Plugin Name: RME Kit Builder
  * Description: Interactive radio kit builder wizard with WooCommerce cart integration. Use [rme_kit_builder] shortcode.
- * Version: 1.0.0
+ * Version: 2.2.0
  * Author: Radio Made Easy
  * Requires PHP: 7.4
  * Requires at least: 5.8

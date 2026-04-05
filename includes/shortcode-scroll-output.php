@@ -105,7 +105,7 @@
     </div>
     <div class="kb-section__summary" style="display:none"></div>
     <div class="kb-section__content">
-      <p></p>
+      <p>Your kit includes the factory battery. Add spares for extended runtime in the field.</p>
       <div class="options-grid" id="battery-options"></div>
       <div class="kb-section__actions">
         <button class="kb-btn kb-btn--secondary" onclick="kbsGoBack('battery')">Back</button>

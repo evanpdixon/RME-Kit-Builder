@@ -68,6 +68,7 @@
       if (next === 'mounting' && kbsCurrentCategory !== 'mobile' && kbsCurrentCategory !== 'base') {
         document.getElementById('sec-mounting').style.display = 'none';
         sectionState['mounting'] = 'complete';
+        renumberSections();
         // Immediately advance to antennas
         var antEl = document.getElementById('sec-antennas');
         if (antEl) { antEl.classList.remove('kb-section--locked'); antEl.classList.add('kb-section--loading'); }
@@ -85,6 +86,7 @@
       }
       if (next === 'mounting') {
         document.getElementById('sec-mounting').style.display = '';
+        renumberSections();
         renderMountingOptions();
         return;
       }
@@ -1258,13 +1260,15 @@
       });
     }
 
-    grid.innerHTML = lineup.filter(r => !r.outOfStock).map(r => {
+    grid.innerHTML = lineup.map(r => {
       var isMatch = r.key === matchedRadioKey;
+      var oos = r.outOfStock;
       return `
-      <div class="radio-pick${isMatch ? ' radio-pick--match' : ''}" onclick="${category === 'handheld' ? "kbsSelectRadio('" + r.key + "')" : "kbsSelectNonHandheld('" + r.key + "','" + category + "')"}">
+      <div class="radio-pick${isMatch ? ' radio-pick--match' : ''}${oos ? ' radio-pick--oos' : ''}" ${oos ? '' : 'onclick="' + (category === 'handheld' ? "kbsSelectRadio('" + r.key + "')" : "kbsSelectNonHandheld('" + r.key + "','" + category + "')") + '"'}>
         <div class="rp-img"><img src="${r.img}" alt="${r.name}"></div>
         <div class="rp-info">
           <h4>${r.name.replace(' Essentials Kit', '').replace(' Mobile Radio Kit', '')}</h4>
+          ${oos ? '<div class="rp-match" style="color:var(--rme-red);background:rgba(238,85,85,0.12);border-color:var(--rme-red)">Out of Stock</div>' : ''}
           ${isMatch ? '<div class="rp-match">' + matchLabel + '</div>' : ''}
           <div class="rp-price">$${r.price}</div>
           <div class="rp-tag">${r.tagline}</div>
@@ -1366,10 +1370,18 @@
     // Adapt section labels for this category
     adaptSectionsForCategory(category);
 
+    // Determine first product section: mounting for vehicle/base, antennas for others
+    var showMounting = (category === 'mobile' || category === 'base');
+    var firstSection = showMounting ? 'mounting' : 'antennas';
+    var firstEl = document.getElementById('sec-' + firstSection);
+
+    if (showMounting) {
+      document.getElementById('sec-mounting').style.display = '';
+    }
+
     // Find current active section to fade out
     const activeSection = SECTIONS.find(s => sectionState[s] === 'active');
     const activeEl = activeSection ? document.getElementById('sec-' + activeSection) : null;
-    const antennasEl = document.getElementById('sec-antennas');
 
     // Phase 1: Fade out current section
     if (activeEl) activeEl.classList.add('kb-section--fading');
@@ -1379,18 +1391,22 @@
       renderSummary('radio');
       applyAllStates();
 
-      // Show loading spinner on antennas
-      if (antennasEl) {
-        antennasEl.classList.remove('kb-section--locked');
-        antennasEl.classList.add('kb-section--loading');
+      // Show loading spinner on first product section
+      if (firstEl) {
+        firstEl.classList.remove('kb-section--locked');
+        firstEl.classList.add('kb-section--loading');
       }
-      scrollToSection('antennas');
+      scrollToSection(firstSection);
 
       // Phase 2: Render content behind spinner, then reveal
       setTimeout(function() {
-        renderCategoryProducts('antennas', category, radioKey);
-        sectionState['antennas'] = 'active';
-        if (antennasEl) antennasEl.classList.remove('kb-section--loading');
+        if (showMounting) {
+          renderMountingOptions();
+        } else {
+          renderCategoryProducts('antennas', category, radioKey);
+        }
+        sectionState[firstSection] = 'active';
+        if (firstEl) firstEl.classList.remove('kb-section--loading');
         applyAllStates();
         updateScrollPriceBar();
         updateConsultLinks();
@@ -1448,6 +1464,18 @@
     updateScrollPriceBar();
   };
 
+  // Renumber visible sections sequentially so there are no gaps
+  function renumberSections() {
+    var num = 1;
+    SECTIONS.forEach(function(s) {
+      var el = document.getElementById('sec-' + s);
+      if (!el || el.style.display === 'none') return;
+      var badge = el.querySelector('.kb-section__number');
+      if (badge) badge.textContent = num;
+      num++;
+    });
+  }
+
   function adaptSectionsForCategory(cat) {
     const headings = {
       mobile: { antennas: 'Antenna & Mount', battery: 'Power Setup', accessories: 'Accessories', programming: 'Custom Programming' },
@@ -1474,6 +1502,12 @@
         if (p) p.textContent = d[sec];
       });
     }
+    // Hide battery section for scanner (it just shows a "no options" message)
+    if (cat === 'scanner') {
+      document.getElementById('sec-battery').style.display = 'none';
+      sectionState['battery'] = 'complete';
+    }
+    renumberSections();
   }
 
   // ── SVG line-art placeholders for imageless products ──
@@ -2242,6 +2276,8 @@
     });
     // Initialize product page mode if applicable
     initProductPageMode();
+    // Renumber sections (mounting is hidden initially, so 1-2-3-4-5... not 1-2-3-5-6...)
+    renumberSections();
   });
 
 })();

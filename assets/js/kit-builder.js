@@ -972,7 +972,6 @@ const hfRadioLineup = [
     pitch: 'Full-featured 100W HF radio covering 1.8-54 MHz. Excellent receiver, built for serious HF operators. Includes MARS/CAP mod.',
     features: ['100W HF', '1.8-54 MHz', 'Superior receiver', 'MARS/CAP mod included', 'Rugged build'],
     tags: ['premium', 'hf', 'power'],
-    outOfStock: true
   },
 ];
 
@@ -986,11 +985,11 @@ const mobileProducts = {
     { key: 'lipmount-nmo', name: 'Comet CP-5NMO Antenna Lip Mount', desc: 'Permanent lip mount, the most stable option. Mounts on trunk/hood lip without drilling.', price: 99, id: 7013, mountType: 'permanent', img: S+'2025/03/61NAaQUrDSL._AC_SL1500_.jpg' },
     { key: 'lipmount-so239', name: 'Comet CP-5M Antenna Lip Mount (SO-239)', desc: 'Permanent lip mount with SO-239 connector.', price: 99, id: 7277, mountType: 'permanent', img: S+'2025/05/CP-5M__12349.jpg' },
     { key: 'fender-tacoma', name: 'NCG Tacoma Fender Mount (TACANTNCG)', desc: 'No-drill NMO fender bracket for Toyota Tacoma 2016-2023. Uses existing fender bolts.', price: 29, id: 8224, mountType: 'permanent', vehicleMatch: 'tacoma', isFenderMount: true },
-    { key: 'fender-ford', name: 'NCG Ford Truck Fender Mount (FO3ANTNCG)', desc: 'No-drill NMO fender bracket for Ford F-150 (2015+), F-250/F-350 (2017+), Expedition (2018+).', price: 29, id: null, mountType: 'permanent', vehicleMatch: 'ford-truck', isFenderMount: true },
-    { key: 'fender-chevy', name: 'NCG Silverado/Sierra Fender Mount (CV3ANTNCG)', desc: 'No-drill NMO fender bracket for Chevy Silverado/GMC Sierra 1500 (2019-24), 2500/3500 (2020-23).', price: 29, id: null, mountType: 'permanent', vehicleMatch: 'chevy-truck', isFenderMount: true },
-    { key: 'fender-ram', name: 'NCG Ram Fender Mount (DG2ANTPF)', desc: 'No-drill NMO fender bracket for Ram 1500/2500/3500 (2009-2018). Driver side.', price: 29, id: null, mountType: 'permanent', vehicleMatch: 'ram-truck', isFenderMount: true },
-    { key: 'fender-ram-new', name: 'NCG Ram Fender Mount (DG3ANTNCG)', desc: 'No-drill NMO fender bracket for Ram 1500/2500/3500 (2019-2023). Driver side.', price: 29, id: null, mountType: 'permanent', vehicleMatch: 'ram-truck-new', isFenderMount: true },
-    { key: 'fender-colorado', name: 'NCG Colorado/Canyon Fender Mount (COANTNCG)', desc: 'No-drill NMO fender bracket for Chevy Colorado/GMC Canyon (2012-2022).', price: 29, id: null, mountType: 'permanent', vehicleMatch: 'colorado', isFenderMount: true },
+    { key: 'fender-ford', name: 'NCG Ford Truck Fender Mount (FO3ANTNCG)', desc: 'No-drill NMO fender bracket for Ford F-150 (2015+), F-250/F-350 (2017+), Expedition (2018+).', price: 29, id: 9602, mountType: 'permanent', vehicleMatch: 'ford-truck', isFenderMount: true },
+    { key: 'fender-chevy', name: 'NCG Silverado/Sierra Fender Mount (CV3ANTNCG)', desc: 'No-drill NMO fender bracket for Chevy Silverado/GMC Sierra 1500 (2019-24), 2500/3500 (2020-23).', price: 29, id: 9603, mountType: 'permanent', vehicleMatch: 'chevy-truck', isFenderMount: true },
+    { key: 'fender-ram', name: 'NCG Ram Fender Mount (DG2ANTPF)', desc: 'No-drill NMO fender bracket for Ram 1500/2500/3500 (2009-2018). Driver side.', price: 29, id: 9604, mountType: 'permanent', vehicleMatch: 'ram-truck', isFenderMount: true },
+    { key: 'fender-ram-new', name: 'NCG Ram Fender Mount (DG3ANTNCG)', desc: 'No-drill NMO fender bracket for Ram 1500/2500/3500 (2019-2023). Driver side.', price: 29, id: 9605, mountType: 'permanent', vehicleMatch: 'ram-truck-new', isFenderMount: true },
+    { key: 'fender-colorado', name: 'NCG Colorado/Canyon Fender Mount (COANTNCG)', desc: 'No-drill NMO fender bracket for Chevy Colorado/GMC Canyon (2012-2022).', price: 29, id: 9606, mountType: 'permanent', vehicleMatch: 'colorado', isFenderMount: true },
     { key: 'magmount-nmo', name: 'Comet Mag Mount NMO', desc: 'Flat magnetic mount for vehicle roofs. Easy to remove, best if you need to take the antenna off regularly.', price: 39, id: 6940, mountType: 'temporary' },
     { key: 'roofrack', name: 'Comet RS-660U Roof Rack Mount', desc: 'Clamps to roof rack bars (up to 2.25" x 2"). Good option when no flat metal surface is available.', price: 59, id: 7198, mountType: 'permanent', img: S+'2025/04/cma-rs-660u_kb_xl.jpg' },
     { key: 'ditchlight', name: 'Ditch Light Antenna Mount Extension', desc: 'Adds antenna mount to existing ditch light mount.', price: 29, id: 7602, mountType: 'permanent', img: S+'2025/07/71Icm8mvWL._AC_SL1500_.jpg' },
@@ -1019,9 +1018,9 @@ const mobileProducts = {
   accessories: [
     { key: 'bs22', name: 'BS-22 Wireless Speakermic', desc: 'Bluetooth wireless speaker-microphone. Clips to gear, pairs via Bluetooth.', price: 59, id: 8491, compatRadios: ['uv50pro'], img: S+'2025/12/1000009367.jpg' },
     { key: 'bt01', name: 'BT-01 Mobile Bluetooth Speaker Mic', desc: 'Bluetooth speaker-microphone for mobile radios. Wireless audio with PTT for hands-free operation.', price: 149, id: 6717, compatRadios: ['d578'], img: S+'2025/02/103ed8b249b56d45d92df2fb25350ab6.jpg' },
-    { key: 'magmic', name: 'Magnetic Mic Upgrade', desc: 'Magnetic mounting solution for your hand microphone. Keeps the mic secure and accessible on any metal surface in your vehicle.', price: 59, id: null },
+    { key: 'magmic', name: 'Magnetic Mic Upgrade', desc: 'Magnetic mounting solution for your hand microphone. Keeps the mic secure and accessible on any metal surface in your vehicle.', price: 59, id: 9607 },
     { key: 'relocation', name: 'Antenna Jack Relocation Cable', desc: 'Right-angle PL-259 to SO-239 cable for repositioning the antenna jack.', price: 19, id: 7271 },
-    { key: 'so239-pigtail', name: 'SO-239 Antenna Pigtail Adapter', desc: 'Connect your handheld radio to your vehicle-mounted antenna. BNC to SO-239 adapter with short coax lead.', price: 9, id: 1434, img: S+'2023/07/20230628_1406042.jpg' },
+    { key: 'so239-pigtail', name: 'SO-239 Antenna Pigtail Adapter', desc: 'Adapt your antenna connection from PL-259 to SO-239. Useful for routing to a different antenna jack location.', price: 9, id: 1434, img: S+'2023/07/20230628_1406042.jpg' },
   ],
 };
 
@@ -3157,9 +3156,9 @@ const ADAPTER_PRICE = 5; // SMA-F to BNC-F Adapter [456] -added once if any BNC 
 
 // Shared items (available for all radios)
 const sharedAntennaUpgrades = [
-  { key: 'stubby', name: 'Stubby Antenna with BNC Adapter', bestUse: 'Best for: Covert Carry', desc: 'Compact, low-profile antenna. Great for covert carry, backpacking, or when you need a shorter profile.', price: 39, img: S+'2023/05/20250227_154740.jpg', ids: [816, 456], addsToCart: ['Stubby Antenna [816] ($39)'] },
   { key: 'foulweather', name: 'Foul Weather Whip with BNC Adapter', bestUse: 'Best for: Chest Rigs & Field Use', desc: 'Flexible whip that bends without breaking. Ideal for field use, rucking, and mounting on chest rigs or plate carriers.', price: 40, img: S+'2024/03/20240320_115347.jpg', ids: [3916, 456], addsToCart: ['Foul Weather Whip [3916] ($40)'] },
   { key: 'signalstick', name: 'Signal Stick with BNC Adapter', bestUse: 'Best for: Overall Performance', desc: 'Super elastic, nearly indestructible flexible antenna. Excellent all-around performer for both transmit and receive.', price: 25, img: S+'2022/07/IMGP8549-scaled.jpg', ids: [39, 456], addsToCart: ['Signal Stick [39] ($25)'] },
+  { key: 'stubby', name: 'Stubby Antenna with BNC Adapter', bestUse: 'Best for: Covert Carry', desc: 'Compact, low-profile antenna. Great for covert carry, backpacking, or when you need a shorter profile.', price: 39, img: S+'2023/05/20250227_154740.jpg', ids: [816, 456], addsToCart: ['Stubby Antenna [816] ($39)'] },
 ];
 
 const sharedAdditionalAntennas = [

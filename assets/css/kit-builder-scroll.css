@@ -293,10 +293,6 @@
 /* Meta hidden */
 #rme-kit-builder-scroll #rme-kit-builder .opt-card .oc-meta { display: none; }
 
-/* Cards without images: simpler row */
-#rme-kit-builder-scroll #rme-kit-builder .opt-card:not(:has(.oc-img)) {
-  grid-template-columns: 1fr auto;
-}
 /* Cards without images: simpler 2-column grid */
 #rme-kit-builder-scroll #rme-kit-builder .opt-card:not(:has(.oc-img)) {
   grid-template-columns: 1fr auto;
@@ -595,6 +591,13 @@
   background: rgba(253,211,81,0.12); border: 1px solid var(--rme-gold-dim);
   border-radius: 4px; padding: 2px 8px; display: inline-block;
   margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px;
+}
+
+/* ── Out of stock radio ─────────────────── */
+#rme-kit-builder-scroll .radio-pick--oos {
+  opacity: 0.4;
+  pointer-events: none;
+  cursor: default;
 }
 
 /* ── Sticky Price Bar ──────────────────── */
