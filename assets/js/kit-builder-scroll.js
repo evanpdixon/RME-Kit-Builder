@@ -69,11 +69,29 @@
     const next = SECTIONS[nextIdx];
     const nextEl = document.getElementById('sec-' + next);
 
-    // Phase 1: Fade out current section (800ms)
+    // Steps that don't need product rendering get a fast transition
+    const needsLoading = ['antennas','battery','accessories','programming','review'].includes(next);
+
+    if (!needsLoading) {
+      // Fast path: fade current, immediately show next
+      if (currentEl) currentEl.style.opacity = '0';
+      setTimeout(function() {
+        sectionState[name] = 'complete';
+        renderSummary(name);
+        sectionState[next] = 'active';
+        applyAllStates();
+        if (nextEl) { nextEl.style.opacity = '0'; nextEl.offsetHeight; nextEl.style.opacity = '1'; }
+        scrollToSection(next);
+        updateScrollPriceBar();
+        updateConsultLinks();
+      }, 500);
+      return;
+    }
+
+    // Full transition: fade → spinner → render → reveal
     if (currentEl) currentEl.style.opacity = '0';
 
     setTimeout(function() {
-      // Phase 2: Collapse current, show spinner on next
       sectionState[name] = 'complete';
       renderSummary(name);
       applyAllStates();
@@ -82,13 +100,11 @@
         nextEl.classList.remove('kb-section--locked');
         nextEl.classList.add('kb-section--loading');
         nextEl.style.opacity = '1';
-        // Ensure content is hidden, spinner shows
-        const content = nextEl.querySelector('.kb-section__content');
+        var content = nextEl.querySelector('.kb-section__content');
         if (content) content.style.display = 'none';
       }
       scrollToSection(next);
 
-      // Phase 3: Render content in background while spinner plays (1200ms)
       setTimeout(function() {
         if (kbsCurrentCategory === 'handheld') {
           if (next === 'antennas') renderAllAntennas();
@@ -102,22 +118,20 @@
           if (next === 'review') { renderReview(); fixReviewButtons(); enableCartBtn(); }
         }
 
-        // Phase 4: Fade out spinner, fade in content (800ms)
         if (nextEl) nextEl.style.opacity = '0';
 
         setTimeout(function() {
           sectionState[next] = 'active';
           if (nextEl) nextEl.classList.remove('kb-section--loading');
           applyAllStates();
-          // Fade in
           requestAnimationFrame(function() {
             if (nextEl) nextEl.style.opacity = '1';
           });
           updateScrollPriceBar();
           updateConsultLinks();
         }, 400);
-      }, 1200);
-    }, 800);
+      }, 1000);
+    }, 600);
   };
 
   // ── Public: Go back to previous section ────────
@@ -318,27 +332,27 @@
     // Show category multi-select before radio grid
     document.getElementById('kbs-interview-choice').style.display = 'none';
     document.getElementById('kbs-interview-stack').style.display = '';
-    document.getElementById('kbs-interview-stack').innerHTML = `
-      <div class="kbs-iq">
-        <h3>What type of radio do you need?</h3>
-        <p>Select all that apply.</p>
-        <div class="kbs-iq-options">
-          ${[
-            { key: 'handheld', icon: ICO.handheld, label: 'Handheld', detail: 'Portable, carried on your person' },
-            { key: 'vehicle', icon: ICO.vehicle, label: 'Vehicle / Mobile', detail: 'Mounted in a car, truck, or RV' },
-            { key: 'base', icon: ICO.base, label: 'Base Station', detail: 'Fixed location with outdoor antenna' },
-            { key: 'hf', icon: ICO.hf, label: 'HF (Long-Distance)', detail: 'Nationwide or worldwide' },
-            { key: 'scanner', icon: ICO.scanner, label: 'Scanner / SDR', detail: 'Listen only, no license required' },
-          ].map(o => '<div class="kbs-iq-opt" onclick="kbsDirectToggleCat(this,\\''+o.key+'\\')">' +
-            (o.icon ? '<span style="margin-right:6px">'+o.icon+'</span>' : '') + o.label +
-            '<span style="display:block;font-size:12px;color:#888;margin-top:2px">'+o.detail+'</span></div>'
-          ).join('')}
-        </div>
-        <div style="margin-top:14px">
-          <button class="kb-btn kb-btn--primary" id="kbs-direct-next" disabled onclick="kbsDirectProceed()">Next</button>
-        </div>
-      </div>
-    `;
+    var catOpts = [
+      { key: 'handheld', icon: ICO.handheld, label: 'Handheld', detail: 'Portable, carried on your person' },
+      { key: 'vehicle', icon: ICO.vehicle, label: 'Vehicle / Mobile', detail: 'Mounted in a car, truck, or RV' },
+      { key: 'base', icon: ICO.base, label: 'Base Station', detail: 'Fixed location with outdoor antenna' },
+      { key: 'hf', icon: ICO.hf, label: 'HF (Long-Distance)', detail: 'Nationwide or worldwide' },
+      { key: 'scanner', icon: ICO.scanner, label: 'Scanner / SDR', detail: 'Listen only, no license required' },
+    ];
+    var catHtml = catOpts.map(function(o) {
+      return '<div class="kbs-iq-opt" onclick="kbsDirectToggleCat(this,&quot;' + o.key + '&quot;)">' +
+        (o.icon ? '<span style="margin-right:6px">' + o.icon + '</span>' : '') + o.label +
+        '<span style="display:block;font-size:12px;color:#888;margin-top:2px">' + o.detail + '</span></div>';
+    }).join('');
+    document.getElementById('kbs-interview-stack').innerHTML =
+      '<div class="kbs-iq">' +
+        '<h3>What type of radio do you need?</h3>' +
+        '<p>Select all that apply.</p>' +
+        '<div class="kbs-iq-options">' + catHtml + '</div>' +
+        '<div style="margin-top:14px">' +
+          '<button class="kb-btn kb-btn--primary" id="kbs-direct-next" disabled onclick="kbsDirectProceed()">Next</button>' +
+        '</div>' +
+      '</div>';
     kbsDirectCategories = [];
   };
 
