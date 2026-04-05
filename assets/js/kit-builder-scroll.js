@@ -26,21 +26,9 @@
     SECTIONS.forEach(s => {
       const el = document.getElementById('sec-' + s);
       if (!el) return;
-      el.classList.remove('kb-section--locked', 'kb-section--active', 'kb-section--complete');
+      el.classList.remove('kb-section--locked', 'kb-section--active', 'kb-section--complete', 'kb-section--loading', 'kb-section--fading');
       el.classList.add('kb-section--' + sectionState[s]);
-
-      const summary = el.querySelector('.kb-section__summary');
-      const content = el.querySelector('.kb-section__content');
-      if (sectionState[s] === 'complete') {
-        if (summary) summary.style.display = '';
-        if (content) content.style.display = 'none';
-      } else if (sectionState[s] === 'active') {
-        if (summary) summary.style.display = 'none';
-        if (content) { content.style.display = ''; }
-      } else {
-        if (summary) summary.style.display = 'none';
-        if (content) content.style.display = 'none';
-      }
+      // Summary/content visibility handled entirely by CSS classes
     });
   }
 
@@ -69,69 +57,49 @@
     const next = SECTIONS[nextIdx];
     const nextEl = document.getElementById('sec-' + next);
 
-    // Steps that don't need product rendering get a fast transition
-    const needsLoading = ['antennas','battery','accessories','programming','review'].includes(next);
-
-    if (!needsLoading) {
-      // Fast path: fade current, immediately show next
-      if (currentEl) currentEl.style.opacity = '0';
-      setTimeout(function() {
-        sectionState[name] = 'complete';
-        renderSummary(name);
-        sectionState[next] = 'active';
-        applyAllStates();
-        if (nextEl) { nextEl.style.opacity = '0'; nextEl.offsetHeight; nextEl.style.opacity = '1'; }
-        scrollToSection(next);
-        updateScrollPriceBar();
-        updateConsultLinks();
-      }, 500);
-      return;
+    // Render product content for next section (if needed)
+    function renderNext() {
+      if (kbsCurrentCategory === 'handheld') {
+        if (next === 'antennas') renderAllAntennas();
+        if (next === 'battery') renderBatteryUpgrades();
+        if (next === 'accessories') renderAccessories();
+        if (next === 'programming') renderProgramming();
+        if (next === 'review') { renderReview(); fixReviewButtons(); enableCartBtn(); }
+      } else {
+        renderCategoryProducts(next, kbsCurrentCategory, selectedRadioKey);
+        if (next === 'programming' && typeof renderProgramming === 'function') renderProgramming();
+        if (next === 'review') { renderReview(); fixReviewButtons(); enableCartBtn(); }
+      }
     }
 
-    // Full transition: fade → spinner → render → reveal
-    if (currentEl) currentEl.style.opacity = '0';
+    // Phase 1: Add fading-out class to current section (CSS handles the fade)
+    if (currentEl) currentEl.classList.add('kb-section--fading');
 
+    // Phase 2: After fade-out completes, collapse current + show spinner
     setTimeout(function() {
       sectionState[name] = 'complete';
       renderSummary(name);
       applyAllStates();
 
+      // Show loading spinner on next section
       if (nextEl) {
         nextEl.classList.remove('kb-section--locked');
         nextEl.classList.add('kb-section--loading');
-        nextEl.style.opacity = '1';
-        var content = nextEl.querySelector('.kb-section__content');
-        if (content) content.style.display = 'none';
       }
       scrollToSection(next);
 
+      // Phase 3: Render content behind spinner, then reveal
       setTimeout(function() {
-        if (kbsCurrentCategory === 'handheld') {
-          if (next === 'antennas') renderAllAntennas();
-          if (next === 'battery') renderBatteryUpgrades();
-          if (next === 'accessories') renderAccessories();
-          if (next === 'programming') renderProgramming();
-          if (next === 'review') { renderReview(); fixReviewButtons(); enableCartBtn(); }
-        } else {
-          renderCategoryProducts(next, kbsCurrentCategory, selectedRadioKey);
-          if (next === 'programming' && typeof renderProgramming === 'function') renderProgramming();
-          if (next === 'review') { renderReview(); fixReviewButtons(); enableCartBtn(); }
-        }
+        renderNext();
 
-        if (nextEl) nextEl.style.opacity = '0';
-
-        setTimeout(function() {
-          sectionState[next] = 'active';
-          if (nextEl) nextEl.classList.remove('kb-section--loading');
-          applyAllStates();
-          requestAnimationFrame(function() {
-            if (nextEl) nextEl.style.opacity = '1';
-          });
-          updateScrollPriceBar();
-          updateConsultLinks();
-        }, 400);
-      }, 1000);
-    }, 600);
+        // Phase 4: Switch from loading to active (CSS fades in)
+        sectionState[next] = 'active';
+        if (nextEl) nextEl.classList.remove('kb-section--loading');
+        applyAllStates();
+        updateScrollPriceBar();
+        updateConsultLinks();
+      }, 1200);
+    }, 800);
   };
 
   // ── Public: Go back to previous section ────────

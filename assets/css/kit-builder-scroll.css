@@ -79,6 +79,7 @@
 
 .kb-section__content {
   padding: 0 24px 24px;
+  transition: opacity 0.8s ease;
 }
 .kb-section__content p {
   color: #ccc; font-size: 15px; line-height: 1.6; margin-bottom: 20px;
@@ -120,6 +121,7 @@
   color: #111;
 }
 .kb-section--loading .kb-section__summary { display: none !important; }
+.kb-section--loading .kb-section__content { max-height: 0; overflow: hidden; opacity: 0; padding: 0 24px; }
 .kb-section--loading::after {
   content: '';
   display: block;
@@ -141,14 +143,20 @@
   pointer-events: none;
 }
 .kb-section--locked .kb-section__content {
-  display: none;
+  max-height: 0; overflow: hidden; opacity: 0; padding: 0 24px;
+}
+.kb-section--locked .kb-section__summary { display: none; }
+
+/* Fading out (added by JS before collapsing) */
+#rme-kit-builder-scroll .kb-section.kb-section--fading {
+  opacity: 0;
+  transition: opacity 0.8s ease;
 }
 
 /* Active */
 .kb-section--active {
   border-color: var(--rme-gold-dim);
   border-left: 3px solid var(--rme-gold);
-  /* opacity transition handled by JS */
 }
 .kb-section--active .kb-section__number {
   background: var(--rme-gold);
@@ -157,6 +165,10 @@
 .kb-section--active .kb-section__header h2 {
   color: var(--rme-gold);
 }
+.kb-section--active .kb-section__content {
+  max-height: 9999px; opacity: 1; padding: 0 24px 24px;
+}
+.kb-section--active .kb-section__summary { display: none; }
 
 /* Complete */
 .kb-section--complete {
@@ -202,7 +214,7 @@
   color: var(--rme-gold);
 }
 .kb-section--complete .kb-section__content {
-  display: none;
+  max-height: 0; overflow: hidden; opacity: 0; padding: 0 24px;
 }
 
 /* ── Section Actions ───────────────────── */
@@ -574,6 +586,8 @@
   .kb-btn--cart { padding: 10px 20px; font-size: 14px; }
   .kbp-consult { font-size: 11px; padding: 6px 10px; }
   .kbs-iq-options { flex-direction: column; }
+  /* Remove gold border on active sections for mobile */
+  .kb-section--active { border-color: var(--rme-border); border-left-width: 1px; }
   /* Compact product cards on mobile */
   #rme-kit-builder-scroll #rme-kit-builder .opt-card { padding: 10px 12px; gap: 8px; }
   #rme-kit-builder-scroll #rme-kit-builder .opt-card .oc-img {
@@ -586,10 +600,11 @@
 }
 
 /* ── Reduced motion ────────────────────── */
+/* Reduced motion: slow down but don't eliminate transitions */
 @media (prefers-reduced-motion: reduce) {
   #rme-kit-builder-scroll *, #rme-kit-builder-scroll *::before, #rme-kit-builder-scroll *::after,
   .kb-scroll-price-bar, .kb-scroll-price-bar * {
-    animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
+    animation-duration: 0.3s !important;
+    transition-duration: 0.3s !important;
   }
 }
