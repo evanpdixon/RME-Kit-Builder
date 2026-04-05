@@ -448,13 +448,13 @@
   .kbp-consult { font-size: 11px; padding: 6px 10px; }
   .kbs-iq-options { flex-direction: column; }
   /* Compact product cards on mobile */
-  #rme-kit-builder-scroll #rme-kit-builder .opt-card { padding: 10px 12px; gap: 10px; }
+  #rme-kit-builder-scroll #rme-kit-builder .opt-card { padding: 10px 12px; gap: 8px; }
   #rme-kit-builder-scroll #rme-kit-builder .opt-card .oc-img {
-    width: 48px; height: 36px; border-radius: 4px;
+    width: 56px; height: 56px; border-radius: 6px;
   }
   #rme-kit-builder-scroll #rme-kit-builder .opt-card .oc-name { font-size: 14px; }
   #rme-kit-builder-scroll #rme-kit-builder .opt-card .oc-desc { font-size: 12px; }
-  #rme-kit-builder-scroll #rme-kit-builder .opt-card .oc-price { font-size: 14px; }
+  #rme-kit-builder-scroll #rme-kit-builder .opt-card .oc-price { font-size: 13px; }
   #rme-kit-builder-scroll #rme-kit-builder .oc-best-use { font-size: 10px; }
 }
 
