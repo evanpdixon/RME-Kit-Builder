@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kit Builder Logic Tester</title>
+<style>
+  body { font-family: monospace; background: #111; color: #ddd; padding: 20px; max-width: 800px; margin: 0 auto; }
+  h1 { color: #fdd351; font-size: 20px; }
+  h2 { color: #fdd351; font-size: 16px; margin-top: 24px; }
+  .group { margin: 12px 0; padding: 12px; background: #1a1a1a; border: 1px solid #333; border-radius: 8px; }
+  label { display: block; margin: 4px 0; cursor: pointer; }
+  label:hover { color: #fdd351; }
+  button { background: #fdd351; color: #111; border: none; padding: 10px 24px; border-radius: 6px; font-weight: bold; cursor: pointer; margin: 8px 4px; font-size: 14px; }
+  button:hover { background: #ffe87a; }
+  #result { margin-top: 16px; padding: 16px; background: #0a1a0a; border: 1px solid #2a3a2a; border-radius: 8px; white-space: pre-wrap; font-size: 13px; line-height: 1.6; }
+  .score-bar { display: inline-block; background: #fdd351; height: 12px; margin-right: 8px; border-radius: 2px; }
+  .winner { color: #4caf50; font-weight: bold; }
+  .tag { display: inline-block; background: #1a1800; border: 1px solid #d4af37; color: #fdd351; padding: 2px 8px; border-radius: 4px; font-size: 11px; margin: 2px; }
+</style>
+</head><body>
+<h1>Kit Builder Logic Tester</h1>
+<p>Test scoring and category routing without the full UI. Select options and click "Score".</p>
+
+<h2>Usage (multi-select)</h2>
+<div class="group" id="usage-group">
+  <label><input type="checkbox" name="usage" value="handheld"> Handheld</label>
+  <label><input type="checkbox" name="usage" value="vehicle"> Vehicle / Mobile</label>
+  <label><input type="checkbox" name="usage" value="base"> Base Station</label>
+  <label><input type="checkbox" name="usage" value="hf"> HF (Long-Distance)</label>
+  <label><input type="checkbox" name="usage" value="scanner"> Scanner</label>
+  <label><input type="checkbox" name="usage" value="notsure"> Not Sure</label>
+</div>
+
+<h2>Distance (if not sure)</h2>
+<div class="group">
+  <label><input type="radio" name="distance" value="short"> Short (1-5 mi)</label>
+  <label><input type="radio" name="distance" value="medium"> Medium (5-25 mi)</label>
+  <label><input type="radio" name="distance" value="long"> Long (25+ mi)</label>
+  <label><input type="radio" name="distance" value="extreme"> Extreme (HF)</label>
+</div>
+
+<h2>Preferences (multi-select)</h2>
+<div class="group">
+  <label><input type="checkbox" name="preferences" value="digital"> Digital / Encryption</label>
+  <label><input type="checkbox" name="preferences" value="waterproof"> Waterproof</label>
+  <label><input type="checkbox" name="preferences" value="simple"> Simple / Easy</label>
+  <label><input type="checkbox" name="preferences" value="range"> Max Range</label>
+  <label><input type="checkbox" name="preferences" value="budget"> Budget</label>
+  <label><input type="checkbox" name="preferences" value="crossband"> Crossband Repeat</label>
+</div>
+
+<h2>Budget</h2>
+<div class="group">
+  <label><input type="radio" name="budget" value="low"> Economical</label>
+  <label><input type="radio" name="budget" value="mid"> Mid-range</label>
+  <label><input type="radio" name="budget" value="high"> Best of the best</label>
+</div>
+
+<h2>Where (multi-select)</h2>
+<div class="group">
+  <label><input type="checkbox" name="use" value="general"> Around town</label>
+  <label><input type="checkbox" name="use" value="outdoor"> Outdoors</label>
+  <label><input type="checkbox" name="use" value="water"> On/near water</label>
+  <label><input type="checkbox" name="use" value="professional"> Work / business</label>
+  <label><input type="checkbox" name="use" value="emergency"> Emergency prep</label>
+</div>
+
+<h2>Features (multi-select)</h2>
+<div class="group">
+  <label><input type="checkbox" name="features" value="price"> Lowest price</label>
+  <label><input type="checkbox" name="features" value="waterproof"> Waterproof</label>
+  <label><input type="checkbox" name="features" value="encryption"> Encryption</label>
+  <label><input type="checkbox" name="features" value="channels"> Max channels</label>
+  <label><input type="checkbox" name="features" value="airband"> Airband</label>
+  <label><input type="checkbox" name="features" value="bluetooth"> Bluetooth</label>
+  <label><input type="checkbox" name="features" value="grow"> Room to grow</label>
+  <label><input type="checkbox" name="features" value="noaa"> NOAA weather</label>
+  <label><input type="checkbox" name="features" value="compact"> Compact size</label>
+  <label><input type="checkbox" name="features" value="compatible"> UV-5R compatible</label>
+</div>
+
+<button onclick="runScore()">Score</button>
+<button onclick="clearAll()">Clear</button>
+
+<div id="result"></div>
+
+<script>
+// Inline radio data (same as kit-builder.js)
+const radioLineup = [
+  { key:'uv5r', name:'UV-5R', price:59, tags:['budget','simple','compatible','compact'] },
+  { key:'uv5r-mini', name:'UV-5R Mini', price:39, tags:['budget','simple','channels','airband','usbc','compact','noaa'] },
+  { key:'uv-pro', name:'UV-PRO', price:159, tags:['waterproof','gps','bluetooth','airband','grow','professional','usbc','channels','noaa','commercial'] },
+  { key:'dmr-6x2', name:'DMR 6X2 PRO', price:249, tags:['encryption','digital','channels','gps','professional','bluetooth','water-resistant','usbc','grow','noaa','commercial'] },
+  { key:'da-7x2', name:'DA-7X2', price:299, tags:['encryption','digital','crossband','airband','professional','premium','bluetooth','water-resistant','usbc','gps','grow','channels','noaa','commercial'] },
+];
+const mobileRadioLineup = [
+  { key:'uv50pro', name:'UV-50PRO', price:329, tags:['waterproof','gps','bluetooth','simple','professional'] },
+  { key:'d578', name:'DMR D578', price:549, tags:['encryption','digital','crossband','gps','bluetooth','professional'] },
+];
+const hfRadioLineup = [
+  { key:'g90', name:'Xiegu G90', price:549, tags:['budget','hf','portable'] },
+  { key:'ft891', name:'Yaesu FT-891', price:899, tags:['premium','hf','power'], outOfStock:true },
+];
+const scannerRadioLineup = [
+  { key:'sds200', name:'Uniden SDS200', price:799, tags:[] },
+  { key:'sds100', name:'Uniden SDS100', price:749, tags:[] },
+  { key:'sdr-kit', name:'SDR Kit', price:99, tags:[] },
+  { key:'sds150', name:'Uniden SDS150', price:1049, tags:[] },
+];
+
+const interviewQuestions = [
+  { id:'budget', multi:false, options:[
+    {key:'low',tags:['budget']},{key:'mid',tags:['waterproof','gps','bluetooth','grow']},{key:'high',tags:['encryption','digital','premium','crossband']}
+  ]},
+  { id:'use', multi:true, options:[
+    {key:'general',tags:['budget','simple']},{key:'outdoor',tags:['gps','grow','waterproof']},{key:'water',tags:['waterproof']},{key:'professional',tags:['professional','commercial','waterproof','gps']},{key:'emergency',tags:['channels','durable']}
+  ]},
+  { id:'features', multi:true, options:[
+    {key:'price',tags:['budget']},{key:'waterproof',tags:['waterproof']},{key:'encryption',tags:['encryption','digital']},{key:'channels',tags:['channels']},{key:'airband',tags:['airband']},{key:'bluetooth',tags:['bluetooth']},{key:'grow',tags:['grow']},{key:'noaa',tags:['noaa']},{key:'compact',tags:['compact']},{key:'compatible',tags:['compatible']},{key:'nopreference',tags:[]}
+  ]},
+];
+
+function getChecked(name) {
+  return [...document.querySelectorAll('input[name="'+name+'"]:checked')].map(i => i.value);
+}
+function getRadio(name) {
+  const el = document.querySelector('input[name="'+name+'"]:checked');
+  return el ? el.value : null;
+}
+
+function detectCategory(answers) {
+  const usage = answers.usage || [];
+  if (usage.includes('vehicle')) return 'mobile';
+  if (usage.includes('base')) return 'base';
+  if (usage.includes('hf')) return 'hf';
+  if (usage.includes('scanner')) return 'scanner';
+  const distance = answers.distance;
+  if (distance === 'long') return 'base';
+  if (distance === 'extreme') return 'hf';
+  return 'handheld';
+}
+
+function getLineup(cat) {
+  if (cat === 'mobile' || cat === 'base') return mobileRadioLineup;
+  if (cat === 'hf') return hfRadioLineup;
+  if (cat === 'scanner') return scannerRadioLineup;
+  return radioLineup;
+}
+
+function runScore() {
+  const answers = {
+    usage: getChecked('usage'),
+    distance: getRadio('distance'),
+    preferences: getChecked('preferences'),
+    budget: getRadio('budget'),
+    use: getChecked('use'),
+    features: getChecked('features'),
+  };
+
+  const category = detectCategory(answers);
+  const lineup = getLineup(category);
+  const scores = {};
+  lineup.forEach(r => { scores[r.key] = 0; });
+
+  // Score from preferences
+  (answers.preferences || []).forEach(p => {
+    lineup.forEach(r => { if (r.tags.includes(p)) scores[r.key] += 10; });
+  });
+
+  // Score from interview questions
+  interviewQuestions.forEach(q => {
+    const answer = answers[q.id];
+    if (!answer) return;
+    const keys = Array.isArray(answer) ? answer : [answer];
+    keys.forEach(key => {
+      const opt = q.options.find(o => o.key === key);
+      if (opt && opt.tags) {
+        opt.tags.forEach(tag => {
+          lineup.forEach(r => { if (r.tags.includes(tag)) scores[r.key] += 10; });
+        });
+      }
+    });
+  });
+
+  const ranked = lineup.slice().filter(r => !r.outOfStock).sort((a, b) => scores[b.key] - scores[a.key]);
+  const maxScore = Math.max(...Object.values(scores), 1);
+
+  let html = `CATEGORY: ${category.toUpperCase()}\nLINEUP: ${lineup.map(r=>r.key).join(', ')}\n\n`;
+  html += `RANKING:\n`;
+  ranked.forEach((r, i) => {
+    const pct = Math.round(scores[r.key] / maxScore * 100);
+    const bar = '<span class="score-bar" style="width:' + pct * 2 + 'px"></span>';
+    html += `${i === 0 ? '<span class="winner">' : ''}${i+1}. ${r.name} ($${r.price}) — ${scores[r.key]} pts ${bar}${i === 0 ? ' RECOMMENDED</span>' : ''}\n`;
+    html += `   Tags: ${r.tags.map(t => '<span class="tag">'+t+'</span>').join(' ')}\n\n`;
+  });
+
+  html += `\nINPUTS:\n${JSON.stringify(answers, null, 2)}`;
+  document.getElementById('result').innerHTML = html;
+}
+
+function clearAll() {
+  document.querySelectorAll('input').forEach(i => i.checked = false);
+  document.getElementById('result').innerHTML = '';
+}
+</script>
+</body></html>
