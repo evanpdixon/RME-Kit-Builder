@@ -3,67 +3,149 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Kit Builder Logic Tester</title>
 <style>
-  body { font-family: monospace; background: #111; color: #ddd; padding: 20px; max-width: 800px; margin: 0 auto; }
+  body { font-family: monospace; background: #111; color: #ddd; padding: 20px; max-width: 900px; margin: 0 auto; }
   h1 { color: #fdd351; font-size: 20px; }
   h2 { color: #fdd351; font-size: 16px; margin-top: 24px; }
   .group { margin: 12px 0; padding: 12px; background: #1a1a1a; border: 1px solid #333; border-radius: 8px; }
   label { display: block; margin: 4px 0; cursor: pointer; }
   label:hover { color: #fdd351; }
-  button { background: #fdd351; color: #111; border: none; padding: 10px 24px; border-radius: 6px; font-weight: bold; cursor: pointer; margin: 8px 4px; font-size: 14px; }
+  button { background: #fdd351; color: #111; border: none; padding: 10px 24px; border-radius: 6px; font-weight: bold; cursor: pointer; margin: 4px; font-size: 14px; }
   button:hover { background: #ffe87a; }
-  #result { margin-top: 16px; padding: 16px; background: #0a1a0a; border: 1px solid #2a3a2a; border-radius: 8px; white-space: pre-wrap; font-size: 13px; line-height: 1.6; }
+  button:disabled { opacity: 0.3; cursor: default; }
+  button.secondary { background: #333; color: #ddd; }
+  button.secondary:hover { background: #444; }
+
+  /* Step indicator */
+  .step-path { display: flex; gap: 4px; align-items: center; margin: 16px 0; flex-wrap: wrap; }
+  .step-node { padding: 4px 10px; border-radius: 4px; font-size: 12px; }
+  .step-node.done { background: #1a2a1a; color: #4caf50; border: 1px solid #2a3a2a; }
+  .step-node.current { background: #2a2200; color: #fdd351; border: 1px solid #d4af37; }
+  .step-node.future { background: #1a1a1a; color: #666; border: 1px solid #333; }
+  .step-arrow { color: #555; font-size: 14px; }
+
+  /* Question card */
+  .q-card { margin: 16px 0; padding: 20px; background: #1a1a1a; border: 2px solid #d4af37; border-radius: 10px; }
+  .q-card h3 { color: #fdd351; margin: 0 0 4px 0; font-size: 16px; }
+  .q-card .q-sub { color: #888; font-size: 13px; margin-bottom: 12px; }
+  .q-opt { display: inline-block; padding: 8px 14px; margin: 4px; border-radius: 6px; cursor: pointer; border: 1px solid #444; background: #222; font-size: 13px; transition: all 0.15s; }
+  .q-opt:hover { border-color: #d4af37; color: #fdd351; }
+  .q-opt.selected { background: #2a2200; border-color: #d4af37; color: #fdd351; }
+
+  /* Answered question (collapsed) */
+  .q-answered { margin: 8px 0; padding: 10px 14px; background: #0a1a0a; border: 1px solid #2a3a2a; border-radius: 6px; font-size: 13px; display: flex; justify-content: space-between; align-items: center; }
+  .q-answered .q-label { color: #888; }
+  .q-answered .q-value { color: #4caf50; font-weight: bold; }
+
+  /* Category routing callout */
+  .route-callout { margin: 12px 0; padding: 12px 16px; border-radius: 8px; font-size: 13px; line-height: 1.5; }
+  .route-callout.info { background: #0a1a2a; border: 1px solid #1a3a5a; color: #6ab0f3; }
+  .route-callout.warn { background: #2a2200; border: 1px solid #d4af37; color: #fdd351; }
+  .route-callout code { background: #000; padding: 1px 5px; border-radius: 3px; font-size: 12px; }
+
+  /* Results */
+  #result { margin-top: 16px; padding: 16px; background: #0a1a0a; border: 1px solid #2a3a2a; border-radius: 8px; font-size: 13px; line-height: 1.6; }
   .score-bar { display: inline-block; background: #fdd351; height: 12px; margin-right: 8px; border-radius: 2px; }
   .winner { color: #4caf50; font-weight: bold; }
   .tag { display: inline-block; background: #1a1800; border: 1px solid #d4af37; color: #fdd351; padding: 2px 8px; border-radius: 4px; font-size: 11px; margin: 2px; }
+  .tag.matched { background: #1a2a1a; border-color: #4caf50; color: #4caf50; }
+
+  /* Scoring breakdown */
+  .score-breakdown { margin: 8px 0; font-size: 12px; color: #888; }
+  .score-breakdown div { padding: 2px 0; }
+  .score-breakdown .pts { color: #4caf50; font-weight: bold; min-width: 30px; display: inline-block; }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 0; margin-bottom: 0; }
+  .tab { padding: 8px 20px; background: #1a1a1a; border: 1px solid #333; border-bottom: none; cursor: pointer; font-size: 13px; color: #888; border-radius: 6px 6px 0 0; }
+  .tab.active { background: #222; color: #fdd351; border-color: #d4af37; }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+  .tab-panel { background: #222; border: 1px solid #333; border-radius: 0 8px 8px 8px; padding: 16px; }
+
+  /* Flow tree */
+  .flow-tree { font-size: 12px; line-height: 1.8; }
+  .flow-tree .node { padding: 2px 8px; border-radius: 4px; }
+  .flow-tree .node.active { background: #2a2200; color: #fdd351; }
+  .flow-tree .branch { color: #666; margin-left: 20px; }
+  .flow-tree .branch.taken { color: #4caf50; }
 </style>
 </head><body>
 <h1>Kit Builder Logic Tester</h1>
-<p>Test scoring and category routing without the full UI. Matches V2 interview order.</p>
+<p style="color:#888;font-size:13px">Step through the V2 interview flow. See how answers route to categories and score radios.</p>
 
-<h2>1. What kind of radio are you looking for?</h2>
-<div class="group">
-  <label><input type="radio" name="budget" value="high"> <strong>Best of the best</strong> <small style="color:#888">Maximum capability, every feature available</small></label>
-  <label><input type="radio" name="budget" value="mid"> <strong>Mid-range</strong> <small style="color:#888">More features and durability, the sweet spot</small></label>
-  <label><input type="radio" name="budget" value="low"> <strong>Economical</strong> <small style="color:#888">A solid, reliable radio without the extras</small></label>
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('branch')">Branching Flow</div>
+  <div class="tab" onclick="switchTab('batch')">Batch Score (all at once)</div>
+  <div class="tab" onclick="switchTab('tree')">Decision Tree</div>
 </div>
 
-<h2>2. Who are you trying to reach? (multi-select)</h2>
-<div class="group">
-  <label><input type="checkbox" name="reach" value="nearby"> <strong>Nearby</strong> <small style="color:#888">Same property, group, or event</small></label>
-  <label><input type="checkbox" name="reach" value="local"> <strong>Local</strong> <small style="color:#888">Across town, neighboring cities, through repeaters</small></label>
-  <label><input type="checkbox" name="reach" value="far"> <strong>Long distance</strong> <small style="color:#888">Statewide, cross-country, or worldwide</small></label>
-  <label><input type="checkbox" name="reach" value="listen"> <strong>Listen only</strong> <small style="color:#888">Monitor police, fire, EMS, or aircraft</small></label>
-</div>
+<div class="tab-panel">
 
-<h2>3. What do you need? (multi-select)</h2>
-<div class="group">
-  <label><input type="checkbox" name="needs" value="water"> <strong>Waterproof / water resistant</strong> <small style="color:#888">Rain, boating, submersion</small></label>
-  <label><input type="checkbox" name="needs" value="gps"> <strong>GPS location sharing</strong> <small style="color:#888">Track and share positions via APRS</small></label>
-  <label><input type="checkbox" name="needs" value="bluetooth"> <strong>Bluetooth</strong> <small style="color:#888">Wireless speakermic or phone control</small></label>
-  <label><input type="checkbox" name="needs" value="texting"> <strong>Text messaging</strong> <small style="color:#888">Send text over radio without cell service</small></label>
-  <label><input type="checkbox" name="needs" value="encryption"> <strong>Secure / encryption capable</strong> <small style="color:#888">Private, encrypted communications</small></label>
-  <label><input type="checkbox" name="needs" value="repeater"> <strong>Repeater capable</strong> <small style="color:#888">Crossband or simplex repeat to extend range</small></label>
-  <label><input type="checkbox" name="needs" value="channels"> <strong>High memory capacity</strong> <small style="color:#888">Hundreds or thousands of programmable channels</small></label>
-</div>
-
-<details style="margin:16px 0">
-  <summary style="color:#fdd351;cursor:pointer;font-size:14px">Category override (for "I Know What I Want" path)</summary>
-  <div class="group" style="margin-top:8px">
-    <label><input type="checkbox" name="usage" value="handheld"> Handheld</label>
-    <label><input type="checkbox" name="usage" value="vehicle"> Vehicle / Mobile</label>
-    <label><input type="checkbox" name="usage" value="base"> Base Station</label>
-    <label><input type="checkbox" name="usage" value="hf"> HF (Long-Distance)</label>
-    <label><input type="checkbox" name="usage" value="scanner"> Scanner</label>
+<!-- TAB 1: Branching step-by-step flow -->
+<div class="tab-content active" id="tab-branch">
+  <div class="step-path" id="step-path"></div>
+  <div id="answered-stack"></div>
+  <div id="active-question"></div>
+  <div id="branch-result"></div>
+  <div style="margin-top:16px">
+    <button class="secondary" onclick="branchReset()">Reset</button>
   </div>
-</details>
+</div>
 
-<button onclick="runScore()">Score</button>
-<button onclick="clearAll()">Clear</button>
+<!-- TAB 2: Batch scoring (original flat view) -->
+<div class="tab-content" id="tab-batch">
+  <h2>1. What kind of radio are you looking for?</h2>
+  <div class="group">
+    <label><input type="radio" name="budget" value="high"> <strong>Best of the best</strong> <small style="color:#888">Maximum capability, every feature available</small></label>
+    <label><input type="radio" name="budget" value="mid"> <strong>Mid-range</strong> <small style="color:#888">More features and durability, the sweet spot</small></label>
+    <label><input type="radio" name="budget" value="low"> <strong>Economical</strong> <small style="color:#888">A solid, reliable radio without the extras</small></label>
+  </div>
 
-<div id="result"></div>
+  <h2>2. Who are you trying to reach? (multi-select)</h2>
+  <div class="group">
+    <label><input type="checkbox" name="reach" value="nearby"> <strong>Nearby</strong> <small style="color:#888">Same property, group, or event</small></label>
+    <label><input type="checkbox" name="reach" value="local"> <strong>Local</strong> <small style="color:#888">Across town, neighboring cities, through repeaters</small></label>
+    <label><input type="checkbox" name="reach" value="far"> <strong>Long distance</strong> <small style="color:#888">Statewide, cross-country, or worldwide</small></label>
+    <label><input type="checkbox" name="reach" value="listen"> <strong>Listen only</strong> <small style="color:#888">Monitor police, fire, EMS, or aircraft</small></label>
+  </div>
+
+  <h2>3. What do you need? (multi-select)</h2>
+  <div class="group">
+    <label><input type="checkbox" name="needs" value="water"> <strong>Waterproof / water resistant</strong></label>
+    <label><input type="checkbox" name="needs" value="gps"> <strong>GPS location sharing</strong></label>
+    <label><input type="checkbox" name="needs" value="bluetooth"> <strong>Bluetooth</strong></label>
+    <label><input type="checkbox" name="needs" value="texting"> <strong>Text messaging</strong></label>
+    <label><input type="checkbox" name="needs" value="encryption"> <strong>Secure / encryption capable</strong></label>
+    <label><input type="checkbox" name="needs" value="repeater"> <strong>Built-in repeater mode</strong></label>
+    <label><input type="checkbox" name="needs" value="channels"> <strong>Increased channel capacity</strong></label>
+  </div>
+
+  <details style="margin:16px 0">
+    <summary style="color:#fdd351;cursor:pointer;font-size:14px">Category override (for "I Know What I Want" path)</summary>
+    <div class="group" style="margin-top:8px">
+      <label><input type="checkbox" name="usage" value="handheld"> Handheld</label>
+      <label><input type="checkbox" name="usage" value="vehicle"> Vehicle / Mobile</label>
+      <label><input type="checkbox" name="usage" value="base"> Base Station</label>
+      <label><input type="checkbox" name="usage" value="hf"> HF (Long-Distance)</label>
+      <label><input type="checkbox" name="usage" value="scanner"> Scanner</label>
+    </div>
+  </details>
+
+  <button onclick="runScore()">Score</button>
+  <button class="secondary" onclick="clearAll()">Clear</button>
+  <div id="result"></div>
+</div>
+
+<!-- TAB 3: Decision tree visualization -->
+<div class="tab-content" id="tab-tree">
+  <p style="color:#888;font-size:13px;margin-bottom:16px">Full decision tree showing all paths through the V2 guided interview.</p>
+  <div id="tree-view" class="flow-tree"></div>
+</div>
+
+</div><!-- /tab-panel -->
 
 <script>
-// Inline radio data (same as kit-builder.js)
+// ── Radio Data (matches kit-builder.js) ──────────────
 const radioLineup = [
   { key:'uv5r', name:'UV-5R', price:59, tags:['budget','simple','compatible','compact'] },
   { key:'uv5r-mini', name:'UV-5R Mini', price:39, tags:['budget','simple','channels','airband','usbc','compact','noaa'] },
@@ -86,26 +168,32 @@ const scannerRadioLineup = [
   { key:'sds150', name:'Uniden SDS150', price:1049, tags:[] },
 ];
 
+// ── Interview Questions (matches kit-builder.js) ─────
 const interviewQuestions = [
-  { id:'budget', multi:false, options:[
-    {key:'low',tags:['budget','simple','compact']},{key:'mid',tags:['waterproof','gps','bluetooth','grow']},{key:'high',tags:['encryption','digital','premium','crossband']}
+  { id:'budget', question:'What kind of radio are you looking for?', multi:false, options:[
+    {key:'high', label:'Best of the best', detail:'Maximum capability, every feature available', tags:['encryption','digital','premium','crossband']},
+    {key:'mid', label:'Mid-range', detail:'More features and durability, the sweet spot', tags:['waterproof','gps','bluetooth','grow']},
+    {key:'low', label:'Economical', detail:'A solid, reliable radio without the extras', tags:['budget','simple','compact']},
   ]},
-  { id:'reach', multi:true, options:[
-    {key:'nearby',tags:['budget','simple']},{key:'local',tags:['channels','grow']},{key:'far',tags:[]},{key:'listen',tags:[]}
+  { id:'reach', question:'Who are you trying to reach?', multi:true, options:[
+    {key:'nearby', label:'Nearby', detail:'Same property, group, or event', tags:['budget','simple']},
+    {key:'local', label:'Local', detail:'Across town, neighboring cities, through repeaters', tags:['channels','grow']},
+    {key:'far', label:'Long distance', detail:'Statewide, cross-country, or worldwide', tags:[]},
+    {key:'listen', label:'Listen only', detail:'Monitor police, fire, EMS, or aircraft', tags:[]},
   ]},
-  { id:'needs', multi:true, options:[
-    {key:'water',tags:['waterproof']},{key:'gps',tags:['gps']},{key:'bluetooth',tags:['bluetooth']},{key:'texting',tags:['grow','digital']},{key:'encryption',tags:['encryption','digital','professional','commercial']},{key:'repeater',tags:['crossband','grow']},{key:'channels',tags:['channels']},{key:'nopreference',tags:[]}
+  { id:'needs', question:'What do you need?', multi:true, options:[
+    {key:'water', label:'Waterproof / water resistant', detail:'Rain, boating, submersion', tags:['waterproof']},
+    {key:'gps', label:'GPS location sharing', detail:'Track and share positions via APRS', tags:['gps']},
+    {key:'bluetooth', label:'Bluetooth', detail:'Wireless speakermic or phone control', tags:['bluetooth']},
+    {key:'texting', label:'Text messaging', detail:'Send text over radio without cell service', tags:['grow','digital']},
+    {key:'encryption', label:'Secure / encryption capable', detail:'Private, encrypted communications', tags:['encryption','digital','professional','commercial']},
+    {key:'repeater', label:'Built-in repeater mode', detail:'Your radio becomes a relay to extend range for others', tags:['crossband','grow']},
+    {key:'channels', label:'Increased channel capacity', detail:'Program repeaters across multiple locations and regions', tags:['channels']},
+    {key:'nopreference', label:'No specific needs', detail:'', tags:[]},
   ]},
 ];
 
-function getChecked(name) {
-  return [...document.querySelectorAll('input[name="'+name+'"]:checked')].map(i => i.value);
-}
-function getRadio(name) {
-  const el = document.querySelector('input[name="'+name+'"]:checked');
-  return el ? el.value : null;
-}
-
+// ── Category Detection ──────────────────────────────
 function detectCategory(answers) {
   const usage = answers.usage || [];
   if (usage.includes('vehicle')) return 'mobile';
@@ -125,6 +213,283 @@ function getLineup(cat) {
   return radioLineup;
 }
 
+const catLabels = {
+  handheld: 'Handheld', mobile: 'Vehicle / Mobile', base: 'Base Station',
+  hf: 'HF (Long-Distance)', scanner: 'Scanner'
+};
+
+// ── Tab switching ───────────────────────────────────
+function switchTab(id) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  document.querySelectorAll('.tab')[['branch','batch','tree'].indexOf(id)].classList.add('active');
+  if (id === 'tree') renderTree();
+}
+
+// ════════════════════════════════════════════════════
+// TAB 1: BRANCHING STEP-BY-STEP FLOW
+// ════════════════════════════════════════════════════
+
+let branchStep = 0;
+let branchAnswers = {};
+let branchQuestions = []; // built dynamically
+
+function buildBranchQuestions() {
+  branchQuestions = [];
+  // Always: budget, then reach
+  branchQuestions.push(interviewQuestions.find(q => q.id === 'budget'));
+  branchQuestions.push(interviewQuestions.find(q => q.id === 'reach'));
+
+  // After reach: detect category. Only handhelds get the features question.
+  const cat = detectCategory(branchAnswers);
+  if (cat === 'handheld') {
+    branchQuestions.push(interviewQuestions.find(q => q.id === 'needs'));
+  }
+}
+
+function branchReset() {
+  branchStep = 0;
+  branchAnswers = {};
+  buildBranchQuestions();
+  renderBranch();
+}
+
+function renderBranch() {
+  buildBranchQuestions();
+  renderStepPath();
+  renderAnsweredStack();
+  renderActiveQuestion();
+
+  // If past last question, show results
+  if (branchStep >= branchQuestions.length) {
+    renderBranchResult();
+    document.getElementById('active-question').innerHTML = '';
+  } else {
+    document.getElementById('branch-result').innerHTML = '';
+  }
+}
+
+function renderStepPath() {
+  buildBranchQuestions();
+  const cat = detectCategory(branchAnswers);
+  const allSteps = ['Budget', 'Reach'];
+
+  // Show routing indicator after reach
+  if (branchStep >= 2) {
+    if (cat === 'handheld') {
+      allSteps.push('Features');
+    } else {
+      allSteps.push(catLabels[cat]);
+    }
+  } else {
+    allSteps.push('???');
+  }
+  allSteps.push('Results');
+
+  let html = '';
+  allSteps.forEach((s, i) => {
+    if (i > 0) html += '<span class="step-arrow">&#8594;</span>';
+    const cls = i < branchStep ? 'done' : i === branchStep ? 'current' : 'future';
+    html += '<span class="step-node ' + cls + '">' + s + '</span>';
+  });
+  document.getElementById('step-path').innerHTML = html;
+}
+
+function renderAnsweredStack() {
+  let html = '';
+  for (let i = 0; i < branchStep && i < branchQuestions.length; i++) {
+    const q = branchQuestions[i];
+    const answer = branchAnswers[q.id];
+    const opts = q.options || [];
+    const selected = opts.filter(o =>
+      q.multi ? (answer || []).includes(o.key) : answer === o.key
+    );
+    const ansText = selected.map(o => o.label).join(', ');
+    html += '<div class="q-answered"><span class="q-label">' + q.question + '</span><span class="q-value">' + ansText + '</span></div>';
+
+    // After reach question, show category routing callout
+    if (q.id === 'reach') {
+      const cat = detectCategory(branchAnswers);
+      if (cat === 'handheld') {
+        html += '<div class="route-callout info">ROUTE: <code>reach</code> = ' + JSON.stringify(branchAnswers.reach) + ' &#8594; Category: <strong>Handheld</strong> &#8594; showing features question next, scoring against ' + radioLineup.length + ' handhelds</div>';
+      } else {
+        const lineup = getLineup(cat);
+        const available = lineup.filter(r => !r.outOfStock);
+        html += '<div class="route-callout warn">ROUTE: <code>reach</code> includes <strong>' + (cat === 'hf' ? 'far' : 'listen') + '</strong> &#8594; Category: <strong>' + catLabels[cat] + '</strong> &#8594; skipping features question, scoring against ' + available.length + ' ' + cat + ' radios</div>';
+      }
+    }
+  }
+  document.getElementById('answered-stack').innerHTML = html;
+}
+
+function renderActiveQuestion() {
+  if (branchStep >= branchQuestions.length) return;
+  const q = branchQuestions[branchStep];
+  const answer = branchAnswers[q.id];
+  const hasAnswer = answer !== undefined && answer !== null && (Array.isArray(answer) ? answer.length > 0 : true);
+
+  let html = '<div class="q-card">';
+  html += '<h3>' + q.question + '</h3>';
+  if (q.multi) html += '<p class="q-sub">Select all that apply</p>';
+
+  html += '<div>';
+  q.options.forEach(o => {
+    const sel = q.multi ? (answer || []).includes(o.key) : answer === o.key;
+    html += '<div class="q-opt ' + (sel ? 'selected' : '') + '" onclick="branchAnswer(\'' + q.id + '\',\'' + o.key + '\',' + !!q.multi + ')">';
+    html += o.label;
+    if (o.detail) html += ' <span style="color:#666;font-size:11px">(' + o.detail + ')</span>';
+    if (o.tags && o.tags.length) html += ' <span style="color:#555;font-size:10px">[' + o.tags.join(', ') + ']</span>';
+    html += '</div>';
+  });
+  html += '</div>';
+
+  // Show live tag accumulation
+  if (hasAnswer) {
+    const keys = Array.isArray(answer) ? answer : [answer];
+    const tags = [];
+    keys.forEach(k => {
+      const opt = q.options.find(o => o.key === k);
+      if (opt && opt.tags) opt.tags.forEach(t => { if (!tags.includes(t)) tags.push(t); });
+    });
+    if (tags.length) {
+      html += '<div style="margin-top:10px;font-size:12px;color:#888">Tags from this answer: ' + tags.map(t => '<span class="tag">' + t + '</span>').join(' ') + '</div>';
+    }
+  }
+
+  html += '<div style="margin-top:14px">';
+  if (branchStep > 0) html += '<button class="secondary" onclick="branchBack()">Back</button> ';
+  html += '<button onclick="branchNext()" ' + (!hasAnswer ? 'disabled' : '') + '>' + (branchStep === branchQuestions.length - 1 ? 'See Results' : 'Next') + '</button>';
+  html += '</div>';
+  html += '</div>';
+
+  document.getElementById('active-question').innerHTML = html;
+}
+
+function branchAnswer(qId, optKey, multi) {
+  if (multi) {
+    if (!branchAnswers[qId]) branchAnswers[qId] = [];
+    const idx = branchAnswers[qId].indexOf(optKey);
+    if (idx >= 0) branchAnswers[qId].splice(idx, 1);
+    else branchAnswers[qId].push(optKey);
+  } else {
+    branchAnswers[qId] = optKey;
+  }
+  renderBranch();
+}
+
+function branchNext() {
+  branchStep++;
+  buildBranchQuestions();
+  renderBranch();
+}
+
+function branchBack() {
+  if (branchStep > 0) {
+    branchStep--;
+    buildBranchQuestions();
+    // Clear the answer for the question we're going back to
+    if (branchStep < branchQuestions.length) {
+      delete branchAnswers[branchQuestions[branchStep].id];
+    }
+    renderBranch();
+  }
+}
+
+function renderBranchResult() {
+  const cat = detectCategory(branchAnswers);
+  const lineup = getLineup(cat);
+  const available = lineup.filter(r => !r.outOfStock);
+
+  // Score
+  const scores = {};
+  const scoreBreakdown = {}; // key -> [{reason, pts}]
+  lineup.forEach(r => { scores[r.key] = 0; scoreBreakdown[r.key] = []; });
+
+  interviewQuestions.forEach(q => {
+    const answer = branchAnswers[q.id];
+    if (!answer) return;
+    const keys = Array.isArray(answer) ? answer : [answer];
+    keys.forEach(key => {
+      const opt = q.options.find(o => o.key === key);
+      if (opt && opt.tags) {
+        opt.tags.forEach(tag => {
+          lineup.forEach(r => {
+            if (r.tags.includes(tag)) {
+              scores[r.key] += 10;
+              scoreBreakdown[r.key].push({ reason: q.id + ':' + key + ' -> tag "' + tag + '"', pts: 10 });
+            }
+          });
+        });
+      }
+    });
+  });
+
+  const ranked = available.slice().sort((a, b) => scores[b.key] - scores[a.key]);
+  const maxScore = Math.max(...Object.values(scores), 1);
+
+  // Collect all matched tags for highlighting
+  const allMatchedTags = new Set();
+  interviewQuestions.forEach(q => {
+    const answer = branchAnswers[q.id];
+    if (!answer) return;
+    const keys = Array.isArray(answer) ? answer : [answer];
+    keys.forEach(key => {
+      const opt = q.options.find(o => o.key === key);
+      if (opt && opt.tags) opt.tags.forEach(t => allMatchedTags.add(t));
+    });
+  });
+
+  let html = '<div id="result">';
+  html += 'CATEGORY: <strong>' + cat.toUpperCase() + '</strong> (' + catLabels[cat] + ')\n';
+  html += 'LINEUP: ' + lineup.map(r => r.key + (r.outOfStock ? ' [OOS]' : '')).join(', ') + '\n\n';
+  html += 'RANKING:\n';
+
+  ranked.forEach((r, i) => {
+    const pct = Math.round(scores[r.key] / maxScore * 100);
+    const bar = '<span class="score-bar" style="width:' + pct * 2 + 'px"></span>';
+    html += (i === 0 ? '<span class="winner">' : '') + (i+1) + '. ' + r.name + ' ($' + r.price + ') \u2014 ' + scores[r.key] + ' pts ' + bar + (i === 0 ? ' RECOMMENDED</span>' : '') + '\n';
+
+    // Tags with match highlighting
+    html += '   Tags: ' + r.tags.map(t => '<span class="tag' + (allMatchedTags.has(t) ? ' matched' : '') + '">' + t + '</span>').join(' ') + '\n';
+
+    // Scoring breakdown (collapsible)
+    if (scoreBreakdown[r.key].length > 0) {
+      html += '   <details style="margin-left:12px"><summary style="cursor:pointer;color:#888;font-size:11px">Score breakdown</summary><div class="score-breakdown">';
+      scoreBreakdown[r.key].forEach(s => {
+        html += '<div><span class="pts">+' + s.pts + '</span> ' + s.reason + '</div>';
+      });
+      html += '</div></details>';
+    }
+    html += '\n';
+  });
+
+  // Show out of stock separately
+  const oos = lineup.filter(r => r.outOfStock);
+  if (oos.length) {
+    html += '\nOUT OF STOCK (excluded from ranking):\n';
+    oos.forEach(r => { html += '  - ' + r.name + ' ($' + r.price + ') - ' + scores[r.key] + ' pts\n'; });
+  }
+
+  html += '\nINPUTS:\n' + JSON.stringify(branchAnswers, null, 2);
+  html += '</div>';
+
+  document.getElementById('branch-result').innerHTML = html;
+}
+
+
+// ════════════════════════════════════════════════════
+// TAB 2: BATCH SCORING (original flat view)
+// ════════════════════════════════════════════════════
+
+function getChecked(name) {
+  return [...document.querySelectorAll('input[name="'+name+'"]:checked')].map(i => i.value);
+}
+function getRadio(name) {
+  const el = document.querySelector('input[name="'+name+'"]:checked');
+  return el ? el.value : null;
+}
+
 function runScore() {
   const answers = {
     usage: getChecked('usage'),
@@ -138,7 +503,6 @@ function runScore() {
   const scores = {};
   lineup.forEach(r => { scores[r.key] = 0; });
 
-  // Score from interview questions
   interviewQuestions.forEach(q => {
     const answer = answers[q.id];
     if (!answer) return;
@@ -156,22 +520,125 @@ function runScore() {
   const ranked = lineup.slice().filter(r => !r.outOfStock).sort((a, b) => scores[b.key] - scores[a.key]);
   const maxScore = Math.max(...Object.values(scores), 1);
 
-  let html = `CATEGORY: ${category.toUpperCase()}\nLINEUP: ${lineup.map(r=>r.key).join(', ')}\n\n`;
-  html += `RANKING:\n`;
+  // Collect matched tags
+  const allMatchedTags = new Set();
+  interviewQuestions.forEach(q => {
+    const answer = answers[q.id];
+    if (!answer) return;
+    const keys = Array.isArray(answer) ? answer : [answer];
+    keys.forEach(key => {
+      const opt = q.options.find(o => o.key === key);
+      if (opt && opt.tags) opt.tags.forEach(t => allMatchedTags.add(t));
+    });
+  });
+
+  let html = 'CATEGORY: ' + category.toUpperCase() + '\nLINEUP: ' + lineup.map(r=>r.key).join(', ') + '\n\n';
+  html += 'RANKING:\n';
   ranked.forEach((r, i) => {
     const pct = Math.round(scores[r.key] / maxScore * 100);
     const bar = '<span class="score-bar" style="width:' + pct * 2 + 'px"></span>';
-    html += `${i === 0 ? '<span class="winner">' : ''}${i+1}. ${r.name} ($${r.price}) — ${scores[r.key]} pts ${bar}${i === 0 ? ' RECOMMENDED</span>' : ''}\n`;
-    html += `   Tags: ${r.tags.map(t => '<span class="tag">'+t+'</span>').join(' ')}\n\n`;
+    html += (i === 0 ? '<span class="winner">' : '') + (i+1) + '. ' + r.name + ' ($' + r.price + ') \u2014 ' + scores[r.key] + ' pts ' + bar + (i === 0 ? ' RECOMMENDED</span>' : '') + '\n';
+    html += '   Tags: ' + r.tags.map(t => '<span class="tag' + (allMatchedTags.has(t) ? ' matched' : '') + '">' + t + '</span>').join(' ') + '\n\n';
   });
 
-  html += `\nINPUTS:\n${JSON.stringify(answers, null, 2)}`;
+  html += '\nINPUTS:\n' + JSON.stringify(answers, null, 2);
   document.getElementById('result').innerHTML = html;
 }
 
 function clearAll() {
-  document.querySelectorAll('input').forEach(i => i.checked = false);
+  document.querySelectorAll('#tab-batch input').forEach(i => i.checked = false);
   document.getElementById('result').innerHTML = '';
 }
+
+
+// ════════════════════════════════════════════════════
+// TAB 3: DECISION TREE VISUALIZATION
+// ════════════════════════════════════════════════════
+
+function renderTree() {
+  const budgetQ = interviewQuestions.find(q => q.id === 'budget');
+  const reachQ = interviewQuestions.find(q => q.id === 'reach');
+  const needsQ = interviewQuestions.find(q => q.id === 'needs');
+
+  let html = '<pre style="font-size:12px;line-height:1.7;overflow-x:auto">';
+  html += '<strong style="color:#fdd351">V2 GUIDED INTERVIEW FLOW</strong>\n';
+  html += '\n';
+  html += 'START: "Help Me Choose"\n';
+  html += '  |\n';
+  html += '  +-- Q1: Budget (single-select)\n';
+  budgetQ.options.forEach(o => {
+    html += '  |     ' + o.key.toUpperCase() + ': "' + o.label + '" -> tags: [' + o.tags.join(', ') + ']\n';
+  });
+  html += '  |\n';
+  html += '  +-- Q2: Reach (multi-select)\n';
+  reachQ.options.forEach(o => {
+    const route = o.key === 'far' ? ' --> ROUTES TO HF' : o.key === 'listen' ? ' --> ROUTES TO SCANNER' : '';
+    html += '  |     ' + o.key.toUpperCase() + ': "' + o.label + '" -> tags: [' + (o.tags||[]).join(', ') + ']' + (route ? ' <span style="color:#ff6b6b">' + route + '</span>' : '') + '\n';
+  });
+  html += '  |\n';
+  html += '  +-- CATEGORY ROUTING LOGIC:\n';
+  html += '  |     reach includes "far"    --> <strong style="color:#6ab0f3">HF</strong> (' + hfRadioLineup.filter(r=>!r.outOfStock).length + ' radios, skip features Q)\n';
+  html += '  |     reach includes "listen"  --> <strong style="color:#6ab0f3">Scanner</strong> (' + scannerRadioLineup.length + ' radios, skip features Q)\n';
+  html += '  |     otherwise                --> <strong style="color:#6ab0f3">Handheld</strong> (' + radioLineup.length + ' radios, show features Q)\n';
+  html += '  |\n';
+  html += '  +-- [IF HANDHELD] Q3: Features (multi-select)\n';
+  needsQ.options.forEach(o => {
+    html += '  |     ' + o.key.toUpperCase() + ': "' + o.label + '" -> tags: [' + (o.tags||[]).join(', ') + ']\n';
+  });
+  html += '  |\n';
+  html += '  +-- SCORING: for each answer tag, +10 pts to radios that have that tag\n';
+  html += '  |\n';
+  html += '  +-- RESULTS: top 2 radios shown as recommendation cards\n';
+  html += '\n\n';
+
+  // Show lineup tag coverage
+  html += '<strong style="color:#fdd351">TAG COVERAGE BY RADIO</strong>\n\n';
+
+  // Collect all unique tags from answers
+  const allTags = new Set();
+  interviewQuestions.forEach(q => q.options.forEach(o => (o.tags||[]).forEach(t => allTags.add(t))));
+  const tagList = [...allTags].sort();
+
+  html += 'Interview tags: ' + tagList.join(', ') + '\n\n';
+
+  const allLineups = [
+    { label: 'HANDHELD', radios: radioLineup },
+    { label: 'MOBILE/BASE', radios: mobileRadioLineup },
+    { label: 'HF', radios: hfRadioLineup },
+    { label: 'SCANNER', radios: scannerRadioLineup },
+  ];
+
+  allLineups.forEach(group => {
+    html += '<strong>' + group.label + '</strong>\n';
+    group.radios.forEach(r => {
+      const matchCount = tagList.filter(t => r.tags.includes(t)).length;
+      html += '  ' + r.name.padEnd(16) + ' $' + String(r.price).padEnd(5) + ' (' + matchCount + '/' + tagList.length + ' tags) ';
+      html += r.tags.map(t => tagList.includes(t) ? '<span class="tag matched">' + t + '</span>' : '<span class="tag">' + t + '</span>').join(' ');
+      if (r.outOfStock) html += ' <span style="color:#ff6b6b">[OUT OF STOCK]</span>';
+      html += '\n';
+    });
+    html += '\n';
+  });
+
+  // Direct path
+  html += '\n<strong style="color:#fdd351">V2 DIRECT PATH ("I Know What I Want")</strong>\n\n';
+  html += 'START: "I Know What I Want"\n';
+  html += '  |\n';
+  html += '  +-- Category picker (multi-select)\n';
+  html += '  |     HANDHELD  --> ' + radioLineup.length + ' radios\n';
+  html += '  |     VEHICLE   --> ' + mobileRadioLineup.length + ' mobile radios\n';
+  html += '  |     BASE      --> ' + mobileRadioLineup.length + ' base radios (same lineup)\n';
+  html += '  |     HF        --> ' + hfRadioLineup.length + ' HF radios\n';
+  html += '  |     SCANNER   --> ' + scannerRadioLineup.length + ' scanners\n';
+  html += '  |\n';
+  html += '  +-- Radio grid (no scoring, user picks directly)\n';
+
+  html += '</pre>';
+  document.getElementById('tree-view').innerHTML = html;
+}
+
+// ── Init ────────────────────────────────────────────
+buildBranchQuestions();
+renderBranch();
 </script>
 </body></html>
