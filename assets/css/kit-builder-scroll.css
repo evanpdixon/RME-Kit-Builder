@@ -568,9 +568,8 @@
   font-weight: 600;
 }
 #rme-kit-builder-scroll .radio-pick .rp-price {
-  grid-row: 1; grid-column: 3; align-self: center;
   color: var(--rme-gold); font-weight: 700; font-size: 18px;
-  text-align: right;
+  margin-top: 2px;
 }
 #rme-kit-builder-scroll .radio-pick .rp-tag {
   grid-row: 2; grid-column: 2 / 4;
