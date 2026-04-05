@@ -211,6 +211,7 @@
 <div class="kb-scroll-price-bar" id="kb-scroll-price-bar" style="display:none">
   <div class="kbp-info">
     <span class="kbp-label" id="kbs-radio-name"></span>
+    <span class="kbp-subtotal-label">Subtotal</span>
     <span class="kbp-total" id="kbs-total"></span>
   </div>
   <a href="#" id="kbs-consult-btn" class="kbp-consult kbs-consult-link" target="_blank">&#128222; <span>Book a consultation</span></a>
