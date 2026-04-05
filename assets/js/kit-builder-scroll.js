@@ -68,7 +68,7 @@
       } else {
         renderCategoryProducts(next, kbsCurrentCategory, selectedRadioKey);
         if (next === 'programming' && typeof renderProgramming === 'function') renderProgramming();
-        if (next === 'review') { renderReview(); fixReviewButtons(); enableCartBtn(); }
+        if (next === 'review') { renderNonHandheldReview(); enableCartBtn(); }
       }
     }
 
@@ -98,6 +98,9 @@
         applyAllStates();
         updateScrollPriceBar();
         updateConsultLinks();
+        addKeyboardSupport();
+        // Move focus to new section for screen readers
+        setTimeout(function() { focusSection(next); }, 200);
       }, 1200);
     }, 800);
   };
@@ -128,11 +131,18 @@
       disableCartBtn();
       applyAllStates();
       scrollToSection(name);
-      // Re-render if product section
-      if (name === 'antennas') renderAllAntennas();
-      if (name === 'battery') renderBatteryUpgrades();
-      if (name === 'accessories') renderAccessories();
-      if (name === 'programming') renderProgramming();
+      // Re-render if product section (category-aware)
+      if (kbsCurrentCategory === 'handheld') {
+        if (name === 'antennas') renderAllAntennas();
+        if (name === 'battery') renderBatteryUpgrades();
+        if (name === 'accessories') renderAccessories();
+        if (name === 'programming') renderProgramming();
+      } else {
+        if (name === 'antennas' || name === 'battery' || name === 'accessories') {
+          renderCategoryProducts(name, kbsCurrentCategory, selectedRadioKey);
+        }
+        if (name === 'programming') renderProgramming();
+      }
     }
 
     // If there's an active section to fade out, animate the transition
@@ -299,24 +309,93 @@
   }
 
   // ── Cart ──────────────────────────────────────
+  // Collect cart items for non-handheld categories from category-specific product arrays
+  function collectCategoryCartItems() {
+    var cat = kbsCurrentCategory;
+    var lineup = kbsGetRadioLineup();
+    var radio = lineup.find(function(r) { return r.key === selectedRadioKey; });
+    if (!radio) return [];
+    var items = [{ name: radio.name, price: radio.price, id: radio.id, qty: 1 }];
+
+    var antennaList = [];
+    var powerList = [];
+    var accList = [];
+
+    if (cat === 'mobile' || cat === 'base') {
+      if (typeof mobileProducts !== 'undefined') {
+        antennaList = [...(mobileProducts.antennaMounts || []), ...(mobileProducts.vehicleAntennas || [])];
+        powerList = mobileProducts.power || [];
+        accList = (mobileProducts.accessories || []).filter(function(a) { return !a.compatRadios || a.compatRadios.includes(selectedRadioKey); });
+      }
+      if (cat === 'base' && typeof baseProducts !== 'undefined') {
+        antennaList = [...(baseProducts.antennaPath.quick.items || []), ...(baseProducts.antennaPath.permanent.antennas || [])];
+      }
+    } else if (cat === 'hf') {
+      if (typeof hfProducts !== 'undefined') {
+        antennaList = hfProducts.antennas || [];
+        accList = (hfProducts.accessories || []).filter(function(a) { return !a.radioMatch || a.radioMatch === selectedRadioKey; });
+      }
+      if (typeof mobileProducts !== 'undefined') {
+        powerList = mobileProducts.power || [];
+      }
+    } else if (cat === 'scanner') {
+      if (typeof scannerProducts !== 'undefined') {
+        antennaList = scannerProducts.antennas || [];
+        accList = (scannerProducts.accessories || []).filter(function(a) { return !a.compatRadios || a.compatRadios.includes(selectedRadioKey); });
+      }
+    }
+
+    selectedAntennas.forEach(function(key) {
+      var p = antennaList.find(function(x) { return x.key === key; });
+      if (p && p.id) items.push({ name: p.name, price: p.price, id: p.id, qty: 1 });
+    });
+
+    selectedBatteries.forEach(function(qty, key) {
+      var p = powerList.find(function(x) { return x.key === key; });
+      if (p && p.id) items.push({ name: p.name, price: p.price * qty, id: p.id, qty: qty });
+    });
+
+    selectedAccessories.forEach(function(key) {
+      var a = accList.find(function(x) { return x.key === key; });
+      if (a && a.id) items.push({ name: a.name, price: a.price || 0, id: a.id, qty: 1 });
+    });
+
+    if (programmingChoice === 'multi') items.push({ name: 'Multi-Location Programming', price: 10, id: 624, qty: 1 });
+
+    return items;
+  }
+
   window.kbsAddToCart = function() {
-    if (typeof collectHandheldCartItems !== 'function') return;
-    const items = collectHandheldCartItems();
+    var items;
+    if (kbsCurrentCategory === 'handheld') {
+      if (typeof collectHandheldCartItems !== 'function') return;
+      items = collectHandheldCartItems();
+    } else {
+      items = collectCategoryCartItems();
+    }
     rmeKbAddToCart(items);
   };
 
   // ── Email Section ─────────────────────────────
   window.kbsSubmitEmail = function() {
-    const email = document.getElementById('kbs-lead-email').value.trim();
+    const emailInput = document.getElementById('kbs-lead-email');
+    const email = emailInput.value.trim();
     const name = document.getElementById('kbs-lead-name').value.trim();
-    if (email && !email.includes('@')) return;
+    // Validate email format if provided
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      emailInput.style.borderColor = 'var(--rme-red, #e55)';
+      return;
+    }
+    emailInput.style.borderColor = '';
+    // Prevent double-submit
+    var btn = document.querySelector('.kb-email-form .kb-btn--primary');
+    if (btn) { btn.disabled = true; btn.textContent = 'Saving...'; }
     // Save to session
     if (typeof kitSession !== 'undefined') {
       kitSession.email = email;
       kitSession.name = name;
     }
-    if (email && typeof captureEmailAndStart === 'function') {
-      // Use existing AJAX to save lead, but don't let it change phases
+    if (email && typeof rmeKitBuilder !== 'undefined') {
       fetch(rmeKitBuilder.ajaxUrl + '?action=rme_kb_capture_email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -413,6 +492,7 @@
       { key: 'handheld', icon: ICO.handheld, label: 'Handheld', detail: 'Portable, carried on your person', tags: [] },
       { key: 'vehicle', icon: ICO.vehicle, label: 'Vehicle / Mobile', detail: 'Mounted in a car, truck, or RV', tags: [] },
       { key: 'base', icon: ICO.base, label: 'Base Station', detail: 'Fixed location with outdoor antenna', tags: [] },
+      { key: 'hf', icon: ICO.hf, label: 'HF (Long-Distance)', detail: 'Nationwide or worldwide, amateur license required', tags: [] },
       { key: 'scanner', icon: ICO.scanner, label: 'Scanner / SDR', detail: 'Listen only, no license required', tags: [] },
     ]
   };
@@ -423,7 +503,7 @@
     const reach = kbsAnswers['reach'] || [];
     var preSelected = [];
     if (reach.includes('nearby') || reach.includes('local')) preSelected.push('handheld');
-    if (reach.includes('far')) preSelected.push('handheld'); // HF is niche, default handheld; user can change
+    if (reach.includes('far')) preSelected.push('hf');
     if (reach.includes('listen')) preSelected.push('scanner');
     if (preSelected.length === 0) preSelected.push('handheld');
     kbsAnswers['setup'] = preSelected;
@@ -800,9 +880,11 @@
   window.kbsRetakeQuiz = function() {
     // Reset interview answers and step, re-render questions
     kbsStep = 0;
-    var keepUsage = kbsAnswers['usage']; // preserve category selection
+    var keepUsage = kbsAnswers['usage'];
+    var keepSetup = kbsAnswers['setup'];
     kbsAnswers = {};
     if (keepUsage) kbsAnswers['usage'] = keepUsage;
+    if (keepSetup) kbsAnswers['setup'] = keepSetup;
     kbsInterviewTags = [];
     document.getElementById('kbs-interview-stack').style.display = '';
     renderInterviewStack();
@@ -1164,6 +1246,7 @@
       const container = document.getElementById(section === 'battery' ? 'battery-options' : 'accessory-options');
       if (!container || typeof hfProducts === 'undefined') return;
       if (section === 'battery') {
+        // HF uses shared 12V power products (LiFePO4 batteries, PSUs) from mobileProducts.power
         renderMobileBaseProducts('battery', 'hf', radioKey);
         return;
       }
@@ -1202,8 +1285,14 @@
         </div>
       `).join('');
     }
-    if (section === 'battery' || section === 'accessories') {
-      const container = document.getElementById(section === 'battery' ? 'battery-options' : 'accessory-options');
+    if (section === 'battery') {
+      // Scanners don't have separate power options; show a simple message
+      const container = document.getElementById('battery-options');
+      if (!container) return;
+      container.innerHTML = '<p style="color:var(--rme-muted)">Your scanner includes standard power. No additional power options needed.</p>';
+    }
+    if (section === 'accessories') {
+      const container = document.getElementById('accessory-options');
       if (!container) return;
       const acc = (scannerProducts.accessories || []).filter(a => !a.compatRadios || a.compatRadios.includes(radioKey));
       container.innerHTML = acc.map(a => `
@@ -1237,6 +1326,133 @@
       }
       _origUpdateBottomBar();
     };
+  }
+
+  // ── Non-handheld review renderer ───────────────
+  // renderReview() from base JS reads handheld product arrays. For non-handheld,
+  // we build the review from category-specific product arrays.
+  function renderNonHandheldReview() {
+    var cat = kbsCurrentCategory;
+    var list = document.getElementById('review-list');
+    if (!list) return;
+    var items = [];
+    var editStyle = 'font-size:12px;color:var(--rme-gold);cursor:pointer;text-transform:uppercase;letter-spacing:1px;margin-left:8px;padding:8px 12px;border-radius:4px;min-height:36px;display:inline-flex;align-items:center';
+
+    // Radio
+    var lineup = kbsGetRadioLineup();
+    var radio = lineup.find(function(r) { return r.key === selectedRadioKey; });
+    if (!radio) return;
+    items.push(
+      '<div class="review-item base">' +
+        '<div class="ri-img"><img src="' + (radio.img || '') + '" alt="" onerror="this.parentElement.innerHTML=\'&#128251;\'"></div>' +
+        '<div class="ri-name">' + radio.name + '<small>Base kit</small></div>' +
+        '<div class="ri-price">$' + radio.price + '</div>' +
+      '</div>'
+    );
+
+    // Build product lists for lookups
+    var antennaList = [];
+    var powerList = [];
+    var accList = [];
+    if (cat === 'mobile') {
+      if (typeof mobileProducts !== 'undefined') {
+        antennaList = [].concat(mobileProducts.antennaMounts || [], mobileProducts.vehicleAntennas || []);
+        powerList = mobileProducts.power || [];
+        accList = (mobileProducts.accessories || []).filter(function(a) { return !a.compatRadios || a.compatRadios.includes(selectedRadioKey); });
+      }
+    } else if (cat === 'base') {
+      if (typeof baseProducts !== 'undefined') {
+        antennaList = [].concat(baseProducts.antennaPath.quick.items || [], baseProducts.antennaPath.permanent.antennas || []);
+      }
+      if (typeof mobileProducts !== 'undefined') { powerList = mobileProducts.power || []; }
+    } else if (cat === 'hf') {
+      if (typeof hfProducts !== 'undefined') {
+        antennaList = hfProducts.antennas || [];
+        accList = (hfProducts.accessories || []).filter(function(a) { return !a.radioMatch || a.radioMatch === selectedRadioKey; });
+      }
+      if (typeof mobileProducts !== 'undefined') { powerList = mobileProducts.power || []; }
+    } else if (cat === 'scanner') {
+      if (typeof scannerProducts !== 'undefined') {
+        antennaList = scannerProducts.antennas || [];
+        accList = (scannerProducts.accessories || []).filter(function(a) { return !a.compatRadios || a.compatRadios.includes(selectedRadioKey); });
+      }
+    }
+
+    // Antennas
+    if (selectedAntennas.size > 0) {
+      items.push('<div style="font-size:12px;color:var(--rme-muted);padding:12px 0 4px;border-bottom:1px solid var(--rme-border);display:flex;justify-content:space-between;align-items:center"><span>ANTENNAS</span><span style="' + editStyle + '" onclick="kbsEditSection(\'antennas\')">Edit</span></div>');
+      selectedAntennas.forEach(function(key) {
+        var a = antennaList.find(function(x) { return x.key === key; });
+        if (a) {
+          items.push(
+            '<div class="review-item">' +
+              '<div class="ri-img">' + (a.img ? '<img src="' + a.img + '" alt="">' : '') + '</div>' +
+              '<div class="ri-name">' + a.name + '</div>' +
+              '<div class="ri-price">+$' + a.price + '</div>' +
+            '</div>'
+          );
+        }
+      });
+    }
+
+    // Power / Battery
+    if (selectedBatteries.size > 0) {
+      items.push('<div style="font-size:12px;color:var(--rme-muted);padding:12px 0 4px;border-bottom:1px solid var(--rme-border);display:flex;justify-content:space-between;align-items:center"><span>POWER</span><span style="' + editStyle + '" onclick="kbsEditSection(\'battery\')">Edit</span></div>');
+      selectedBatteries.forEach(function(qty, key) {
+        var p = powerList.find(function(x) { return x.key === key; });
+        if (p) {
+          items.push(
+            '<div class="review-item">' +
+              '<div class="ri-img">' + (p.img ? '<img src="' + p.img + '" alt="">' : '') + '</div>' +
+              '<div class="ri-name">' + p.name + (qty > 1 ? ' <small>x' + qty + '</small>' : '') + '</div>' +
+              '<div class="ri-price">+$' + (p.price * qty) + '</div>' +
+            '</div>'
+          );
+        }
+      });
+    }
+
+    // Accessories
+    if (selectedAccessories.size > 0) {
+      items.push('<div style="font-size:12px;color:var(--rme-muted);padding:12px 0 4px;border-bottom:1px solid var(--rme-border);display:flex;justify-content:space-between;align-items:center"><span>ACCESSORIES</span><span style="' + editStyle + '" onclick="kbsEditSection(\'accessories\')">Edit</span></div>');
+      selectedAccessories.forEach(function(key) {
+        var a = accList.find(function(x) { return x.key === key; });
+        if (a) {
+          items.push(
+            '<div class="review-item">' +
+              '<div class="ri-img">' + (a.img ? '<img src="' + a.img + '" alt="">' : '') + '</div>' +
+              '<div class="ri-name">' + a.name + '</div>' +
+              '<div class="ri-price">' + (a.price ? '+$' + a.price : 'Included') + '</div>' +
+            '</div>'
+          );
+        }
+      });
+    }
+
+    // Programming
+    items.push('<div style="font-size:12px;color:var(--rme-muted);padding:12px 0 4px;border-bottom:1px solid var(--rme-border);display:flex;justify-content:space-between;align-items:center"><span>PROGRAMMING</span><span style="' + editStyle + '" onclick="kbsEditSection(\'programming\')">Edit</span></div>');
+    if (programmingChoice === 'standard') {
+      items.push('<div class="review-item" style="opacity:0.7"><div class="ri-img" style="background:var(--rme-card);display:flex;align-items:center;justify-content:center;font-size:24px">&#128225;</div><div class="ri-name">Custom Programming<small>Standard</small></div><div class="ri-price" style="color:var(--rme-green)">Included</div></div>');
+    } else if (programmingChoice === 'multi') {
+      items.push('<div class="review-item"><div class="ri-img" style="background:var(--rme-card);display:flex;align-items:center;justify-content:center;font-size:24px">&#128225;</div><div class="ri-name">Multi-Location Programming</div><div class="ri-price">+$10</div></div>');
+    } else {
+      items.push('<div class="review-item" style="opacity:0.5"><div class="ri-img" style="background:var(--rme-card);display:flex;align-items:center;justify-content:center;font-size:24px">&#128225;</div><div class="ri-name">No Programming<small>Ships with factory defaults</small></div><div class="ri-price" style="color:var(--rme-muted)">-</div></div>');
+    }
+
+    if (items.length === 1) {
+      items.push('<div class="empty-state">No add-ons selected. Just the base kit.</div>');
+    }
+
+    // Total (use price bar calculation)
+    var total = radio.price;
+    selectedAntennas.forEach(function(key) { var p = antennaList.find(function(x) { return x.key === key; }); if (p) total += p.price; });
+    selectedBatteries.forEach(function(qty, key) { var p = powerList.find(function(x) { return x.key === key; }); if (p) total += p.price * qty; });
+    selectedAccessories.forEach(function(key) { var a = accList.find(function(x) { return x.key === key; }); if (a) total += (a.price || 0); });
+    if (programmingChoice === 'multi') total += 10;
+
+    items.push('<div class="review-total"><div class="rt-label">Kit Total</div><div class="rt-price">$' + total + '</div></div>');
+
+    list.innerHTML = items.join('');
   }
 
   // ── Fix review buttons for scroll mode ────────
@@ -1290,6 +1506,68 @@
     _origComplete(name);
   };
 
+  // ── Focus management after section transitions ──
+  function focusSection(name) {
+    var el = document.getElementById('sec-' + name);
+    if (!el) return;
+    var heading = el.querySelector('.kb-section__header h2');
+    if (heading) { heading.setAttribute('tabindex', '-1'); heading.focus({ preventScroll: true }); }
+  }
+
+  // ── Modal scroll lock helpers ──────────────────
+  function lockBodyScroll() { document.body.classList.add('kb-modal-open'); }
+  function unlockBodyScroll() { document.body.classList.remove('kb-modal-open'); }
+
+  // Patch modal open/close to lock scrolling
+  var _origAdapterModalAdd = window.adapterModalAdd;
+  var _origAdapterModalSkip = window.adapterModalSkip;
+  var _origAdapterModalCancel = window.adapterModalCancel;
+  if (typeof _origAdapterModalAdd === 'function') {
+    window.adapterModalAdd = function() { unlockBodyScroll(); _origAdapterModalAdd(); };
+    window.adapterModalSkip = function() { unlockBodyScroll(); _origAdapterModalSkip(); };
+    window.adapterModalCancel = function() { unlockBodyScroll(); _origAdapterModalCancel(); };
+  }
+
+  // Watch for modal open class to auto-lock
+  var modalObserver = new MutationObserver(function(mutations) {
+    mutations.forEach(function(m) {
+      if (m.target.classList && m.target.classList.contains('modal-overlay')) {
+        if (m.target.classList.contains('open')) lockBodyScroll();
+        else unlockBodyScroll();
+      }
+    });
+  });
+
+  // ── Keyboard support for interactive cards ─────
+  function addKeyboardSupport() {
+    document.querySelectorAll('#rme-kit-builder-scroll .kbs-choice-card, #rme-kit-builder-scroll .kbs-iq-opt, #rme-kit-builder-scroll .result-card, #rme-kit-builder-scroll .radio-pick').forEach(function(el) {
+      if (!el.getAttribute('tabindex')) el.setAttribute('tabindex', '0');
+      if (!el.getAttribute('role')) el.setAttribute('role', 'button');
+      el.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); el.click(); }
+      });
+    });
+  }
+
+  // ── ARIA attributes for sections ───────────────
+  function updateSectionAria() {
+    SECTIONS.forEach(function(s) {
+      var el = document.getElementById('sec-' + s);
+      if (!el) return;
+      var state = sectionState[s];
+      el.setAttribute('aria-expanded', state === 'active' ? 'true' : 'false');
+      if (state === 'locked') el.setAttribute('aria-disabled', 'true');
+      else el.removeAttribute('aria-disabled');
+    });
+  }
+
+  // Patch applyAllStates to include ARIA
+  var _origApplyAllStates = applyAllStates;
+  applyAllStates = function() {
+    _origApplyAllStates();
+    updateSectionAria();
+  };
+
   // ── Init ──────────────────────────────────────
   document.addEventListener('DOMContentLoaded', function() {
     // Reset any leftover state from base JS
@@ -1297,8 +1575,13 @@
     applyAllStates();
     attachHeaderClicks();
     updateConsultLinks();
+    addKeyboardSupport();
     // Set initial history state so first back press stays in builder
     history.replaceState({ kbSection: 'email' }, '', '');
+    // Observe modals for scroll lock
+    document.querySelectorAll('.modal-overlay').forEach(function(modal) {
+      modalObserver.observe(modal, { attributes: true, attributeFilter: ['class'] });
+    });
   });
 
 })();

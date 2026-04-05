@@ -3,7 +3,7 @@
 <div id="rme-kit-builder">
 
   <!-- SECTION 1: Email Capture -->
-  <div class="kb-section kb-section--active" data-section="email" id="sec-email">
+  <div class="kb-section kb-section--active" data-section="email" id="sec-email" role="region" aria-label="Email capture" aria-expanded="true">
     <div class="kb-section__header">
       <span class="kb-section__number">1</span>
       <h2>Let's Get Started</h2>
@@ -21,7 +21,7 @@
   </div>
 
   <!-- SECTION 2: Interview / Direct Pick -->
-  <div class="kb-section kb-section--locked" data-section="interview" id="sec-interview">
+  <div class="kb-section kb-section--locked" data-section="interview" id="sec-interview" role="region" aria-label="Find your radio" aria-expanded="false" aria-disabled="true">
     <div class="kb-section__header">
       <span class="kb-section__number">2</span>
       <h2>Find Your Radio</h2>
@@ -46,7 +46,7 @@
   </div>
 
   <!-- SECTION 3: Radio Selection -->
-  <div class="kb-section kb-section--locked" data-section="radio" id="sec-radio">
+  <div class="kb-section kb-section--locked" data-section="radio" id="sec-radio" role="region" aria-label="Choose your radio" aria-expanded="false" aria-disabled="true">
     <div class="kb-section__header">
       <span class="kb-section__number">3</span>
       <h2>Choose Your Radio</h2>
@@ -63,7 +63,7 @@
   </div>
 
   <!-- SECTION 4: Antennas -->
-  <div class="kb-section kb-section--locked" data-section="antennas" id="sec-antennas">
+  <div class="kb-section kb-section--locked" data-section="antennas" id="sec-antennas" role="region" aria-label="Antennas" aria-expanded="false" aria-disabled="true">
     <div class="kb-section__header">
       <span class="kb-section__number">4</span>
       <h2>Antennas</h2>
@@ -81,7 +81,7 @@
   </div>
 
   <!-- SECTION 5: Battery -->
-  <div class="kb-section kb-section--locked" data-section="battery" id="sec-battery">
+  <div class="kb-section kb-section--locked" data-section="battery" id="sec-battery" role="region" aria-label="Battery upgrade" aria-expanded="false" aria-disabled="true">
     <div class="kb-section__header">
       <span class="kb-section__number">5</span>
       <h2>Battery Upgrade</h2>
@@ -98,7 +98,7 @@
   </div>
 
   <!-- SECTION 6: Accessories -->
-  <div class="kb-section kb-section--locked" data-section="accessories" id="sec-accessories">
+  <div class="kb-section kb-section--locked" data-section="accessories" id="sec-accessories" role="region" aria-label="Accessories" aria-expanded="false" aria-disabled="true">
     <div class="kb-section__header">
       <span class="kb-section__number">6</span>
       <h2>Accessories</h2>
@@ -116,7 +116,7 @@
   </div>
 
   <!-- SECTION 7: Programming -->
-  <div class="kb-section kb-section--locked" data-section="programming" id="sec-programming">
+  <div class="kb-section kb-section--locked" data-section="programming" id="sec-programming" role="region" aria-label="Custom programming" aria-expanded="false" aria-disabled="true">
     <div class="kb-section__header">
       <span class="kb-section__number">7</span>
       <h2>Custom Programming</h2>
@@ -134,7 +134,7 @@
   </div>
 
   <!-- SECTION 8: Review & Cart -->
-  <div class="kb-section kb-section--locked" data-section="review" id="sec-review">
+  <div class="kb-section kb-section--locked" data-section="review" id="sec-review" role="region" aria-label="Review your kit" aria-expanded="false" aria-disabled="true">
     <div class="kb-section__header">
       <span class="kb-section__number">8</span>
       <h2>Review Your Kit</h2>

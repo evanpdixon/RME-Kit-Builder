@@ -718,6 +718,51 @@
   opacity: 1;
 }
 
+/* ── Modal scroll lock ────────────────── */
+/* Prevent background scrolling when modal is open */
+.modal-overlay.open { overflow-y: auto; }
+body.kb-modal-open { overflow: hidden; }
+
+/* ── Contrast improvements ───────────── */
+/* Ensure completed section text meets WCAG AA */
+.kb-section--complete .kb-section__summary .kbs-none {
+  color: #8a8a8a; /* raised from #667 for 4.5:1 ratio on #040404 */
+}
+.kb-section--complete .kb-section__header h2 {
+  color: #8aaa8a; /* slightly brighter for readability */
+}
+
+/* ── Section state text labels ────────── */
+/* Visible state indicator alongside color for colorblind users */
+.kb-section--complete .kb-section__header::after {
+  content: '(done)';
+  font-size: 11px;
+  color: #8a8a8a;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-left: auto;
+  font-family: var(--rme-font-body);
+}
+.kb-section--active .kb-section__header::after {
+  content: '(current)';
+  font-size: 11px;
+  color: var(--rme-gold-dim);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-left: auto;
+  font-family: var(--rme-font-body);
+}
+
+/* ── Focus styles for keyboard navigation ── */
+.kbs-choice-card:focus-visible,
+.kbs-iq-opt:focus-visible,
+.result-card:focus-visible,
+.radio-pick:focus-visible,
+.opt-card:focus-visible {
+  outline: 2px solid var(--rme-gold);
+  outline-offset: 2px;
+}
+
 /* ── Reduced motion ────────────────────── */
 /* Reduced motion: slow down but don't eliminate transitions */
 @media (prefers-reduced-motion: reduce) {
