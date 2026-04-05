@@ -481,18 +481,26 @@
   };
 
   window.kbsNextQ = function() {
-    kbsStep++;
-    // Rebuild question list (conditionals may have changed)
-    buildQuestionList();
-    if (kbsStep >= kbsAllQuestions.length) {
-      showScrollResults();
-      return;
-    }
-    renderInterviewStack();
-    setTimeout(() => {
-      const qs = document.querySelectorAll('.kbs-iq:not(.kbs-iq--answered)');
-      if (qs.length) qs[qs.length - 1].scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 100);
+    // Fade out current question
+    var stack = document.getElementById('kbs-interview-stack');
+    if (stack) stack.style.opacity = '0';
+
+    setTimeout(function() {
+      kbsStep++;
+      buildQuestionList();
+      if (kbsStep >= kbsAllQuestions.length) {
+        showScrollResults();
+        if (stack) { stack.offsetHeight; stack.style.opacity = '1'; }
+        return;
+      }
+      renderInterviewStack();
+      // Fade in
+      if (stack) { stack.offsetHeight; stack.style.opacity = '1'; }
+      setTimeout(function() {
+        var qs = document.querySelectorAll('.kbs-iq:not(.kbs-iq--answered)');
+        if (qs.length) qs[qs.length - 1].scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 300);
+    }, 500);
   };
 
   function showScrollResults() {
@@ -611,14 +619,18 @@
 
   window.kbsPrevQ = function() {
     if (kbsStep > 0) {
-      kbsStep--;
-      // Remove the answer for the question we're going back to
-      buildQuestionList();
-      if (kbsStep < kbsAllQuestions.length) {
-        delete kbsAnswers[kbsAllQuestions[kbsStep].id];
-      }
-      renderInterviewStack();
-      scrollToSection('interview');
+      var stack = document.getElementById('kbs-interview-stack');
+      if (stack) stack.style.opacity = '0';
+      setTimeout(function() {
+        kbsStep--;
+        buildQuestionList();
+        if (kbsStep < kbsAllQuestions.length) {
+          delete kbsAnswers[kbsAllQuestions[kbsStep].id];
+        }
+        renderInterviewStack();
+        if (stack) { stack.offsetHeight; stack.style.opacity = '1'; }
+        scrollToSection('interview');
+      }, 500);
     }
   };
 
@@ -674,19 +686,13 @@
     if (sectionState['interview'] !== 'complete') {
       sectionState['interview'] = 'complete';
       renderSummary('interview');
+      applyAllStates();
     }
 
-    // Complete radio section
-    sectionState['radio'] = 'complete';
-    renderSummary('radio');
-
-    // Unlock antennas
-    sectionState['antennas'] = 'active';
+    // Use animated transition for radio → antennas
+    // Pre-render antennas content
     renderAllAntennas();
-
-    applyAllStates();
-    scrollToSection('antennas');
-    updateScrollPriceBar();
+    kbsCompleteSection('radio');
   };
 
   window.kbsShowAllRadios = function() {

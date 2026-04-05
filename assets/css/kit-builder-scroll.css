@@ -414,6 +414,9 @@
 }
 
 /* ── Interview Stack ───────────────────── */
+#kbs-interview-stack {
+  transition: opacity 0.5s ease;
+}
 .kbs-iq {
   margin-bottom: 16px;
   padding: 20px;
