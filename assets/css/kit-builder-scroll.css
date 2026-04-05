@@ -827,13 +827,7 @@ body.kb-modal-open { overflow: hidden; }
   font-family: var(--rme-font-body);
 }
 .kb-section--active .kb-section__header::after {
-  content: '(current)';
-  font-size: 11px;
-  color: var(--rme-gold-dim);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-left: auto;
-  font-family: var(--rme-font-body);
+  content: none;
 }
 
 /* ── Focus styles for keyboard navigation ── */
