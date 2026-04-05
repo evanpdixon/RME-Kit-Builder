@@ -560,7 +560,7 @@
               : '<button class="kb-btn kb-btn--secondary" onclick="kbsPrevQ()">Back</button>'
             }
             <button class="kb-btn kb-btn--primary" onclick="kbsNextQ()" ${!hasAnswer ? 'disabled' : ''}>
-              ${i === kbsAllQuestions.length - 1 && kbsAllQuestions[i].phase === 'interview' ? 'See Results' : 'Next'}
+              ${i === kbsAllQuestions.length - 1 && kbsAllQuestions[i].phase === 'interview' && kbsAllQuestions[i].id !== 'setup' ? 'See Results' : 'Next'}
             </button>
             <a href="#" class="kbs-consult-escape kbs-consult-link" target="_blank">&#128222; Not sure? Book a consultation</a>
           </div>
