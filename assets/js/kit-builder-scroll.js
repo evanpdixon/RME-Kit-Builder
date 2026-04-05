@@ -554,6 +554,11 @@
           stack.style.opacity = '1';
           stack.style.transform = 'translateY(0)';
         }
+        // Scroll to the results heading so it's visible (especially on mobile)
+        setTimeout(function() {
+          var heading = document.querySelector('.kbs-results-heading');
+          if (heading) heading.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 400);
         return;
       }
       renderInterviewStack();

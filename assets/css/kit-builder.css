@@ -347,7 +347,7 @@
 #rme-kit-builder .prog-deemph:hover { opacity: 0.8; }
 
 /* Color swatches (UV-PRO) */
-#rme-kit-builder .color-picker { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+#rme-kit-builder .color-picker { display: flex; align-items: center; gap: 10px; margin-top: 8px; grid-column: 1 / -1; flex-wrap: wrap; }
 #rme-kit-builder .color-picker-label { font-size: 13px; color: var(--rme-muted); }
 #rme-kit-builder .color-swatch {
   width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--rme-border);

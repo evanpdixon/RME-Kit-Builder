@@ -3458,17 +3458,6 @@ function renderBatteryUpgrades() {
       <div class="oc-body">
         <div class="oc-name">${b.name}</div>
         <div class="oc-desc">${b.desc}</div>
-        ${showColorPicker ? `
-          <div class="color-picker" style="margin-top:6px" onclick="event.stopPropagation()">
-            <span class="color-picker-label">Color:</span>
-            <div class="color-swatch color-swatch--black ${batColor === 'black' ? 'active' : ''}"
-                 onclick="setUvproBatteryColor('${b.key}','black')" title="Black"></div>
-            <div class="color-swatch color-swatch--tan ${batColor === 'tan' ? 'active' : ''}"
-                 onclick="setUvproBatteryColor('${b.key}','tan')" title="Tan / Coyote"></div>
-            <span class="color-swatch-name">${batColor === 'black' ? 'Black' : 'Tan / Coyote'}</span>
-          </div>
-          ${batColor !== uvproRadioColor ? '<div style="font-size:11px;color:var(--rme-gold-dim);margin-top:4px">Note: battery color differs from your radio (' + (uvproRadioColor === 'black' ? 'Black' : 'Tan') + ')</div>' : ''}
-        ` : ''}
       </div>
       ${isSelected ? `
         <div class="qty-stepper" onclick="event.stopPropagation()">
@@ -3478,6 +3467,17 @@ function renderBatteryUpgrades() {
         </div>
         <div class="oc-price">+$${b.price * qty}</div>
       ` : `<div class="oc-price">+$${b.price}/ea</div>`}
+      ${showColorPicker ? `
+        <div class="color-picker" onclick="event.stopPropagation()">
+          <span class="color-picker-label">Color:</span>
+          <div class="color-swatch color-swatch--black ${batColor === 'black' ? 'active' : ''}"
+               onclick="setUvproBatteryColor('${b.key}','black')" title="Black"></div>
+          <div class="color-swatch color-swatch--tan ${batColor === 'tan' ? 'active' : ''}"
+               onclick="setUvproBatteryColor('${b.key}','tan')" title="Tan / Coyote"></div>
+          <span class="color-swatch-name">${batColor === 'black' ? 'Black' : 'Tan / Coyote'}</span>
+          ${batColor !== uvproRadioColor ? '<span style="font-size:11px;color:var(--rme-gold-dim);margin-left:8px">Differs from radio (' + (uvproRadioColor === 'black' ? 'Black' : 'Tan') + ')</span>' : ''}
+        </div>
+      ` : ''}
     </div>
   `}).join('');
 }
@@ -3485,30 +3485,11 @@ function renderBatteryUpgrades() {
 function renderAccessories() {
   const container = document.getElementById('accessory-options');
 
-  const helpGuide = `
-    <div class="acc-help-toggle" onclick="this.nextElementSibling.classList.toggle('open');this.classList.toggle('open')">
-      Not sure what you need? <span>Click here for a quick guide</span>
-    </div>
-    <div class="acc-help-panel">
-      <ul>
-        <li><strong>Cheat Sheets</strong> - Waterproof quick-reference cards. Great for beginners or field use.</li>
-        <li><strong>Speakermic / Wireless Speakermic</strong> - Clip to your gear so you can talk hands-free. The most popular accessory.</li>
-        <li><strong>Eartube Headset</strong> - Discreet earpiece for security, events, or when you don't want others hearing your radio.</li>
-        <li><strong>Exoskeleton / Saddle</strong> - Protective gear. The exoskeleton prevents drops and accidental transmissions. The saddle covers your accessory port.</li>
-        <li><strong>Programming Cable</strong> - For advanced users who want to program channels from a computer.</li>
-        <li><strong>Earpro Cable</strong> - Connects your speakermic to electronic ear protection (shooting, machinery, etc.).</li>
-        <li><strong>SO-239 Pigtail</strong> - Lets you connect your handheld to a full-size vehicle or base antenna.</li>
-        <li><strong>Battery Eliminator</strong> - Run your radio from 12V power (vehicle, battery pack) instead of the internal battery.</li>
-      </ul>
-      <p style="margin:8px 0 0;color:var(--gold-dim)">Still unsure? Book a free consultation using the button below.</p>
-    </div>
-  `;
-
-  container.innerHTML = helpGuide + accessories.map(a => `
+  container.innerHTML = accessories.map(a => `
     <div class="opt-card ${selectedAccessories.has(a.key) ? 'selected' : ''}"
          onclick="toggleAccessory('${a.key}')">
       <div class="oc-check">${selectedAccessories.has(a.key) ? '✓' : ''}</div>
-      ${a.img ? `<div class="oc-img"><img src="${a.img}" alt="${a.name}" onerror="this.parentElement.innerHTML='<div style=\\'color:#444;font-size:11px;text-align:center;padding:8px\\'>No img</div>'"></div>` : ''}
+      <div class="oc-img">${a.img ? `<img src="${a.img}" alt="${a.name}" onerror="this.parentElement.classList.add('oc-img--placeholder')">` : '<div class="oc-img--placeholder-icon">A</div>'}</div>
       <div class="oc-body">
         <div class="oc-name">${a.name}</div>
         <div class="oc-desc">${a.desc}</div>
