@@ -176,13 +176,13 @@
 
 /* Complete */
 .kb-section--complete {
-  opacity: 0.5;
+  opacity: 0.65;
   background: #040404;
-  border-color: #151515;
+  border-color: #1a1a1a;
 }
 .kb-section--complete:hover {
-  opacity: 0.75;
-  border-color: #252525;
+  opacity: 0.85;
+  border-color: #2a2a2a;
 }
 .kb-section--complete .kb-section__number {
   background: var(--rme-green);
@@ -191,8 +191,8 @@
 }
 /* Number stays visible on completed steps (no checkmark replacement) */
 .kb-section--complete .kb-section__header h2 {
-  color: #5a7a5a;
-  font-size: 14px;
+  color: #7a9a7a;
+  font-size: 15px;
 }
 .kb-section--complete .kb-section__header {
   cursor: pointer;
@@ -202,14 +202,14 @@
   padding: 0 24px 12px;
 }
 .kb-section--complete .kb-section__summary .kbs-sel {
-  background: transparent; border-color: #2a3a2a;
-  color: #6a8a6a; font-size: 12px;
+  background: transparent; border-color: #3a4a3a;
+  color: #8aaa8a; font-size: 13px;
 }
 .kb-section--complete .kb-section__summary .kbs-none {
-  color: #556; font-size: 12px;
+  color: #667; font-size: 13px;
 }
 .kb-section--complete .kb-section__summary .kbs-edit {
-  color: #6a8a6a; font-size: 11px;
+  color: #8aaa8a; font-size: 12px;
 }
 .kb-section--complete .kb-section__summary .kbs-edit:hover {
   color: var(--rme-gold);
@@ -415,7 +415,7 @@
 
 /* ── Interview Stack ───────────────────── */
 #kbs-interview-stack {
-  transition: opacity 0.5s ease;
+  transition: opacity 0.4s ease, transform 0.4s ease;
 }
 .kbs-iq {
   margin-bottom: 16px;
@@ -501,6 +501,24 @@
   transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 #rme-kit-builder-scroll .rc-btn:hover { background: #ffe87a; transform: translateY(-2px); box-shadow: 0 4px 16px rgba(253,211,81,0.25); }
+#rme-kit-builder-scroll .result-card .rc-pitch {
+  font-size: 13px; color: var(--rme-muted); margin-bottom: 16px; text-align: center;
+}
+#rme-kit-builder-scroll .kbs-results-heading {
+  text-align: center; padding: 20px 0;
+}
+#rme-kit-builder-scroll .kbs-results-heading h3 {
+  font-size: 20px; color: var(--rme-gold); margin-bottom: 6px;
+}
+#rme-kit-builder-scroll .kbs-results-heading p {
+  color: var(--rme-muted); font-size: 14px; margin-bottom: 8px;
+}
+#rme-kit-builder-scroll .kbs-results-actions {
+  margin-top: 16px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+}
+#rme-kit-builder-scroll .kbs-results-consult {
+  margin-top: 12px; text-align: center;
+}
 
 /* ── Radio List (T-Rex Arms style: image left, info right, tagline below) ── */
 #rme-kit-builder-scroll .radio-grid {
@@ -584,23 +602,37 @@
   .kb-section__summary { padding: 0 16px 12px; }
   #rme-kit-builder-scroll .result-cards { flex-direction: column; align-items: center; }
   #rme-kit-builder-scroll .result-card { max-width: 100%; }
-  .kb-scroll-price-bar { flex-wrap: nowrap; gap: 12px; padding: 10px 16px; }
+  .kb-scroll-price-bar { flex-wrap: wrap; gap: 8px; padding: 10px 16px; justify-content: center; }
   .kbp-label { display: none; }
   .kbp-total { font-size: 20px; }
-  .kb-btn--cart { padding: 10px 20px; font-size: 14px; }
+  .kb-btn--cart { padding: 10px 20px; font-size: 14px; min-width: 0; }
   .kbp-consult { font-size: 11px; padding: 6px 10px; }
   .kbs-iq-options { flex-direction: column; }
-  /* Remove gold border on active sections for mobile */
-  .kb-section--active { border-color: var(--rme-border); border-left-width: 1px; }
+  /* Keep active indicator on mobile: use top border instead of left */
+  .kb-section--active { border-color: var(--rme-border); border-left-width: 1px; border-top: 3px solid var(--rme-gold); }
   /* Compact product cards on mobile */
   #rme-kit-builder-scroll #rme-kit-builder .opt-card { padding: 10px 12px; gap: 8px; }
   #rme-kit-builder-scroll #rme-kit-builder .opt-card .oc-img {
-    width: 56px; height: 56px; border-radius: 6px;
+    width: 64px; height: 64px; border-radius: 6px;
   }
   #rme-kit-builder-scroll #rme-kit-builder .opt-card .oc-name { font-size: 14px; }
   #rme-kit-builder-scroll #rme-kit-builder .opt-card .oc-desc { font-size: 12px; }
   #rme-kit-builder-scroll #rme-kit-builder .opt-card .oc-price { font-size: 13px; }
   #rme-kit-builder-scroll #rme-kit-builder .oc-best-use { font-size: 10px; }
+}
+
+/* ── Modal button overrides ───────────── */
+#rme-kit-builder-scroll .modal-actions {
+  display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px;
+}
+#rme-kit-builder-scroll .modal-actions .kb-btn {
+  flex: 1; min-width: 140px;
+}
+#rme-kit-builder-scroll .kbs-modal-cancel {
+  opacity: 0.6; font-size: 12px; flex-basis: 100%;
+}
+#rme-kit-builder-scroll .kbs-modal-cancel:hover {
+  opacity: 1;
 }
 
 /* ── Reduced motion ────────────────────── */

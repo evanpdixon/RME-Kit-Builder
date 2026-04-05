@@ -38,7 +38,7 @@
           <p>Jump straight to our lineup and pick your radio.</p>
         </div>
         <div style="text-align:center;margin-top:16px;grid-column:1/-1">
-          <a href="#" class="kbs-consult-escape" target="_blank" class="kbs-consult-link">&#128222; Not sure where to start? Book a consultation</a>
+          <a href="#" class="kbs-consult-escape kbs-consult-link" target="_blank">&#128222; Not sure where to start? Book a consultation</a>
         </div>
       </div>
       <div id="kbs-interview-stack" style="display:none"></div>
@@ -75,7 +75,7 @@
       <div class="kb-section__actions">
         <button class="kb-btn kb-btn--secondary" onclick="kbsGoBack('antennas')">Back</button>
         <button class="kb-btn kb-btn--primary" onclick="kbsCompleteSection('antennas')">Continue</button>
-        <a href="#" class="kbs-consult-escape" target="_blank" class="kbs-consult-link">&#128222; Not sure? Book a consultation</a>
+        <a href="#" class="kbs-consult-escape kbs-consult-link" target="_blank">&#128222; Not sure? Book a consultation</a>
       </div>
     </div>
   </div>
@@ -92,7 +92,7 @@
       <div class="kb-section__actions">
         <button class="kb-btn kb-btn--secondary" onclick="kbsGoBack('battery')">Back</button>
         <button class="kb-btn kb-btn--primary" onclick="kbsCompleteSection('battery')">Continue</button>
-        <a href="#" class="kbs-consult-escape" target="_blank" class="kbs-consult-link">&#128222; Not sure? Book a consultation</a>
+        <a href="#" class="kbs-consult-escape kbs-consult-link" target="_blank">&#128222; Not sure? Book a consultation</a>
       </div>
     </div>
   </div>
@@ -110,7 +110,7 @@
       <div class="kb-section__actions">
         <button class="kb-btn kb-btn--secondary" onclick="kbsGoBack('accessories')">Back</button>
         <button class="kb-btn kb-btn--primary" onclick="kbsCompleteSection('accessories')">Continue</button>
-        <a href="#" class="kbs-consult-escape" target="_blank" class="kbs-consult-link">&#128222; Not sure? Book a consultation</a>
+        <a href="#" class="kbs-consult-escape kbs-consult-link" target="_blank">&#128222; Not sure? Book a consultation</a>
       </div>
     </div>
   </div>
@@ -128,7 +128,7 @@
       <div class="kb-section__actions">
         <button class="kb-btn kb-btn--secondary" onclick="kbsGoBack('programming')">Back</button>
         <button class="kb-btn kb-btn--primary" onclick="kbsCompleteSection('programming')">Continue</button>
-        <a href="#" class="kbs-consult-escape" target="_blank" class="kbs-consult-link">&#128222; Not sure? Book a consultation</a>
+        <a href="#" class="kbs-consult-escape kbs-consult-link" target="_blank">&#128222; Not sure? Book a consultation</a>
       </div>
     </div>
   </div>
@@ -149,15 +149,15 @@
     </div>
   </div>
 
-  <!-- Modals (reused from step-based) -->
+  <!-- Modals -->
   <div class="modal-overlay" id="adapter-modal">
     <div class="modal-box">
       <h3>BNC Adapter Needed</h3>
       <p>This antenna uses a BNC connector. Your radio has an SMA connector, so you'll need an SMA-F to BNC-F Adapter ($5) to use it.</p>
       <div class="modal-actions">
-        <button class="btn-nav btn-next" onclick="adapterModalAdd()">Add Adapter + Antenna</button>
-        <button class="btn-nav btn-back" onclick="adapterModalSkip()">I Have One Already</button>
-        <button class="btn-nav btn-back" onclick="adapterModalCancel()" style="opacity:0.6;font-size:12px">Cancel</button>
+        <button class="kb-btn kb-btn--primary" onclick="adapterModalAdd()">Add Adapter + Antenna</button>
+        <button class="kb-btn kb-btn--secondary" onclick="adapterModalSkip()">I Have One Already</button>
+        <button class="kb-btn kb-btn--secondary kbs-modal-cancel" onclick="adapterModalCancel()">Cancel</button>
       </div>
     </div>
   </div>
@@ -172,8 +172,8 @@
       <p>You've removed the BNC adapter, but these antennas in your kit need one:</p>
       <ul id="adapter-warn-list"></ul>
       <div class="modal-actions">
-        <button class="btn-nav btn-next" onclick="document.getElementById('adapter-warn-modal').classList.remove('open');toggleAddlAntenna('extraadapter')">Keep the Adapter</button>
-        <button class="btn-nav btn-back" onclick="removeAllBncAntennas();document.getElementById('adapter-warn-modal').classList.remove('open')">Remove Those Antennas</button>
+        <button class="kb-btn kb-btn--primary" onclick="document.getElementById('adapter-warn-modal').classList.remove('open');toggleAddlAntenna('extraadapter')">Keep the Adapter</button>
+        <button class="kb-btn kb-btn--secondary" onclick="removeAllBncAntennas();document.getElementById('adapter-warn-modal').classList.remove('open')">Remove Those Antennas</button>
       </div>
     </div>
   </div>

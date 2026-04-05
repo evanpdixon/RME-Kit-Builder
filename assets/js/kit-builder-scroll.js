@@ -113,21 +113,35 @@
     kbsEditSection(SECTIONS[prevIdx]);
   };
 
-  // ── Public: Edit a completed section ──────────
+  // ── Public: Edit a completed section (animated) ──────────
   window.kbsEditSection = function(name) {
-    sectionState[name] = 'active';
-    const idx = SECTIONS.indexOf(name);
-    for (let i = idx + 1; i < SECTIONS.length; i++) {
-      sectionState[SECTIONS[i]] = 'locked';
+    // Find the current active section to fade it out first
+    const activeSection = SECTIONS.find(s => sectionState[s] === 'active');
+    const activeEl = activeSection ? document.getElementById('sec-' + activeSection) : null;
+
+    function doEdit() {
+      sectionState[name] = 'active';
+      const idx = SECTIONS.indexOf(name);
+      for (let i = idx + 1; i < SECTIONS.length; i++) {
+        sectionState[SECTIONS[i]] = 'locked';
+      }
+      disableCartBtn();
+      applyAllStates();
+      scrollToSection(name);
+      // Re-render if product section
+      if (name === 'antennas') renderAllAntennas();
+      if (name === 'battery') renderBatteryUpgrades();
+      if (name === 'accessories') renderAccessories();
+      if (name === 'programming') renderProgramming();
     }
-    disableCartBtn();
-    applyAllStates();
-    scrollToSection(name);
-    // Re-render if product section
-    if (name === 'antennas') renderAllAntennas();
-    if (name === 'battery') renderBatteryUpgrades();
-    if (name === 'accessories') renderAccessories();
-    if (name === 'programming') renderProgramming();
+
+    // If there's an active section to fade out, animate the transition
+    if (activeEl && activeSection !== name) {
+      activeEl.classList.add('kb-section--fading');
+      setTimeout(doEdit, 500);
+    } else {
+      doEdit();
+    }
   };
 
   // ── Click handler: complete sections click header to edit ──
@@ -213,21 +227,53 @@
 
     // Calculate total using existing calcTotal if available, otherwise manual
     let total = r ? r.price : 0;
-    if (typeof antennaUpgrades !== 'undefined') {
-      antennaUpgrades.forEach(a => { if (selectedAntennas.has(a.key)) total += a.price; });
-    }
-    if (selectedAntennas.size > 0) total += 5; // BNC adapter
-    if (typeof additionalAntennas !== 'undefined') {
-      additionalAntennas.forEach(a => { if (selectedAddlAntennas.has(a.key)) total += a.price; });
-    }
-    if (typeof batteryUpgrades !== 'undefined') {
-      batteryUpgrades.forEach(b => {
-        const qty = selectedBatteries.get(b.key) || 0;
-        total += b.price * qty;
+    if (kbsCurrentCategory === 'handheld') {
+      // Handheld: antenna upgrades + BNC adapter + additional antennas
+      if (typeof antennaUpgrades !== 'undefined') {
+        antennaUpgrades.forEach(a => { if (selectedAntennas.has(a.key)) total += a.price; });
+      }
+      if (selectedAntennas.size > 0 && !adapterSuppressed) total += 5; // BNC adapter
+      if (typeof additionalAntennas !== 'undefined') {
+        additionalAntennas.forEach(a => { if (selectedAddlAntennas.has(a.key)) total += a.price; });
+      }
+    } else {
+      // Non-handheld: antennas are tracked via selectedAntennas but use category-specific product lists
+      selectedAntennas.forEach(key => {
+        const lists = [
+          typeof mobileProducts !== 'undefined' ? [...(mobileProducts.antennaMounts || []), ...(mobileProducts.vehicleAntennas || [])] : [],
+          typeof baseProducts !== 'undefined' ? [...(baseProducts.antennaPath?.quick?.items || []), ...(baseProducts.antennaPath?.permanent?.antennas || [])] : [],
+          typeof hfProducts !== 'undefined' ? (hfProducts.antennas || []) : [],
+          typeof scannerProducts !== 'undefined' ? (scannerProducts.antennas || []) : [],
+        ].flat();
+        const product = lists.find(p => p.key === key);
+        if (product) total += product.price;
       });
     }
-    if (typeof accessories !== 'undefined') {
-      accessories.forEach(a => { if (selectedAccessories.has(a.key)) total += (a.price || 0); });
+    if (kbsCurrentCategory === 'handheld') {
+      if (typeof batteryUpgrades !== 'undefined') {
+        batteryUpgrades.forEach(b => {
+          const qty = selectedBatteries.get(b.key) || 0;
+          total += b.price * qty;
+        });
+      }
+      if (typeof accessories !== 'undefined') {
+        accessories.forEach(a => { if (selectedAccessories.has(a.key)) total += (a.price || 0); });
+      }
+    } else {
+      // Non-handheld: power/accessories from category-specific product lists
+      const catProducts = kbsCurrentCategory === 'scanner' ? (typeof scannerProducts !== 'undefined' ? scannerProducts : {})
+        : kbsCurrentCategory === 'hf' ? (typeof hfProducts !== 'undefined' ? hfProducts : {})
+        : (typeof mobileProducts !== 'undefined' ? mobileProducts : {});
+      const powerOpts = catProducts.power || [];
+      selectedBatteries.forEach((qty, key) => {
+        const p = powerOpts.find(x => x.key === key);
+        if (p) total += p.price * qty;
+      });
+      const accOpts = catProducts.accessories || [];
+      selectedAccessories.forEach(key => {
+        const a = accOpts.find(x => x.key === key);
+        if (a) total += (a.price || 0);
+      });
     }
     if (programmingChoice === 'multi') total += 10;
 
@@ -320,7 +366,8 @@
         '<h3>What type of radio do you need?</h3>' +
         '<p>Select all that apply.</p>' +
         '<div class="kbs-iq-options">' + catHtml + '</div>' +
-        '<div style="margin-top:14px">' +
+        '<div style="margin-top:14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">' +
+          '<button class="kb-btn kb-btn--secondary" onclick="kbsBackToChoices()">Back</button>' +
           '<button class="kb-btn kb-btn--primary" id="kbs-direct-next" disabled onclick="kbsDirectProceed()">Next</button>' +
         '</div>' +
       '</div>';
@@ -489,26 +536,39 @@
   };
 
   window.kbsNextQ = function() {
-    // Fade out current question
+    // Fade out current question with slide
     var stack = document.getElementById('kbs-interview-stack');
-    if (stack) stack.style.opacity = '0';
+    if (stack) {
+      stack.style.opacity = '0';
+      stack.style.transform = 'translateY(-12px)';
+    }
 
     setTimeout(function() {
       kbsStep++;
       buildQuestionList();
       if (kbsStep >= kbsAllQuestions.length) {
         showScrollResults();
-        if (stack) { stack.offsetHeight; stack.style.opacity = '1'; }
+        if (stack) {
+          stack.style.transform = 'translateY(12px)';
+          stack.offsetHeight; // force reflow
+          stack.style.opacity = '1';
+          stack.style.transform = 'translateY(0)';
+        }
         return;
       }
       renderInterviewStack();
-      // Fade in
-      if (stack) { stack.offsetHeight; stack.style.opacity = '1'; }
+      // Slide + fade in from below
+      if (stack) {
+        stack.style.transform = 'translateY(12px)';
+        stack.offsetHeight; // force reflow
+        stack.style.opacity = '1';
+        stack.style.transform = 'translateY(0)';
+      }
       setTimeout(function() {
         var qs = document.querySelectorAll('.kbs-iq:not(.kbs-iq--answered)');
         if (qs.length) qs[qs.length - 1].scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 300);
-    }, 500);
+    }, 400);
   };
 
   function showScrollResults() {
@@ -578,7 +638,7 @@
           <h3>${name}</h3>
           <div class="rc-price">$${radio.price}</div>
           <div class="rc-why">${reasonsHtml}</div>
-          <p style="font-size:13px;color:var(--rme-muted);margin-bottom:16px">${radio.pitch}</p>
+          <p class="rc-pitch">${radio.pitch}</p>
           <button class="rc-btn" onclick="event.stopPropagation();kbsSelectRadio('${radio.key}')">${isPrimary ? 'Select This Radio' : 'Choose This Instead'}</button>
         </div>`;
     }
@@ -602,18 +662,19 @@
 
     // Recommendation
     html += `
-      <div style="text-align:center;padding:20px 0">
-        <h3 style="font-size:20px;color:var(--rme-gold);margin-bottom:6px">Our Recommendation</h3>
-        <p style="color:var(--rme-muted);font-size:14px;margin-bottom:8px">Based on what you told us, here's what we'd pick for you.</p>
+      <div class="kbs-results-heading">
+        <h3>Our Recommendation</h3>
+        <p>Based on what you told us, here's what we'd pick for you.</p>
         <div class="result-cards">
           ${resultCard(top, topReasons, true)}
           ${resultCard(runner, runnerReasons, false)}
         </div>
-        <div style="margin-top:16px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <div class="kbs-results-actions">
+          <button class="kb-btn kb-btn--secondary" onclick="kbsBackToLastQuestion()">Back</button>
           <button class="kb-btn kb-btn--secondary" onclick="kbsRetakeQuiz()">Retake Quiz</button>
           <button class="kb-btn kb-btn--secondary" onclick="kbsShowAllRadios()">See All Radios</button>
         </div>
-        <div style="margin-top:12px">
+        <div class="kbs-results-consult">
           <a href="#" class="kbs-consult-escape kbs-consult-link" target="_blank">&#128222; Not sure? Book a consultation</a>
         </div>
       </div>
@@ -628,7 +689,10 @@
   window.kbsPrevQ = function() {
     if (kbsStep > 0) {
       var stack = document.getElementById('kbs-interview-stack');
-      if (stack) stack.style.opacity = '0';
+      if (stack) {
+        stack.style.opacity = '0';
+        stack.style.transform = 'translateY(12px)';
+      }
       setTimeout(function() {
         kbsStep--;
         buildQuestionList();
@@ -636,10 +700,37 @@
           delete kbsAnswers[kbsAllQuestions[kbsStep].id];
         }
         renderInterviewStack();
-        if (stack) { stack.offsetHeight; stack.style.opacity = '1'; }
+        // Slide in from above (reverse direction for back)
+        if (stack) {
+          stack.style.transform = 'translateY(-12px)';
+          stack.offsetHeight;
+          stack.style.opacity = '1';
+          stack.style.transform = 'translateY(0)';
+        }
         scrollToSection('interview');
-      }, 500);
+      }, 400);
     }
+  };
+
+  window.kbsBackToLastQuestion = function() {
+    // Go back from results to the last interview question
+    var stack = document.getElementById('kbs-interview-stack');
+    if (stack) {
+      stack.style.opacity = '0';
+      stack.style.transform = 'translateY(12px)';
+    }
+    setTimeout(function() {
+      buildQuestionList();
+      kbsStep = kbsAllQuestions.length - 1;
+      renderInterviewStack();
+      if (stack) {
+        stack.style.transform = 'translateY(-12px)';
+        stack.offsetHeight;
+        stack.style.opacity = '1';
+        stack.style.transform = 'translateY(0)';
+      }
+      scrollToSection('interview');
+    }, 400);
   };
 
   window.kbsBackToChoices = function() {
@@ -752,16 +843,16 @@
       </div>`;
     });
 
+    const catDetailText = category === 'mobile' ? 'vehicle mounting, antenna installation, and power wiring' :
+      category === 'base' ? 'antenna mounting, coax cabling, and power supply' :
+      category === 'hf' ? 'HF antennas, coax, and power setup' :
+      'scanner antennas and programming';
+
     html += `
-      <div style="text-align:center;padding:24px 0">
-        <h3 style="font-size:20px;color:var(--rme-gold);margin-bottom:8px">${catName} Radios</h3>
-        <p style="color:var(--rme-muted);font-size:14px;margin-bottom:4px">Based on your answers, you need a ${catName.toLowerCase()} setup.</p>
-        <p style="color:#888;font-size:13px;margin-bottom:24px">The ${catName.toLowerCase()} kit builder includes specialized options for ${
-          category === 'mobile' ? 'vehicle mounting, antenna installation, and power wiring' :
-          category === 'base' ? 'antenna mounting, coax cabling, and power supply' :
-          category === 'hf' ? 'HF antennas, coax, and power setup' :
-          'scanner antennas and programming'
-        }.</p>
+      <div class="kbs-results-heading">
+        <h3>${catName} Radios</h3>
+        <p>Based on your answers, you need a ${catName.toLowerCase()} setup.</p>
+        <p style="color:#888;font-size:13px;margin-bottom:24px">The ${catName.toLowerCase()} kit builder includes specialized options for ${catDetailText}.</p>
         <div class="result-cards">
           ${available.map((r, i) => {
             const name = r.name.replace(' Essentials Kit', '').replace(' Mobile Radio Kit', '');
@@ -772,17 +863,24 @@
                 <h3>${name}</h3>
                 <div class="rc-price">$${r.price}</div>
                 <div class="rc-why"><ul style="list-style:none;padding:0;margin:0">${r.features.map(f => '<li style="padding:3px 0">&#10003; ' + f + '</li>').join('')}</ul></div>
-                <p style="font-size:13px;color:var(--rme-muted);margin-bottom:16px">${r.pitch || ''}</p>
+                <p class="rc-pitch">${r.pitch || ''}</p>
                 <button class="rc-btn" onclick="event.stopPropagation();kbsSelectNonHandheld('${r.key}','${category}')">${i === 0 ? 'Build This Kit' : 'Choose This'}</button>
               </div>`;
           }).join('')}
+        </div>
+        <div class="kbs-results-actions">
+          <button class="kb-btn kb-btn--secondary" onclick="kbsBackToLastQuestion()">Back</button>
+          <button class="kb-btn kb-btn--secondary" onclick="kbsRetakeQuiz()">Retake Quiz</button>
+        </div>
+        <div class="kbs-results-consult">
+          <a href="#" class="kbs-consult-escape kbs-consult-link" target="_blank">&#128222; Not sure? Book a consultation</a>
         </div>
       </div>`;
 
     document.getElementById('kbs-interview-stack').innerHTML = html;
   }
 
-  // Handle non-handheld radio selection: stay in V2, adapt sections
+  // Handle non-handheld radio selection: stay in V2, adapt sections (animated)
   window.kbsSelectNonHandheld = function(radioKey, category) {
     kbsCurrentCategory = category;
 
@@ -807,20 +905,40 @@
       sectionState['interview'] = 'complete';
       renderSummary('interview');
     }
-    sectionState['radio'] = 'complete';
-    renderSummary('radio');
 
     // Adapt section labels for this category
     adaptSectionsForCategory(category);
 
-    // Unlock first product section
-    sectionState['antennas'] = 'active';
-    renderCategoryProducts('antennas', category, radioKey);
+    // Find current active section to fade out
+    const activeSection = SECTIONS.find(s => sectionState[s] === 'active');
+    const activeEl = activeSection ? document.getElementById('sec-' + activeSection) : null;
+    const antennasEl = document.getElementById('sec-antennas');
 
-    applyAllStates();
-    scrollToSection('antennas');
-    updateScrollPriceBar();
-    updateConsultLinks();
+    // Phase 1: Fade out current section
+    if (activeEl) activeEl.classList.add('kb-section--fading');
+
+    setTimeout(function() {
+      sectionState['radio'] = 'complete';
+      renderSummary('radio');
+      applyAllStates();
+
+      // Show loading spinner on antennas
+      if (antennasEl) {
+        antennasEl.classList.remove('kb-section--locked');
+        antennasEl.classList.add('kb-section--loading');
+      }
+      scrollToSection('antennas');
+
+      // Phase 2: Render content behind spinner, then reveal
+      setTimeout(function() {
+        renderCategoryProducts('antennas', category, radioKey);
+        sectionState['antennas'] = 'active';
+        if (antennasEl) antennasEl.classList.remove('kb-section--loading');
+        applyAllStates();
+        updateScrollPriceBar();
+        updateConsultLinks();
+      }, 1200);
+    }, 800);
   };
 
   let kbsCurrentCategory = 'handheld';
@@ -888,7 +1006,11 @@
 
     if (section === 'battery') {
       const container = document.getElementById('battery-options');
-      if (!container || typeof mobileProducts === 'undefined') return;
+      if (!container) return;
+      if (typeof mobileProducts === 'undefined') {
+        container.innerHTML = '<p style="color:var(--rme-muted)">Standard power setup included.</p>';
+        return;
+      }
       const powerOpts = mobileProducts.power || [];
       container.innerHTML = powerOpts.map(p => `
         <div class="opt-card ${selectedBatteries.has(p.key) ? 'selected' : ''}"
@@ -905,7 +1027,11 @@
 
     if (section === 'accessories') {
       const container = document.getElementById('accessory-options');
-      if (!container || typeof mobileProducts === 'undefined') return;
+      if (!container) return;
+      if (typeof mobileProducts === 'undefined') {
+        container.innerHTML = '<p style="color:var(--rme-muted)">No additional accessories available.</p>';
+        return;
+      }
       const acc = (mobileProducts.accessories || []).filter(a => !a.compatRadios || a.compatRadios.includes(radioKey));
       container.innerHTML = acc.map(a => `
         <div class="opt-card ${selectedAccessories.has(a.key) ? 'selected' : ''}"
