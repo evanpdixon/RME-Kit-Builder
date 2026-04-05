@@ -37,15 +37,13 @@
 
 <h2>3. What do you need? (multi-select)</h2>
 <div class="group">
-  <label><input type="checkbox" name="needs" value="emergency"> <strong>Emergency / disaster prep</strong> <small style="color:#888">Backup comms when cell networks fail</small></label>
-  <label><input type="checkbox" name="needs" value="outdoor"> <strong>Outdoor / overlanding</strong> <small style="color:#888">Hiking, camping, off-road</small></label>
-  <label><input type="checkbox" name="needs" value="water"> <strong>Wet conditions</strong> <small style="color:#888">Rain, boating, submersion</small></label>
-  <label><input type="checkbox" name="needs" value="encryption"> <strong>Secure / encryption capable</strong> <small style="color:#888">Private comms for work, security, or personal use</small></label>
+  <label><input type="checkbox" name="needs" value="water"> <strong>Waterproof / water resistant</strong> <small style="color:#888">Rain, boating, submersion</small></label>
   <label><input type="checkbox" name="needs" value="gps"> <strong>GPS location sharing</strong> <small style="color:#888">Track and share positions via APRS</small></label>
-  <label><input type="checkbox" name="needs" value="texting"> <strong>Text messaging over radio</strong> <small style="color:#888">Send text without cell service</small></label>
-  <label><input type="checkbox" name="needs" value="airband"> <strong>Listen to aircraft</strong> <small style="color:#888">Monitor aviation frequencies</small></label>
-  <label><input type="checkbox" name="needs" value="repeater"> <strong>Repeater capability</strong> <small style="color:#888">Simplex or crossband repeat to extend range</small></label>
-  <label><input type="checkbox" name="needs" value="bluetooth"> <strong>Bluetooth connectivity</strong> <small style="color:#888">Wireless speakermic or phone control</small></label>
+  <label><input type="checkbox" name="needs" value="bluetooth"> <strong>Bluetooth</strong> <small style="color:#888">Wireless speakermic or phone control</small></label>
+  <label><input type="checkbox" name="needs" value="texting"> <strong>Text messaging</strong> <small style="color:#888">Send text over radio without cell service</small></label>
+  <label><input type="checkbox" name="needs" value="encryption"> <strong>Secure / encryption capable</strong> <small style="color:#888">Private, encrypted communications</small></label>
+  <label><input type="checkbox" name="needs" value="repeater"> <strong>Repeater capable</strong> <small style="color:#888">Crossband or simplex repeat to extend range</small></label>
+  <label><input type="checkbox" name="needs" value="channels"> <strong>High memory capacity</strong> <small style="color:#888">Hundreds or thousands of programmable channels</small></label>
 </div>
 
 <details style="margin:16px 0">
@@ -96,7 +94,7 @@ const interviewQuestions = [
     {key:'nearby',tags:['budget','simple']},{key:'local',tags:['channels','grow']},{key:'far',tags:[]},{key:'listen',tags:[]}
   ]},
   { id:'needs', multi:true, options:[
-    {key:'emergency',tags:['channels','grow','noaa']},{key:'outdoor',tags:['gps','grow','waterproof']},{key:'water',tags:['waterproof']},{key:'encryption',tags:['encryption','digital','professional','commercial']},{key:'gps',tags:['gps']},{key:'texting',tags:['grow','digital']},{key:'airband',tags:['airband']},{key:'repeater',tags:['crossband','grow']},{key:'bluetooth',tags:['bluetooth']},{key:'nopreference',tags:[]}
+    {key:'water',tags:['waterproof']},{key:'gps',tags:['gps']},{key:'bluetooth',tags:['bluetooth']},{key:'texting',tags:['grow','digital']},{key:'encryption',tags:['encryption','digital','professional','commercial']},{key:'repeater',tags:['crossband','grow']},{key:'channels',tags:['channels']},{key:'nopreference',tags:[]}
   ]},
 ];
 
