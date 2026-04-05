@@ -319,11 +319,11 @@
     if (usage.includes('base')) return 'base';
     if (usage.includes('hf')) return 'hf';
     if (usage.includes('scanner')) return 'scanner';
-    // Check "reach" question for "notsure" users
-    const reach = kbsAnswers['reach'];
-    if (reach === 'local') return 'handheld'; // handheld + repeaters, or mobile/base
-    if (reach === 'far') return 'hf';
-    if (reach === 'listen') return 'scanner';
+    // Check "reach" question for "notsure" users (multi-select)
+    const reach = kbsAnswers['reach'] || [];
+    if (reach.includes('far')) return 'hf';
+    if (reach.includes('listen')) return 'scanner';
+    if (reach.includes('local')) return 'handheld';
     return 'handheld'; // default (nearby or no answer)
   }
 

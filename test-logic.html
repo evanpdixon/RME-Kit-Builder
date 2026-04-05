@@ -30,12 +30,12 @@
   <label><input type="checkbox" name="usage" value="notsure"> Not Sure</label>
 </div>
 
-<h2>Who are you trying to reach? (if not sure)</h2>
+<h2>Who are you trying to reach? (if not sure, multi-select)</h2>
 <div class="group">
-  <label><input type="radio" name="reach" value="nearby"> People nearby <small style="color:#888">Same property, event, or neighborhood</small></label>
-  <label><input type="radio" name="reach" value="local"> Across town or county <small style="color:#888">Local area, nearby cities, via repeaters</small></label>
-  <label><input type="radio" name="reach" value="far"> Statewide or beyond <small style="color:#888">Long distance, nationwide, worldwide</small></label>
-  <label><input type="radio" name="reach" value="listen"> Listen to public safety / aviation <small style="color:#888">Monitor police, fire, EMS, aircraft (receive only)</small></label>
+  <label><input type="checkbox" name="reach" value="nearby"> <strong>Nearby</strong> <small style="color:#888">Same property, group, or event</small></label>
+  <label><input type="checkbox" name="reach" value="local"> <strong>Local</strong> <small style="color:#888">Across town, neighboring cities, through repeaters</small></label>
+  <label><input type="checkbox" name="reach" value="far"> <strong>Long distance</strong> <small style="color:#888">Statewide, cross-country, or worldwide</small></label>
+  <label><input type="checkbox" name="reach" value="listen"> <strong>Monitoring</strong> <small style="color:#888">Listen to police, fire, EMS, or aircraft</small></label>
 </div>
 
 <h2>Budget</h2>
@@ -110,9 +110,9 @@ function detectCategory(answers) {
   if (usage.includes('base')) return 'base';
   if (usage.includes('hf')) return 'hf';
   if (usage.includes('scanner')) return 'scanner';
-  const reach = answers.reach;
-  if (reach === 'far') return 'hf';
-  if (reach === 'listen') return 'scanner';
+  const reach = answers.reach || [];
+  if (reach.includes('far')) return 'hf';
+  if (reach.includes('listen')) return 'scanner';
   return 'handheld';
 }
 
@@ -126,7 +126,7 @@ function getLineup(cat) {
 function runScore() {
   const answers = {
     usage: getChecked('usage'),
-    reach: getRadio('reach'),
+    reach: getChecked('reach'),
     budget: getRadio('budget'),
     needs: getChecked('needs'),
   };

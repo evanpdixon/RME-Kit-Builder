@@ -31,6 +31,9 @@ const ICO = {
   athome:     _s('<path d="M3 12l9-7 9 7"/><path d="M5 10v10h14V10"/>'),
   offgrid:    _s('<path d="M12 2L5 10h14z"/><path d="M5 10v10h14V10"/><line x1="12" y1="15" x2="12" y2="18"/>'),
   monitoring: _s('<path d="M3 18v-6a9 9 0 0118 0v6"/><path d="M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3zM3 19a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3z"/>'),
+  nearby:     _s('<circle cx="9" cy="8" r="3"/><circle cx="15" cy="8" r="3"/><path d="M3 21v-2a4 4 0 014-4h2"/><path d="M15 15h2a4 4 0 014 4v2"/><path d="M12 12v3"/>'),
+  local:      _s('<path d="M3 21h18"/><rect x="4" y="10" width="6" height="11"/><rect x="14" y="6" width="6" height="15"/><path d="M6 13h2"/><path d="M6 16h2"/><path d="M16 9h2"/><path d="M16 12h2"/><path d="M16 15h2"/><path d="M10 17l4-4"/>'),
+  farreach:   _s('<circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15 15 0 014 10 15 15 0 01-4 10 15 15 0 01-4-10A15 15 0 0112 2"/>'),
   lock:       _s('<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/>'),
   droplet:    _s('<path d="M12 2.7S5 9.5 5 14a7 7 0 0014 0C19 9.5 12 2.7 12 2.7z"/>'),
   thumbsup:   _s('<path d="M7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3"/><path d="M7 11V4a2 2 0 012-2h0a2 2 0 012 2v5h4.5a2 2 0 012 1.9l-.5 7a2 2 0 01-2 2.1H7"/>'),
@@ -231,14 +234,14 @@ const needsQuestions = [
   {
     id: 'reach',
     question: "Who are you trying to reach?",
-    sub: "Pick the best match.",
-    multi: false,
+    sub: "Select all that apply.",
+    multi: true,
     condition: (answers) => answers.usage && answers.usage.includes('notsure'),
     options: [
-      { key: 'nearby', icon: ICO.shortrange, label: 'People nearby', detail: 'Same property, event, or neighborhood', categories: ['handheld'] },
-      { key: 'local', icon: ICO.midrange, label: 'Across town or county', detail: 'Local area, nearby cities, via repeaters', categories: ['handheld', 'mobile', 'base'] },
-      { key: 'far', icon: ICO.longrange, label: 'Statewide or beyond', detail: 'Long distance, nationwide, worldwide', categories: ['hf'] },
-      { key: 'listen', icon: ICO.monitoring, label: 'Listen to public safety / aviation', detail: 'Monitor police, fire, EMS, aircraft (receive only)', categories: ['scanner'] },
+      { key: 'nearby', icon: ICO.nearby, label: 'Nearby', detail: 'Same property, group, or event', categories: ['handheld'] },
+      { key: 'local', icon: ICO.local, label: 'Local', detail: 'Across town, neighboring cities, through repeaters', categories: ['handheld', 'mobile', 'base'] },
+      { key: 'far', icon: ICO.farreach, label: 'Long distance', detail: 'Statewide, cross-country, or worldwide', categories: ['hf'] },
+      { key: 'listen', icon: ICO.monitoring, label: 'Monitoring', detail: 'Listen to police, fire, EMS, or aircraft', categories: ['scanner'] },
     ]
   },
 ];
@@ -378,12 +381,15 @@ function computeCategories() {
     });
   }
 
-  // From guided "reach" question (replaces distance + where)
+  // From guided "reach" question (multi-select)
   if (answers.reach) {
     const reachQ = needsQuestions.find(q => q.id === 'reach');
     if (reachQ) {
-      const opt = reachQ.options.find(o => o.key === answers.reach);
-      if (opt) opt.categories.forEach(c => cats.add(c));
+      const keys = Array.isArray(answers.reach) ? answers.reach : [answers.reach];
+      keys.forEach(key => {
+        const opt = reachQ.options.find(o => o.key === key);
+        if (opt) opt.categories.forEach(c => cats.add(c));
+      });
     }
   }
 
