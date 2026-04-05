@@ -1328,6 +1328,51 @@
     };
   }
 
+  // Monkey-patch toggle functions for non-handheld categories.
+  // Base JS toggleAntenna/toggleBattery/toggleAccessory call handheld render
+  // functions (renderAntennaUpgrades, renderBatteryUpgrades, renderAccessories)
+  // which overwrite the container with handheld products. In scroll mode for
+  // non-handheld categories, re-render category-specific products instead.
+  const _origToggleAntenna = window.toggleAntenna;
+  window.toggleAntenna = function(key) {
+    if (window._rmeScrollMode && kbsCurrentCategory !== 'handheld') {
+      if (selectedAntennas.has(key)) selectedAntennas.delete(key);
+      else selectedAntennas.add(key);
+      renderCategoryProducts('antennas', kbsCurrentCategory, selectedRadioKey);
+      updateScrollPriceBar();
+      return;
+    }
+    _origToggleAntenna(key);
+  };
+
+  const _origToggleBattery = window.toggleBattery;
+  if (_origToggleBattery) {
+    window.toggleBattery = function(key) {
+      if (window._rmeScrollMode && kbsCurrentCategory !== 'handheld') {
+        if (selectedBatteries.has(key)) selectedBatteries.delete(key);
+        else selectedBatteries.set(key, 1);
+        renderCategoryProducts('battery', kbsCurrentCategory, selectedRadioKey);
+        updateScrollPriceBar();
+        return;
+      }
+      _origToggleBattery(key);
+    };
+  }
+
+  const _origToggleAccessory = window.toggleAccessory;
+  if (_origToggleAccessory) {
+    window.toggleAccessory = function(key) {
+      if (window._rmeScrollMode && kbsCurrentCategory !== 'handheld') {
+        if (selectedAccessories.has(key)) selectedAccessories.delete(key);
+        else selectedAccessories.add(key);
+        renderCategoryProducts('accessories', kbsCurrentCategory, selectedRadioKey);
+        updateScrollPriceBar();
+        return;
+      }
+      _origToggleAccessory(key);
+    };
+  }
+
   // ── Non-handheld review renderer ───────────────
   // renderReview() from base JS reads handheld product arrays. For non-handheld,
   // we build the review from category-specific product arrays.
