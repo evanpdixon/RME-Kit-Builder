@@ -264,12 +264,12 @@
 #rme-kit-builder-scroll #rme-kit-builder .opt-card:hover .oc-img { transform: none; box-shadow: none; }
 
 /* Column 3: check row 1, price row 2, tight stack mirroring image height */
-#rme-kit-builder-scroll #rme-kit-builder .opt-card .oc-check { grid-row: 1; grid-column: 3; align-self: end; justify-self: center; margin: 0 0 4px; }
+#rme-kit-builder-scroll #rme-kit-builder .opt-card .oc-check { grid-row: 1; grid-column: 3; align-self: center; justify-self: center; margin: 0; }
 #rme-kit-builder-scroll #rme-kit-builder .opt-card .oc-body { grid-row: 1; grid-column: 2; align-self: center; }
 #rme-kit-builder-scroll #rme-kit-builder .opt-card .oc-name { font-size: 15px; font-weight: 600; }
 #rme-kit-builder-scroll #rme-kit-builder .opt-card .oc-price {
-  grid-row: 2; grid-column: 3; align-self: start; justify-self: center;
-  font-size: 14px; margin: 0; padding: 4px 0 0; text-align: center;
+  grid-row: 2; grid-column: 3; align-self: center; justify-self: center;
+  font-size: 14px; margin: 0; padding: 0; text-align: center;
 }
 /* Radio buttons (programming) in column 1 */
 #rme-kit-builder-scroll #rme-kit-builder .opt-card .oc-radio {
