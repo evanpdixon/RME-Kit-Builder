@@ -38,44 +38,25 @@
   <label><input type="radio" name="distance" value="extreme"> Extreme (HF)</label>
 </div>
 
-<h2>Preferences (multi-select)</h2>
-<div class="group">
-  <label><input type="checkbox" name="preferences" value="digital"> Digital / Encryption</label>
-  <label><input type="checkbox" name="preferences" value="waterproof"> Waterproof</label>
-  <label><input type="checkbox" name="preferences" value="simple"> Simple / Easy</label>
-  <label><input type="checkbox" name="preferences" value="range"> Max Range</label>
-  <label><input type="checkbox" name="preferences" value="budget"> Budget</label>
-  <label><input type="checkbox" name="preferences" value="crossband"> Crossband Repeat</label>
-</div>
-
 <h2>Budget</h2>
 <div class="group">
-  <label><input type="radio" name="budget" value="low"> Economical</label>
-  <label><input type="radio" name="budget" value="mid"> Mid-range</label>
-  <label><input type="radio" name="budget" value="high"> Best of the best</label>
+  <label><input type="radio" name="budget" value="low"> Economical: solid, reliable, no extras</label>
+  <label><input type="radio" name="budget" value="mid"> Mid-range: more features, the sweet spot</label>
+  <label><input type="radio" name="budget" value="high"> No compromises: maximum capability</label>
 </div>
 
-<h2>Where (multi-select)</h2>
+<h2>What do you need? (multi-select)</h2>
 <div class="group">
-  <label><input type="checkbox" name="use" value="general"> Around town</label>
-  <label><input type="checkbox" name="use" value="outdoor"> Outdoors</label>
-  <label><input type="checkbox" name="use" value="water"> On/near water</label>
-  <label><input type="checkbox" name="use" value="professional"> Work / business</label>
-  <label><input type="checkbox" name="use" value="emergency"> Emergency prep</label>
-</div>
-
-<h2>Features (multi-select)</h2>
-<div class="group">
-  <label><input type="checkbox" name="features" value="price"> Lowest price</label>
-  <label><input type="checkbox" name="features" value="waterproof"> Waterproof</label>
-  <label><input type="checkbox" name="features" value="encryption"> Encryption</label>
-  <label><input type="checkbox" name="features" value="channels"> Max channels</label>
-  <label><input type="checkbox" name="features" value="airband"> Airband</label>
-  <label><input type="checkbox" name="features" value="bluetooth"> Bluetooth</label>
-  <label><input type="checkbox" name="features" value="grow"> Room to grow</label>
-  <label><input type="checkbox" name="features" value="noaa"> NOAA weather</label>
-  <label><input type="checkbox" name="features" value="compact"> Compact size</label>
-  <label><input type="checkbox" name="features" value="compatible"> UV-5R compatible</label>
+  <label><input type="checkbox" name="needs" value="emergency"> Emergency / disaster prep</label>
+  <label><input type="checkbox" name="needs" value="professional"> Work / business use</label>
+  <label><input type="checkbox" name="needs" value="outdoor"> Outdoor / overlanding</label>
+  <label><input type="checkbox" name="needs" value="water"> Wet conditions (rain, boating, submersion)</label>
+  <label><input type="checkbox" name="needs" value="encryption"> Private / encrypted comms</label>
+  <label><input type="checkbox" name="needs" value="gps"> GPS location sharing</label>
+  <label><input type="checkbox" name="needs" value="texting"> Text messaging over radio</label>
+  <label><input type="checkbox" name="needs" value="airband"> Listen to aircraft</label>
+  <label><input type="checkbox" name="needs" value="repeater"> Repeater capability (simplex or crossband)</label>
+  <label><input type="checkbox" name="needs" value="bluetooth"> Bluetooth connectivity</label>
 </div>
 
 <button onclick="runScore()">Score</button>
@@ -111,11 +92,8 @@ const interviewQuestions = [
   { id:'budget', multi:false, options:[
     {key:'low',tags:['budget']},{key:'mid',tags:['waterproof','gps','bluetooth','grow']},{key:'high',tags:['encryption','digital','premium','crossband']}
   ]},
-  { id:'use', multi:true, options:[
-    {key:'general',tags:['budget','simple']},{key:'outdoor',tags:['gps','grow','waterproof']},{key:'water',tags:['waterproof']},{key:'professional',tags:['professional','commercial','waterproof','gps']},{key:'emergency',tags:['channels','durable']}
-  ]},
-  { id:'features', multi:true, options:[
-    {key:'price',tags:['budget']},{key:'waterproof',tags:['waterproof']},{key:'encryption',tags:['encryption','digital']},{key:'channels',tags:['channels']},{key:'airband',tags:['airband']},{key:'bluetooth',tags:['bluetooth']},{key:'grow',tags:['grow']},{key:'noaa',tags:['noaa']},{key:'compact',tags:['compact']},{key:'compatible',tags:['compatible']},{key:'nopreference',tags:[]}
+  { id:'needs', multi:true, options:[
+    {key:'emergency',tags:['channels','grow','noaa']},{key:'professional',tags:['professional','commercial','gps']},{key:'outdoor',tags:['gps','grow','waterproof']},{key:'water',tags:['waterproof']},{key:'encryption',tags:['encryption','digital']},{key:'gps',tags:['gps']},{key:'texting',tags:['grow','digital']},{key:'airband',tags:['airband']},{key:'repeater',tags:['crossband','grow']},{key:'bluetooth',tags:['bluetooth']},{key:'nopreference',tags:[]}
   ]},
 ];
 
@@ -150,21 +128,14 @@ function runScore() {
   const answers = {
     usage: getChecked('usage'),
     distance: getRadio('distance'),
-    preferences: getChecked('preferences'),
     budget: getRadio('budget'),
-    use: getChecked('use'),
-    features: getChecked('features'),
+    needs: getChecked('needs'),
   };
 
   const category = detectCategory(answers);
   const lineup = getLineup(category);
   const scores = {};
   lineup.forEach(r => { scores[r.key] = 0; });
-
-  // Score from preferences
-  (answers.preferences || []).forEach(p => {
-    lineup.forEach(r => { if (r.tags.includes(p)) scores[r.key] += 10; });
-  });
 
   // Score from interview questions
   interviewQuestions.forEach(q => {
