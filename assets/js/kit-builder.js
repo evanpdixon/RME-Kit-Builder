@@ -3601,7 +3601,7 @@ function renderProgramming(opts) {
                 <div style="font-size:13px;color:#bbb;line-height:1.6;margin-bottom:12px">We handle the FCC paperwork to get you your own licensed frequencies. Your comms stay private and legally protected. One license covers all radios in your order, valid for 10 years.</div>
                 <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:14px;color:var(--text,#e0e0e0)" onclick="event.stopPropagation();wantsItinerantLicense=!wantsItinerantLicense;renderProgramming()">
                   <span style="width:22px;height:22px;border:2px solid ${wantsItinerantLicense ? 'var(--gold,#fdd351)' : '#444'};border-radius:4px;display:flex;align-items:center;justify-content:center;background:${wantsItinerantLicense ? 'var(--gold,#fdd351)' : 'transparent'};color:#111;font-size:13px;flex-shrink:0">${wantsItinerantLicense ? '\u2713' : ''}</span>
-                  Yes, add license assistance <span style="color:var(--gold,#fdd351);font-weight:600">+$579</span>
+                  Yes, add Business Itinerant frequency coordination (10 year license) <span style="color:var(--gold,#fdd351);font-weight:600">+$579</span>
                 </label>
               </div>
             ` : ''}`;
