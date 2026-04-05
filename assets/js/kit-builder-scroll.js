@@ -668,9 +668,11 @@
     grid.innerHTML = lineup.filter(r => !r.outOfStock).map(r => `
       <div class="radio-pick" onclick="${category === 'handheld' ? "kbsSelectRadio('" + r.key + "')" : "kbsSelectNonHandheld('" + r.key + "','" + category + "')"}">
         <div class="rp-img"><img src="${r.img}" alt="${r.name}"></div>
-        <h4>${r.name.replace(' Essentials Kit', '').replace(' Mobile Radio Kit', '')}</h4>
-        <div class="rp-price">$${r.price}</div>
-        <div class="rp-tag">${r.tagline}</div>
+        <div class="rp-info">
+          <h4>${r.name.replace(' Essentials Kit', '').replace(' Mobile Radio Kit', '')}</h4>
+          <div class="rp-price">$${r.price}</div>
+          <div class="rp-tag">${r.tagline}</div>
+        </div>
       </div>
     `).join('');
   }
@@ -981,6 +983,31 @@
     });
   }
 
+  // ── Browser back button handling ──────────────
+  // Push history state on each section completion so Android back button
+  // navigates within the flow instead of leaving the page
+  function pushSectionState(sectionName) {
+    history.pushState({ kbSection: sectionName }, '', '');
+  }
+
+  window.addEventListener('popstate', function(e) {
+    if (!e.state || !e.state.kbSection) return;
+    const section = e.state.kbSection;
+    // Find the current active section
+    const activeIdx = SECTIONS.findIndex(s => sectionState[s] === 'active');
+    const targetIdx = SECTIONS.indexOf(section);
+    if (targetIdx >= 0 && targetIdx < activeIdx) {
+      kbsEditSection(section);
+    }
+  });
+
+  // Hook into completeSection to push state
+  const _origComplete = window.kbsCompleteSection;
+  window.kbsCompleteSection = function(name) {
+    pushSectionState(name);
+    _origComplete(name);
+  };
+
   // ── Init ──────────────────────────────────────
   document.addEventListener('DOMContentLoaded', function() {
     // Reset any leftover state from base JS
@@ -988,6 +1015,8 @@
     applyAllStates();
     attachHeaderClicks();
     updateConsultLinks();
+    // Set initial history state so first back press stays in builder
+    history.replaceState({ kbSection: 'email' }, '', '');
   });
 
 })();
