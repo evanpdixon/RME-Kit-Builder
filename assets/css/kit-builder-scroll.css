@@ -246,7 +246,12 @@
 }
 #rme-kit-builder-scroll #rme-kit-builder .opt-card:first-child { border-top: 1px solid var(--rme-border); }
 #rme-kit-builder-scroll #rme-kit-builder .opt-card:hover { background: var(--rme-card-hover); box-shadow: none; }
-#rme-kit-builder-scroll #rme-kit-builder .opt-card.selected { background: #1a1800; border-color: var(--rme-border); box-shadow: none; }
+#rme-kit-builder-scroll #rme-kit-builder .opt-card.selected {
+  background: #2a2200; border-color: var(--rme-gold-dim); box-shadow: none;
+  border-left: 3px solid var(--rme-gold);
+}
+#rme-kit-builder-scroll #rme-kit-builder .opt-card.selected .oc-name { color: var(--rme-gold); }
+#rme-kit-builder-scroll #rme-kit-builder .opt-card.selected .oc-price { color: var(--rme-gold); }
 
 /* Image: left column, spans both rows */
 #rme-kit-builder-scroll #rme-kit-builder .opt-card .oc-img {
@@ -257,13 +262,13 @@
 #rme-kit-builder-scroll #rme-kit-builder .opt-card .oc-img img { padding: 0; object-fit: cover; }
 #rme-kit-builder-scroll #rme-kit-builder .opt-card:hover .oc-img { transform: none; box-shadow: none; }
 
-/* Check + body + price in top row, check on top, price below */
-#rme-kit-builder-scroll #rme-kit-builder .opt-card .oc-check { grid-row: 1; grid-column: 3; align-self: start; margin-top: 0; }
+/* Check + price in column 3, vertically centered together */
+#rme-kit-builder-scroll #rme-kit-builder .opt-card .oc-check { grid-row: 1; grid-column: 3; align-self: center; margin-top: 0; }
 #rme-kit-builder-scroll #rme-kit-builder .opt-card .oc-body { grid-row: 1; grid-column: 2; }
 #rme-kit-builder-scroll #rme-kit-builder .opt-card .oc-name { font-size: 15px; font-weight: 600; }
 #rme-kit-builder-scroll #rme-kit-builder .opt-card .oc-price {
-  grid-row: 2; grid-column: 3; align-self: start;
-  font-size: 16px; margin: 0; padding: 0; text-align: right;
+  grid-row: 1; grid-column: 3; align-self: center;
+  font-size: 16px; margin: 0; padding: 24px 0 0; text-align: right;
 }
 /* Radio buttons (programming) in column 1 */
 #rme-kit-builder-scroll #rme-kit-builder .opt-card .oc-radio {
@@ -467,8 +472,9 @@
 }
 .kbs-iq-opt.selected {
   border-color: var(--rme-gold);
-  background: #1a1800;
+  background: #2a2200;
   color: var(--rme-gold);
+  border-left: 3px solid var(--rme-gold);
 }
 /* Answered question (collapsed) */
 .kbs-iq--answered {

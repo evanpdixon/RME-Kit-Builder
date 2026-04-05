@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'RME_KB_VERSION', '2.0.5' );
+define( 'RME_KB_VERSION', '2.0.6' );
 define( 'RME_KB_PATH', plugin_dir_path( __FILE__ ) );
 define( 'RME_KB_URL', plugin_dir_url( __FILE__ ) );
 
