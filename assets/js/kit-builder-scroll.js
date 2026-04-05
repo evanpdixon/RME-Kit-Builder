@@ -395,16 +395,18 @@
     var grandTotal = (total - perKitDiscount) * kbsKitQty;
 
     var totalEl = document.getElementById('kbs-total');
+    var radioPrice = r ? r.price : 0;
+    var addonsPrice = total - radioPrice;
+
     if (kbsKitQty > 1) {
       totalEl.textContent = '$' + grandTotal;
-      // Show qty badge
       var label = document.getElementById('kbs-radio-name');
       if (label) {
         var rName = r ? r.name.replace(' Essentials Kit', '').replace(' Mobile Radio Kit', '') : '';
         label.textContent = rName + ' x' + kbsKitQty + (tier ? ' (' + tier.pct + '% off)' : '');
       }
     } else {
-      totalEl.textContent = '$' + total;
+      totalEl.innerHTML = '$' + radioPrice + (addonsPrice > 0 ? ' <span class="kbp-addons">+ $' + addonsPrice + '</span>' : '');
     }
 
     // Consult link

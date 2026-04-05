@@ -606,11 +606,12 @@
   padding-bottom: max(14px, env(safe-area-inset-bottom));
 }
 .kbp-info {
-  display: flex; align-items: center; gap: 12px;
+  display: flex; flex-direction: column; gap: 2px;
 }
 .kbp-label { color: #c4a83a; font-size: 14px; }
 .kbp-subtotal-label { color: #666; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
-.kbp-total { font-size: 24px; font-weight: 700; color: #fdd351; }
+.kbp-total { font-size: 24px; font-weight: 700; color: #fdd351; white-space: nowrap; }
+.kbp-addons { font-size: 14px; font-weight: 500; color: #c4a83a; }
 .kbp-consult {
   font-size: 13px; color: #fdd351; text-decoration: none; padding: 10px 18px;
   border: 2px solid #d4af37; border-radius: 8px; white-space: nowrap;
@@ -634,7 +635,7 @@
   #rme-kit-builder-scroll .result-card { max-width: 100%; }
   .kb-scroll-price-bar { flex-wrap: nowrap; gap: 0; padding: 10px 16px; justify-content: space-between; }
   .kbp-info { flex: 1; }
-  .kbp-label { display: none; }
+  .kbp-label { font-size: 12px; }
   .kbp-total { font-size: 22px; }
   .kb-scroll-price-bar .kb-btn--cart { display: none; }
   .kbp-consult { border: none; padding: 10px; font-size: 18px; line-height: 1; }
