@@ -141,10 +141,16 @@
   to { transform: rotate(360deg); }
 }
 
-/* Locked */
+/* Locked - hide all locked sections to reduce overwhelm */
 .kb-section--locked {
-  opacity: 0.35;
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
   pointer-events: none;
+  margin: 0;
+  padding: 0;
+  border: none;
+  transition: opacity 0.4s ease, max-height 0.4s ease;
 }
 .kb-section--locked .kb-section__content {
   max-height: 0; overflow: hidden; opacity: 0; padding: 0 24px;
@@ -218,15 +224,23 @@
   max-height: 0; overflow: hidden; opacity: 0; padding: 0 24px;
 }
 
-/* ── Section Actions ───────────────────── */
+/* ── Section Actions (sticky so Continue is always visible) ── */
 .kb-section__actions {
   margin-top: 20px;
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
+  position: sticky;
+  bottom: 70px; /* above sticky price bar */
+  background: linear-gradient(to bottom, transparent 0%, #000 20%);
+  padding: 24px 0 8px;
+  z-index: 5;
 }
 .kb-section__actions .kbs-consult-escape {
   flex-basis: 100%;
+  font-size: 12px;
+  opacity: 0.6;
+  margin-top: 4px;
 }
 
 /* ── Product List (T-Rex Arms style: image left, info right, desc below) ── */
@@ -573,12 +587,24 @@
 }
 @media (max-width: 500px) {
   #rme-kit-builder-scroll .radio-pick {
-    grid-template-columns: 80px 1fr auto; padding: 12px; gap: 0 10px;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    padding: 16px; gap: 8px 0;
+    text-align: center;
   }
-  #rme-kit-builder-scroll .radio-pick .rp-img { width: 80px; height: 65px; }
-  #rme-kit-builder-scroll .radio-pick h4 { font-size: 14px; }
-  #rme-kit-builder-scroll .radio-pick .rp-price { font-size: 16px; }
-  #rme-kit-builder-scroll .radio-pick .rp-tag { font-size: 12px; }
+  #rme-kit-builder-scroll .radio-pick .rp-img {
+    grid-row: 1; grid-column: 1;
+    width: 100%; height: 140px; border-radius: 8px;
+  }
+  #rme-kit-builder-scroll .radio-pick .rp-info {
+    grid-row: 2; grid-column: 1;
+  }
+  #rme-kit-builder-scroll .radio-pick h4 { font-size: 16px; }
+  #rme-kit-builder-scroll .radio-pick .rp-price { font-size: 20px; }
+  #rme-kit-builder-scroll .radio-pick .rp-tag {
+    grid-row: 3; grid-column: 1;
+    font-size: 13px; padding-top: 0;
+  }
 }
 
 /* ── Radio match badge (multi-kit) ────── */
@@ -616,13 +642,12 @@
 .kbp-total { font-size: 24px; font-weight: 700; color: #fdd351; white-space: nowrap; }
 .kbp-addons { font-size: 14px; font-weight: 500; color: #c4a83a; }
 .kbp-consult {
-  font-size: 13px; color: #fdd351; text-decoration: none; padding: 10px 18px;
-  border: 2px solid #d4af37; border-radius: 8px; white-space: nowrap;
-  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
-  font-weight: 500;
+  font-size: 12px; color: #888; text-decoration: none; padding: 6px 12px;
+  white-space: nowrap;
 }
-.kbp-consult span { color: #fdd351; text-decoration: underline; }
-.kbp-consult:hover { border-color: #fdd351; background: rgba(253,211,81,0.12); transform: translateY(-2px); }
+.kbp-consult span { color: #aaa; text-decoration: underline; font-size: 11px; }
+.kbp-consult:hover { color: #fdd351; }
+.kbp-consult:hover span { color: #fdd351; }
 .kb-btn--cart {
   padding: 14px 36px;
   font-size: 16px;
@@ -641,7 +666,7 @@
   .kbp-label { font-size: 12px; }
   .kbp-total { font-size: 22px; }
   .kb-scroll-price-bar .kb-btn--cart { display: none; }
-  .kbp-consult { border: none; padding: 10px; font-size: 18px; line-height: 1; }
+  .kbp-consult { padding: 6px 8px; font-size: 16px; line-height: 1; }
   .kbp-consult span { display: none; }
   .kbs-iq-options { flex-direction: column; }
   /* Keep active indicator on mobile: use top border instead of left */
@@ -845,13 +870,10 @@ body.kb-modal-open { overflow: hidden; }
 /* ── Section state text labels ────────── */
 /* Visible state indicator alongside color for colorblind users */
 .kb-section--complete .kb-section__header::after {
-  content: '(done)';
-  font-size: 11px;
-  color: #8a8a8a;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  content: '\2713';
+  font-size: 16px;
+  color: #6a6;
   margin-left: auto;
-  font-family: var(--rme-font-body);
 }
 .kb-section--active .kb-section__header::after {
   content: none;

@@ -227,21 +227,21 @@ const needsQuestions = [
       { key: 'vehicle', icon: ICO.vehicle, label: 'Vehicle / mobile radios', detail: 'Mounted in a car, truck, or RV', categories: ['mobile'] },
       { key: 'base', icon: ICO.base, label: 'Base station', detail: 'Fixed location with outdoor antenna', categories: ['base'] },
       { key: 'hf', icon: ICO.hf, label: 'Long-distance (HF)', detail: 'Nationwide or worldwide', categories: ['hf'] },
-      { key: 'scanner', icon: ICO.scanner, label: 'Scanner / SDR receiver', detail: 'Listen only — no license required', categories: ['scanner'] },
+      { key: 'scanner', icon: ICO.scanner, label: 'Scanner / SDR receiver', detail: 'Listen to public safety, weather, and more', categories: ['scanner'] },
       { key: 'notsure', icon: ICO.notsure, label: "I'm not sure yet", detail: "We'll help you figure it out", categories: [] },
     ]
   },
   {
     id: 'reach',
-    question: "Who are you trying to reach?",
+    question: "How far do you need to communicate?",
     sub: "Select all that apply.",
     multi: true,
     condition: (answers) => answers.usage && answers.usage.includes('notsure'),
     options: [
       { key: 'nearby', icon: ICO.nearby, label: 'Nearby', detail: 'Same property, group, or event', categories: ['handheld'] },
-      { key: 'local', icon: ICO.local, label: 'Local', detail: 'Across town, neighboring cities, through repeaters', categories: ['handheld', 'mobile', 'base'] },
+      { key: 'local', icon: ICO.local, label: 'Local', detail: 'Across town or to neighboring cities', categories: ['handheld', 'mobile', 'base'] },
       { key: 'far', icon: ICO.farreach, label: 'Long distance', detail: 'Statewide, cross-country, or worldwide', categories: ['hf'] },
-      { key: 'listen', icon: ICO.monitoring, label: 'Listen only', detail: 'Monitor police, fire, EMS, or aircraft', categories: ['scanner'] },
+      { key: 'listen', icon: ICO.monitoring, label: 'Just listening', detail: 'Monitor public safety, weather, aircraft, and more', categories: ['scanner'] },
     ]
   },
 ];
@@ -412,7 +412,7 @@ function renderCategoryPicker() {
     { key: 'mobile', icon: ICO.vehicle, name: 'Vehicle / Mobile Radios', desc: 'Mounted in a car, truck, or RV' },
     { key: 'base', icon: ICO.base, name: 'Base Station', desc: 'Fixed location with outdoor antenna' },
     { key: 'hf', icon: ICO.hf, name: 'HF Radio', desc: 'Nationwide or worldwide' },
-    { key: 'scanner', icon: ICO.scanner, name: 'Monitor & Listen', desc: 'Listen only — no license required' },
+    { key: 'scanner', icon: ICO.scanner, name: 'Monitor & Listen', desc: 'Listen to public safety, weather, and more' },
   ];
 
   container.innerHTML = `
@@ -2801,7 +2801,7 @@ function renderScannerRadioChoice() {
   phase.innerHTML = `
     <div class="selector-landing" style="text-align:center">
       <h2>Monitor & Listen</h2>
-      <p style="color:#ddd;font-size:15px;max-width:650px;margin:0 auto 8px">Scanners and SDR receivers are for <strong style="color:var(--rme-gold)">listening only</strong>. Unlike our two-way radios, these do not transmit. Monitor police, fire, EMS, aircraft, weather, amateur radio, and thousands of other signals. No license required.</p>
+      <p style="color:#ddd;font-size:15px;max-width:650px;margin:0 auto 8px">Scanners and SDR receivers are for <strong style="color:var(--rme-gold)">listening only</strong>. Unlike our two-way radios, these do not transmit. Monitor public safety, aircraft, weather, and thousands of other signals.</p>
       <div style="display:flex;flex-wrap:wrap;gap:20px;justify-content:center;max-width:900px;margin:24px auto 0">
         ${scannerRadioLineup.map(r => {
           const isSDR = r.requiresComputer;
@@ -3156,16 +3156,16 @@ const ADAPTER_PRICE = 5; // SMA-F to BNC-F Adapter [456] -added once if any BNC 
 
 // Shared items (available for all radios)
 const sharedAntennaUpgrades = [
-  { key: 'foulweather', name: 'Foul Weather Whip with BNC Adapter', bestUse: 'Best for: Chest Rigs & Field Use', desc: 'Flexible whip that bends without breaking. Ideal for field use, rucking, and mounting on chest rigs or plate carriers.', price: 40, img: S+'2024/03/20240320_115347.jpg', ids: [3916, 456], addsToCart: ['Foul Weather Whip [3916] ($40)'] },
+  { key: 'foulweather', name: 'Foul Weather Whip with BNC Adapter', bestUse: 'Best for: Outdoor & Active Use', desc: 'Flexible whip that bends without breaking. Ideal for hiking, camping, and active use where your radio might get bumped around.', price: 40, img: S+'2024/03/20240320_115347.jpg', ids: [3916, 456], addsToCart: ['Foul Weather Whip [3916] ($40)'] },
   { key: 'signalstick', name: 'Signal Stick with BNC Adapter', bestUse: 'Best for: Overall Performance', desc: 'Super elastic, nearly indestructible flexible antenna. Excellent all-around performer for both transmit and receive.', price: 25, img: S+'2022/07/IMGP8549-scaled.jpg', ids: [39, 456], addsToCart: ['Signal Stick [39] ($25)'] },
-  { key: 'stubby', name: 'Stubby Antenna with BNC Adapter', bestUse: 'Best for: Covert Carry', desc: 'Compact, low-profile antenna. Great for covert carry, backpacking, or when you need a shorter profile.', price: 39, img: S+'2023/05/20250227_154740.jpg', ids: [816, 456], addsToCart: ['Stubby Antenna [816] ($39)'] },
+  { key: 'stubby', name: 'Stubby Antenna with BNC Adapter', bestUse: 'Best for: Keeping a Low Profile', desc: 'Compact, short antenna. Great for backpacking, travel, or when you want your radio to be less noticeable.', price: 39, img: S+'2023/05/20250227_154740.jpg', ids: [816, 456], addsToCart: ['Stubby Antenna [816] ($39)'] },
 ];
 
 const sharedAdditionalAntennas = [
-  { key: 'wearable', name: 'Wearable BNC Antenna', bestUse: 'Best for: Body-Worn Setups', desc: 'Low-profile antenna for chest rigs, plate carriers, and body-worn setups. Lays flat for a streamlined profile.', price: 69, img: S+'2022/10/20221006_154507.jpg', id: 460, needsAdapter: true },
-  { key: 'slimjim', name: 'Roll Up Slim Jim Antenna', bestUse: 'Best for: Base Camp Range', desc: 'Portable VHF/UHF antenna you can hang from a tree branch, window, or tarp ridge line. Dramatically extends your range, essential for base camp ops.', price: 49, img: S+'2022/08/12200-2-scaled.jpg', id: 99, needsAdapter: true },
-  { key: 'magmount', name: 'Magnetic BNC Antenna Base', bestUse: 'Best for: Vehicle Mounting', desc: 'Magnetic base mount for any BNC antenna. Stick on a vehicle roof, toolbox, or any metal surface for instant mobile capability.', price: 39, img: S+'2022/10/IMGP8553-scaled.jpg', id: 521, needsAdapter: true },
-  { key: 'mollemount', name: 'BNC MOLLE Antenna Mount', bestUse: 'Best for: Tactical Gear', desc: 'Attach any BNC antenna to MOLLE webbing on your vest, pack, or plate carrier. Keeps the antenna off the radio for a low-profile setup.', price: 19, img: S+'2025/12/1000009993.jpg', id: 8717, needsAdapter: true },
+  { key: 'wearable', name: 'Wearable BNC Antenna', bestUse: 'Best for: Hands-Free Carry', desc: 'Low-profile antenna that lays flat against your body. Clips to a vest, backpack strap, or belt for a streamlined setup while you move.', price: 69, img: S+'2022/10/20221006_154507.jpg', id: 460, needsAdapter: true },
+  { key: 'slimjim', name: 'Roll Up Slim Jim Antenna', bestUse: 'Best for: Maximum Range', desc: 'Portable antenna you can hang from a tree branch, window, or ridgeline. Dramatically extends your range. Great for camping, emergencies, or home use.', price: 49, img: S+'2022/08/12200-2-scaled.jpg', id: 99, needsAdapter: true },
+  { key: 'magmount', name: 'Magnetic BNC Antenna Base', bestUse: 'Best for: Vehicle Use', desc: 'Magnetic base mount for any antenna. Stick on a vehicle roof, toolbox, or any metal surface for instant mobile range boost.', price: 39, img: S+'2022/10/IMGP8553-scaled.jpg', id: 521, needsAdapter: true },
+  { key: 'mollemount', name: 'BNC MOLLE Antenna Mount', bestUse: 'Best for: Backpack & Vest Mounting', desc: 'Attach any antenna to the webbing on your vest or backpack. Keeps the antenna off the radio so it\'s not in the way.', price: 19, img: S+'2025/12/1000009993.jpg', id: 8717, needsAdapter: true },
   { key: 'extraadapter', name: 'Extra SMA-F to BNC-F Adapter', desc: 'Spare BNC adapter so you can leave one on a mag mount or other accessory and still have one for the radio. One adapter is already included if you selected an antenna upgrade.', price: 5, img: S+'2022/09/smaftobncf.jpg', id: 456, needsAdapter: false, isAdapter: true },
 ];
 
@@ -3173,7 +3173,7 @@ const sharedAdditionalAntennas = [
 const radioProducts = {
   'uv5r': {
     batteryLabel: 'Factory Battery (1800mAh)',
-    batteryDesc: 'Standard battery included with your kit. Requires charging cradle (included).',
+    batteryDesc: 'Standard battery included with your kit. Lasts approximately 8-12 hours of typical use. Requires charging cradle (included).',
     batteries: [
       { key: 'usbc-standard', name: 'USB-C Battery (1300mAh) with Cable', desc: 'Standard-size rechargeable battery with built-in USB-C port. Charge from any USB-C cable, no cradle needed.', price: 25, img: S+'2023/08/20230831_163401.jpg', id: 2367 },
       { key: 'usbc-extended', name: 'USB-C Extended Battery (3800mAh) with Cable', desc: 'High-capacity extended battery with built-in USB-C port. Nearly triple the runtime of the factory battery.', price: 29, img: S+'2023/04/20250725_123654.jpg', id: 749 },
@@ -3193,7 +3193,7 @@ const radioProducts = {
   },
   'uv5r-mini': {
     batteryLabel: 'Built-in USB-C Battery',
-    batteryDesc: 'The UV-5R Mini includes a USB-C rechargeable battery. Charge from any USB-C cable. Add a spare below for extended runtime in the field.',
+    batteryDesc: 'The UV-5R Mini includes a USB-C rechargeable battery. Lasts approximately 10-14 hours of typical use. Charge from any USB-C cable.',
     batteries: [
       { key: 'mini-spare', name: 'Extra UV-5R Mini Battery', desc: 'Spare USB-C rechargeable battery for the UV-5R Mini. Swap in the field for extended runtime.', price: 15, img: (typeof rmeKitBuilder!=='undefined'?rmeKitBuilder.pluginUrl:'')+'assets/img/placeholder-battery-mini.svg', id: 9451 },
     ],
@@ -3209,7 +3209,7 @@ const radioProducts = {
   },
   'uv-pro': {
     batteryLabel: 'USB-C Rechargeable Battery (2600mAh)',
-    batteryDesc: 'The UV-PRO includes a USB-C rechargeable battery. Charge from any USB-C cable, no cradle needed.',
+    batteryDesc: 'The UV-PRO includes a USB-C rechargeable battery. Lasts approximately 12-16 hours of typical use. Charge from any USB-C cable, no cradle needed.',
     batteries: [
       { key: 'uvpro-spare', name: 'Extra UV-PRO Battery (2600mAh)', desc: 'Spare USB-C rechargeable battery for the UV-PRO. Swap in the field for extended ops without waiting to recharge.', price: 25, img: S+'2025/11/uvpro-battery-black.jpg', id: 8312 },
     ],
@@ -3321,8 +3321,8 @@ function renderAllAntennas() {
   `;
 
   let note = anyUpgrade
-    ? '<div style="background:#1a2a1a;border:1px solid #2a3a2a;border-radius:8px;padding:12px 16px;margin:16px 0;font-size:13px;color:#5c5"><strong>SMA-F to BNC-F Adapter ($5)</strong> will be added once to your order, shared by all BNC antennas below.</div>'
-    : '<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:16px 0;font-size:13px;color:var(--muted)">Want better performance? Add one or more antenna upgrades below. Automatically bundled with a BNC adapter for your radio.</div>';
+    ? '<div style="background:#1a2a1a;border:1px solid #2a3a2a;border-radius:8px;padding:12px 16px;margin:16px 0;font-size:13px;color:#5c5"><strong>Adapter included ($5)</strong> — your radio needs a small adapter to use these antennas. We\'ll include one automatically.</div>'
+    : '<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:16px 0;font-size:13px;color:var(--muted)">Want better performance? Add one or more antenna upgrades below. We\'ll include the adapter your radio needs automatically.</div>';
 
   let upgradeCards = antennaUpgrades.map(a => `
     <div class="opt-card ${selectedAntennas.has(a.key) ? 'selected' : ''}"
@@ -3342,9 +3342,9 @@ function renderAllAntennas() {
   // ── Section 2: Add More Antennas ──
   let adapterNote = '';
   if (anyUpgrade) {
-    adapterNote = '<div style="background:#1a2a1a;border:1px solid #2a3a2a;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:13px;color:#5c5"><strong>BNC adapter already included</strong> with your antenna upgrade. BNC antennas below will share that adapter, or grab a spare below if you want one dedicated to each setup.</div>';
+    adapterNote = '<div style="background:#1a2a1a;border:1px solid #2a3a2a;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:13px;color:#5c5"><strong>Adapter already included</strong> with your antenna upgrade above. These antennas will share it, or grab a spare below if you want one for each setup.</div>';
   } else {
-    adapterNote = '<div style="background:#2a2000;border:1px solid #3a3000;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:13px;color:#d4af37"><strong>No antenna upgrade selected.</strong> BNC antennas below require an SMA-F to BNC-F Adapter, which will be auto-added if needed.</div>';
+    adapterNote = '<div style="background:#2a2000;border:1px solid #3a3000;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:13px;color:#d4af37"><strong>No antenna upgrade selected above.</strong> These antennas need a small adapter to connect to your radio. We\'ll add one automatically if needed ($5).</div>';
   }
 
   let addlCards = additionalAntennas.map(a => {
@@ -3387,9 +3387,9 @@ function renderAdditionalAntennas() {
   // Show BNC adapter note at top
   let adapterNote = '';
   if (hasUpgrade) {
-    adapterNote = '<div style="background:#1a2a1a;border:1px solid #2a3a2a;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:13px;color:#5c5"><strong>BNC adapter already included</strong> with your antenna upgrade. BNC antennas below will share that adapter, or grab a spare below if you want one dedicated to each setup.</div>';
+    adapterNote = '<div style="background:#1a2a1a;border:1px solid #2a3a2a;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:13px;color:#5c5"><strong>Adapter already included</strong> with your antenna upgrade above. These antennas will share it, or grab a spare below if you want one for each setup.</div>';
   } else {
-    adapterNote = '<div style="background:#2a2000;border:1px solid #3a3000;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:13px;color:#d4af37"><strong>No antenna upgrade selected.</strong> BNC antennas below require an SMA-F to BNC-F Adapter, which will be auto-added if needed.</div>';
+    adapterNote = '<div style="background:#2a2000;border:1px solid #3a3000;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:13px;color:#d4af37"><strong>No antenna upgrade selected above.</strong> These antennas need a small adapter to connect to your radio. We\'ll add one automatically if needed ($5).</div>';
   }
 
   container.innerHTML = adapterNote + additionalAntennas.map(a => {
@@ -3553,8 +3553,8 @@ function renderProgramming(opts) {
       <div style="display:flex;align-items:center;gap:16px">
         <div class="oc-radio"></div>
         <div class="oc-body">
-          <div class="oc-name">Skip Programming. Ship Immediately</div>
-          <div class="oc-desc" style="max-height:none">Radio ships with factory default channels only. Choose this if you plan to program it yourself via CHIRP or another method.</div>
+          <div class="oc-name">I'll Program It Myself</div>
+          <div class="oc-desc" style="max-height:none">Radio ships with factory default channels only. Free programming software is available if you want full control over your channels.</div>
         </div>
         <div class="oc-price free" style="color:var(--muted);font-size:12px">No extra cost</div>
       </div>
@@ -4151,6 +4151,7 @@ function renderReview() {
 
 // ── Review remove handlers ──────────────────────────
 function reviewRemove(type, key) {
+  if (!confirm('Remove this item from your kit?')) return;
   if (type === 'antenna') { selectedAntennas.delete(key); }
   else if (type === 'addl') { selectedAddlAntennas.delete(key); }
   else if (type === 'battery') { selectedBatteries.delete(key); }
@@ -4731,14 +4732,14 @@ const interviewQuestions = [
   },
   {
     id: 'reach',
-    question: "Who are you trying to reach?",
+    question: "How far do you need to communicate?",
     sub: "Select all that apply.",
     multi: true,
     options: [
       { key: 'nearby', icon: ICO.nearby, label: 'Nearby', detail: 'Same property, group, or event', tags: ['budget', 'simple'] },
-      { key: 'local', icon: ICO.local, label: 'Local', detail: 'Across town, neighboring cities, through repeaters', tags: ['channels', 'grow'] },
+      { key: 'local', icon: ICO.local, label: 'Local', detail: 'Across town or to neighboring cities', tags: ['channels', 'grow'] },
       { key: 'far', icon: ICO.farreach, label: 'Long distance', detail: 'Statewide, cross-country, or worldwide', tags: [] },
-      { key: 'listen', icon: ICO.monitoring, label: 'Listen only', detail: 'Monitor police, fire, EMS, or aircraft', tags: [] },
+      { key: 'listen', icon: ICO.monitoring, label: 'Just listening', detail: 'Monitor public safety, weather, aircraft, and more', tags: [] },
     ]
   },
   {

@@ -504,19 +504,14 @@
     var addonsPrice = (total + crossCatDiscount) - radioPrice;
 
     if (kbsKitQty > 1) {
-      var qtyHtml = '$' + grandTotal;
-      if (crossCatDiscount > 0) qtyHtml += ' <span class="kbp-addons" style="color:var(--rme-green)">incl. 5% multi-kit discount</span>';
-      totalEl.innerHTML = qtyHtml;
+      totalEl.innerHTML = '$' + grandTotal;
       var label = document.getElementById('kbs-radio-name');
       if (label) {
         var rName = r ? r.name.replace(' Essentials Kit', '').replace(' Mobile Radio Kit', '') : '';
         label.textContent = rName + ' x' + kbsKitQty + (tier ? ' (' + tier.pct + '% off)' : '');
       }
     } else {
-      var priceHtml = '$' + radioPrice;
-      if (addonsPrice > 0) priceHtml += ' <span class="kbp-addons">+ $' + addonsPrice + '</span>';
-      if (crossCatDiscount > 0) priceHtml += ' <span class="kbp-addons" style="color:var(--rme-green)">-$' + crossCatDiscount + ' multi-kit discount</span>';
-      totalEl.innerHTML = priceHtml;
+      totalEl.innerHTML = '$' + total;
     }
 
     // Consult link
@@ -781,7 +776,7 @@
       { key: 'vehicle', icon: ICO.vehicle, label: 'Vehicle / Mobile', detail: 'Mounted in a car, truck, or RV' },
       { key: 'base', icon: ICO.base, label: 'Base Station', detail: 'Fixed location with outdoor antenna' },
       { key: 'hf', icon: ICO.hf, label: 'HF (Long-Distance)', detail: 'Nationwide or worldwide' },
-      { key: 'scanner', icon: ICO.scanner, label: 'Scanner / SDR', detail: 'Listen only, no license required' },
+      { key: 'scanner', icon: ICO.scanner, label: 'Scanner / SDR', detail: 'Listen to public safety, weather, and more' },
     ];
     var catHtml = catOpts.map(function(o) {
       return '<div class="kbs-iq-opt" onclick="kbsDirectToggleCat(this,&quot;' + o.key + '&quot;)">' +
@@ -839,8 +834,8 @@
       { key: 'handheld', icon: ICO.handheld, label: 'Handheld', detail: 'Portable, carried on your person', tags: [] },
       { key: 'vehicle', icon: ICO.vehicle, label: 'Vehicle / Mobile', detail: 'Mounted in a car, truck, or RV', tags: [] },
       { key: 'base', icon: ICO.base, label: 'Base Station', detail: 'Fixed location with outdoor antenna', tags: [] },
-      { key: 'hf', icon: ICO.hf, label: 'HF (Long-Distance)', detail: 'Nationwide or worldwide, amateur license required', tags: [] },
-      { key: 'scanner', icon: ICO.scanner, label: 'Scanner / SDR', detail: 'Listen only, no license required', tags: [] },
+      { key: 'hf', icon: ICO.hf, label: 'HF (Long-Distance)', detail: 'Nationwide or worldwide communication', tags: [] },
+      { key: 'scanner', icon: ICO.scanner, label: 'Scanner / SDR', detail: 'Listen to public safety, weather, and more', tags: [] },
     ]
   };
 

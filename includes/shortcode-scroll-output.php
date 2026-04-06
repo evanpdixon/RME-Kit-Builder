@@ -141,7 +141,7 @@
     </div>
     <div class="kb-section__summary" style="display:none"></div>
     <div class="kb-section__content">
-      <p>Every Radio Made Easy kit comes custom programmed with GMRS, FRS, NOAA weather, and local repeaters for your area.</p>
+      <p>Every Radio Made Easy kit comes custom programmed and ready to use out of the box, with local channels and weather alerts for your area.</p>
       <div class="options-grid" id="programming-options"></div>
       <div class="kb-section__actions">
         <button class="kb-btn kb-btn--secondary" onclick="kbsGoBack('programming')">Back</button>
@@ -162,7 +162,7 @@
       <div id="review-list"></div>
       <div class="kb-section__actions">
         <button class="kb-btn kb-btn--secondary" onclick="kbsGoBack('review')">Back</button>
-        <button class="kb-btn kb-btn--primary" onclick="kbsCompleteSection('review')">Looks Good</button>
+        <button class="kb-btn kb-btn--primary" onclick="kbsCompleteSection('review')">Continue to Checkout</button>
         <a href="#" class="kbs-consult-escape kbs-consult-link" target="_blank">&#128222; Need help? Book a consultation</a>
       </div>
     </div>
@@ -228,7 +228,7 @@
 <div class="kb-scroll-price-bar" id="kb-scroll-price-bar" style="display:none">
   <div class="kbp-info">
     <span class="kbp-label" id="kbs-radio-name"></span>
-    <span class="kbp-subtotal-label">Subtotal</span>
+    <span class="kbp-subtotal-label">Total</span>
     <span class="kbp-total" id="kbs-total"></span>
   </div>
   <a href="#" id="kbs-consult-btn" class="kbp-consult kbs-consult-link" target="_blank">&#128222; <span>Book a consultation</span></a>
