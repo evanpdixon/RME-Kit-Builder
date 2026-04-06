@@ -126,14 +126,17 @@
         renderNext();
 
         // Phase 4: Switch from loading to active (CSS fades in)
-        sectionState[next] = 'active';
-        if (nextEl) nextEl.classList.remove('kb-section--loading');
-        applyAllStates();
-        updateScrollPriceBar();
-        updateConsultLinks();
-        addKeyboardSupport();
-        // Move focus to new section for screen readers
-        setTimeout(function() { focusSection(next); }, 200);
+        // Skip if renderNext() already handled a section skip (e.g. mounting→antennas)
+        if (sectionState[next] !== 'complete') {
+          sectionState[next] = 'active';
+          if (nextEl) nextEl.classList.remove('kb-section--loading');
+          applyAllStates();
+          updateScrollPriceBar();
+          updateConsultLinks();
+          addKeyboardSupport();
+          // Move focus to new section for screen readers
+          setTimeout(function() { focusSection(next); }, 200);
+        }
       }, 1200);
     }, 800);
   };

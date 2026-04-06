@@ -4069,38 +4069,42 @@ function renderReview() {
   `);
 
   // Determine CTA based on multi-kit vs single-kit mode
-  const isMultiKit = kitSession.kits.length > 1;
-  const isLastKit = kitSession.currentKitIndex >= kitSession.kits.length - 1;
-  rmeDebug('REVIEW CTA', `kits=${kitSession.kits.length} idx=${kitSession.currentKitIndex} multiKit=${isMultiKit} isLastKit=${isLastKit}`);
-  const ctaBtnStyle = 'display:inline-block;background:#fdd351;color:#000;font-family:inherit;font-size:17px;font-weight:600;padding:16px 40px;border:none;border-radius:8px;cursor:pointer;text-transform:uppercase;letter-spacing:1px;margin-top:24px';
-  const editHint = '<div style="color:#c4a83a;font-size:12px;margin-top:8px">Use the Edit links above or the Back button to make changes</div>';
-  if (isMultiKit && !isLastKit) {
-    items.push(`
-      <div style="text-align:center;padding:24px 0 16px">
-        <button style="${ctaBtnStyle}" onclick="document.getElementById('btn-next').click()">
-          Complete This Kit &amp; Build Next →
-        </button>
-        ${editHint}
-      </div>
-    `);
-  } else if (isMultiKit && isLastKit) {
-    items.push(`
-      <div style="text-align:center;padding:24px 0 16px">
-        <button style="${ctaBtnStyle}" onclick="document.getElementById('btn-next').click()">
-          Complete Kit &amp; Review All →
-        </button>
-        ${editHint}
-      </div>
-    `);
-  } else {
-    items.push(`
-      <div style="text-align:center;padding:24px 0 16px">
-        <button style="${ctaBtnStyle}" onclick="document.getElementById('btn-next').click()">
-          Add to Cart →
-        </button>
-        ${editHint}
-      </div>
-    `);
+  // In V2 scroll mode, the section template provides its own "Continue to Checkout" button,
+  // so we skip rendering a CTA here to avoid duplicate buttons.
+  if (!window._rmeScrollMode) {
+    const isMultiKit = kitSession.kits.length > 1;
+    const isLastKit = kitSession.currentKitIndex >= kitSession.kits.length - 1;
+    rmeDebug('REVIEW CTA', `kits=${kitSession.kits.length} idx=${kitSession.currentKitIndex} multiKit=${isMultiKit} isLastKit=${isLastKit}`);
+    const ctaBtnStyle = 'display:inline-block;background:#fdd351;color:#000;font-family:inherit;font-size:17px;font-weight:600;padding:16px 40px;border:none;border-radius:8px;cursor:pointer;text-transform:uppercase;letter-spacing:1px;margin-top:24px';
+    const editHint = '<div style="color:#c4a83a;font-size:12px;margin-top:8px">Use the Edit links above or the Back button to make changes</div>';
+    if (isMultiKit && !isLastKit) {
+      items.push(`
+        <div style="text-align:center;padding:24px 0 16px">
+          <button style="${ctaBtnStyle}" onclick="document.getElementById('btn-next').click()">
+            Complete This Kit &amp; Build Next →
+          </button>
+          ${editHint}
+        </div>
+      `);
+    } else if (isMultiKit && isLastKit) {
+      items.push(`
+        <div style="text-align:center;padding:24px 0 16px">
+          <button style="${ctaBtnStyle}" onclick="document.getElementById('btn-next').click()">
+            Complete Kit &amp; Review All →
+          </button>
+          ${editHint}
+        </div>
+      `);
+    } else {
+      items.push(`
+        <div style="text-align:center;padding:24px 0 16px">
+          <button style="${ctaBtnStyle}" onclick="document.getElementById('btn-next').click()">
+            Add to Cart →
+          </button>
+          ${editHint}
+        </div>
+      `);
+    }
   }
 
   list.innerHTML = items.join('');
