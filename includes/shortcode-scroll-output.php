@@ -232,7 +232,4 @@
     <span class="kbp-total" id="kbs-total"></span>
   </div>
   <a href="#" id="kbs-consult-btn" class="kbp-consult kbs-consult-link" target="_blank">&#128222; <span>Book a consultation</span></a>
-  <button class="kb-btn kb-btn--primary kb-btn--cart" id="kbs-cart-btn" disabled onclick="kbsAddToCart()">
-    &#128722; Add to Cart
-  </button>
 </div>

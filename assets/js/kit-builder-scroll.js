@@ -1052,6 +1052,39 @@
     }, 400);
   };
 
+  // Resolve answer text for a question, with fallback labels for setup/category questions
+  var CATEGORY_LABELS = { handheld: 'Handheld', vehicle: 'Vehicle / Mobile', base: 'Base Station', hf: 'HF (Long-Distance)', scanner: 'Scanner / SDR' };
+  function resolveAnswerText(q, answer) {
+    var opts = q.options || [];
+    var selectedOpts = opts.filter(function(o) {
+      if (q.multi) return (answer || []).includes(o.key);
+      return answer === o.key;
+    });
+    var text = selectedOpts.map(function(o) { return o.label; }).join(', ');
+    // Fallback for setup/usage questions whose options may not resolve
+    if (!text && (q.id === 'setup' || q.id === 'usage')) {
+      var keys = Array.isArray(answer) ? answer : [answer];
+      text = keys.map(function(k) { return CATEGORY_LABELS[k] || k; }).join(', ');
+    }
+    return text;
+  }
+
+  function renderAnsweredQuestions() {
+    buildQuestionList();
+    var html = '';
+    kbsAllQuestions.forEach(function(q) {
+      var answer = kbsAnswers[q.id];
+      if (answer === undefined || answer === null) return;
+      if (Array.isArray(answer) && answer.length === 0) return;
+      var ansText = resolveAnswerText(q, answer);
+      if (!ansText) return;
+      html += '<div class="kbs-iq kbs-iq--answered">' +
+        '<h3>' + q.question + ' <span class="kbs-iq-answer">' + ansText + '</span></h3>' +
+        '</div>';
+    });
+    return html;
+  }
+
   function showScrollResults() {
     // Push history state so Android back returns to quiz instead of leaving
     pushSectionState('interview-results');
@@ -1133,21 +1166,7 @@
     }
 
     // Show answered questions + results in interview section
-    let html = '';
-    // Answered questions from all phases
-    kbsAllQuestions.forEach(q => {
-      const answer = kbsAnswers[q.id];
-      if (answer === undefined || answer === null) return;
-      const opts = q.options || [];
-      const selectedOpts = opts.filter(o => {
-        if (q.multi) return (answer || []).includes(o.key);
-        return answer === o.key;
-      });
-      const ansText = selectedOpts.map(o => o.label).join(', ');
-      html += `<div class="kbs-iq kbs-iq--answered">
-        <h3>${q.question} <span class="kbs-iq-answer">${ansText}</span></h3>
-      </div>`;
-    });
+    let html = renderAnsweredQuestions();
 
     // Recommendation
     html += `
@@ -1345,21 +1364,7 @@
     const catName = catNames[category] || category;
     const available = lineup.filter(r => !r.outOfStock);
 
-    let html = '';
-    // Show answered questions
-    kbsAllQuestions.forEach(q => {
-      const answer = kbsAnswers[q.id];
-      if (answer === undefined || answer === null) return;
-      const opts = q.options || [];
-      const selectedOpts = opts.filter(o => {
-        if (q.multi) return (answer || []).includes(o.key);
-        return answer === o.key;
-      });
-      const ansText = selectedOpts.map(o => o.label).join(', ');
-      html += `<div class="kbs-iq kbs-iq--answered">
-        <h3>${q.question} <span class="kbs-iq-answer">${ansText}</span></h3>
-      </div>`;
-    });
+    let html = renderAnsweredQuestions();
 
     const catDetailText = category === 'mobile' ? 'vehicle mounting, antenna installation, and power wiring' :
       category === 'base' ? 'antenna mounting, coax cabling, and power supply' :
