@@ -4,6 +4,46 @@
 **URL:** https://staging12.radiomadeeasy.com/kit-builder-v2/  
 **Tested:** Desktop (1280x800) and Mobile (375x812)  
 **Approach:** First-time user curious about radios, no technical background  
+**Screenshots:** [Desktop](docs/review-screenshots/desktop/) | [Mobile](docs/review-screenshots/mobile/)
+
+---
+
+## Screenshot Index
+
+### Desktop (1280x800) - Guided Flow
+| Step | Screenshot |
+|------|-----------|
+| Initial full page | ![](docs/review-screenshots/desktop/01-initial-fullpage.png) |
+| Email section | ![](docs/review-screenshots/desktop/03-email-section.png) |
+| Interview choice | ![](docs/review-screenshots/desktop/06-interview-choice-screen.png) |
+| Q1: Budget | ![](docs/review-screenshots/desktop/07-interview-q1-budget.png) |
+| Q2: Reach | ![](docs/review-screenshots/desktop/09-interview-q2-reach.png) |
+| Q3: Setup type | ![](docs/review-screenshots/desktop/11-interview-q3-setup.png) |
+| Q4: Features | ![](docs/review-screenshots/desktop/13-interview-q4-features.png) |
+| Recommendation results | ![](docs/review-screenshots/desktop/15-interview-results-top.png) |
+| After radio select | ![](docs/review-screenshots/desktop/17-after-radio-select.png) |
+| Antennas section | ![](docs/review-screenshots/desktop/19-antennas-section.png) |
+| Antennas selected (BNC banner) | ![](docs/review-screenshots/desktop/21-antennas-after-selection.png) |
+| Battery section | ![](docs/review-screenshots/desktop/22-battery-section.png) |
+| Accessories section | ![](docs/review-screenshots/desktop/25-accessories-section.png) |
+| Programming section | ![](docs/review-screenshots/desktop/28-programming-section.png) |
+| Multi-location programming | ![](docs/review-screenshots/desktop/31-programming-multi-location.png) |
+| Review section | ![](docs/review-screenshots/desktop/33-review-top.png) |
+| Review full page | ![](docs/review-screenshots/desktop/34-review-fullpage.png) |
+| Price bar | ![](docs/review-screenshots/desktop/36-review-price-bar.png) |
+| Quantity section | ![](docs/review-screenshots/desktop/37-quantity-section.png) |
+
+### Mobile (375x812) - Direct Flow
+| Step | Screenshot |
+|------|-----------|
+| Initial viewport | ![](docs/review-screenshots/mobile/01-initial-viewport.png) |
+| Category selection | ![](docs/review-screenshots/mobile/08-direct-categories.png) |
+| Radio grid | ![](docs/review-screenshots/mobile/13-radio-section.png) |
+| Antennas | ![](docs/review-screenshots/mobile/18-antenna-section.png) |
+| Battery | ![](docs/review-screenshots/mobile/23-battery-section.png) |
+| Accessories | ![](docs/review-screenshots/mobile/28-accessories-section.png) |
+| Programming | ![](docs/review-screenshots/mobile/33-programming-section.png) |
+| Programming (skip option) | ![](docs/review-screenshots/mobile/36-programming-selected.png) |
 
 ---
 
@@ -19,19 +59,19 @@
 - **Type:** Bug
 - **Detail:** After answering all guided interview questions, the answered-question summary shows `What type of setup do you need?` with NO answer text beside it (the yellow span is empty). The other questions correctly show their answers ("Mid-range", "Local", "Waterproof / water resistant, GPS location sharing"). This is because the `setup` question uses `multi: true` and the answer is stored, but when rendering the summary the answer text is not being populated. Looking at the code, the setup question options have `tags: []` (empty tags), so tag collection works, but the issue is likely that `kbsAnswers['setup']` is populated from `preSelectSetup()` (which sets values like `['handheld']`) but the summary renderer can't match these to option labels because the question object isn't consistently referenced.
 - **Impact:** User sees their other answers confirmed but "setup type" looks like it was skipped, which is confusing.
-- **Screenshot:** `desktop/15-interview-results-top.png`
+- **Screenshot:** ![Blank setup answer](docs/review-screenshots/desktop/15-interview-results-top.png)
 
 ### 3. Price bar "ADD TO CART" text is cut off / barely visible on desktop
 - **Where:** Sticky bottom price bar, right side
 - **Type:** Design issue / Bug
 - **Detail:** The "ADD TO CART" text in the sticky price bar at the bottom of the screen appears extremely faded/ghosted (nearly invisible against the dark background). It looks like the button is in a disabled state even when the user is mid-flow. The cart icon is visible but the text beside it is barely readable. This is confusing because the user might think they can add to cart from the bar at any time, but the button appearance doesn't communicate its state clearly.
-- **Screenshots:** `desktop/19-antennas-section.png`, `desktop/22-battery-section.png`
+- **Screenshots:** ![Price bar ghosted](docs/review-screenshots/desktop/19-antennas-section.png) ![Price bar on battery](docs/review-screenshots/desktop/22-battery-section.png)
 
 ### 4. Mobile price bar missing "Add to Cart" entirely
 - **Where:** Sticky bottom bar on mobile (375px)
 - **Type:** Bug
 - **Detail:** On mobile, the sticky bottom bar shows "UV-5R / SUBTOTAL / $59" on the left and a pink phone icon on the right, but there is no "Add to Cart" button or text visible at all. The bar is also quite cramped. Compare with desktop where at least the ghosted text is present.
-- **Screenshot:** `mobile/18-antenna-section.png`, `mobile/23-battery-section.png`
+- **Screenshot:** ![Mobile price bar](docs/review-screenshots/mobile/18-antenna-section.png) ![Mobile price bar battery](docs/review-screenshots/mobile/23-battery-section.png)
 
 ---
 
@@ -51,13 +91,13 @@
 - **Where:** Antenna, battery, and accessories steps on desktop (viewport-level screenshots)
 - **Type:** UX concern
 - **Detail:** When viewing these sections at viewport level (not scrolled to the bottom), there's no visible "Continue" or "Skip" button. The Back/Continue buttons are below the fold if there are many product options. A user who doesn't want any antenna upgrades might not realize they need to scroll down past all the options to find the "Continue" button. Consider making the Continue button sticky or more visually prominent. The full-page antenna screenshot shows the buttons are at the very bottom after 10+ products.
-- **Screenshots:** `desktop/19-antennas-section.png` (no buttons visible), `desktop/20-antennas-fullpage.png` (buttons at very bottom)
+- **Screenshots:** ![No buttons visible](docs/review-screenshots/desktop/19-antennas-section.png) ![Buttons at very bottom](docs/review-screenshots/desktop/20-antennas-fullpage.png)
 
 ### 8. BNC adapter auto-add may confuse beginners
 - **Where:** Antenna section, after selecting any BNC antenna
 - **Type:** UX concern
 - **Detail:** When selecting a BNC antenna, a green banner appears: "SMA-F to BNC-F Adapter ($5) will be added once to your order, shared by all BNC antennas below." This is technically correct but a radio newbie has no idea what SMA-F, BNC-F, or adapters are. They might worry they're being upsold something unnecessary. A friendlier message like "Your radio needs a small adapter to use this antenna. We'll include one ($5) automatically." would be clearer.
-- **Screenshot:** `desktop/21-antennas-after-selection.png`
+- **Screenshot:** ![BNC adapter banner](docs/review-screenshots/desktop/21-antennas-after-selection.png)
 
 ### 9. Antenna "BEST FOR" labels assume knowledge
 - **Where:** Antenna selection cards
@@ -92,7 +132,7 @@
 - **Where:** Radio selection grid on mobile
 - **Type:** Design issue
 - **Detail:** On mobile (375px), the radio cards show a small image on the left and text on the right (name, price, tagline). The images are quite small and hard to evaluate. For a product where visual appearance matters (carrying a radio), larger images or a card layout with the image on top would help users choose.
-- **Screenshot:** `mobile/13-radio-section.png`
+- **Screenshot:** ![Mobile radio grid](docs/review-screenshots/mobile/13-radio-section.png)
 
 ### 15. Price bar layout on desktop wastes horizontal space
 - **Where:** Sticky bottom price bar
@@ -127,7 +167,7 @@
 - **Where:** Antenna section, "Factory Antenna" card
 - **Type:** Design issue
 - **Detail:** The factory antenna that's "Included" shows a gray SVG placeholder icon rather than a photo. While the upgrade antennas have real product photos, the included factory antenna has a generic icon. This creates visual inconsistency and makes the included item look less valuable.
-- **Screenshot:** `desktop/19-antennas-section.png`
+- **Screenshot:** ![Factory antenna placeholder](docs/review-screenshots/desktop/19-antennas-section.png)
 
 ### 21. Included battery card has no product image
 - **Where:** Battery section, factory battery card
