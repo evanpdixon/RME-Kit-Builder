@@ -21,6 +21,7 @@
   let kbsAllCategories = [];    // e.g. ['handheld', 'vehicle', 'base']
   let kbsCompletedCategories = [];
   let kbsCompletedKits = [];    // e.g. [{category:'mobile', radioKey:'uv50pro'}, ...]
+  let kbsKitInCart = false;      // true after successful add-to-cart (prevents duplicate adds on back-nav)
 
   // ── Section State Machine ──────────────────────
   const SECTIONS = ['email', 'interview', 'radio', 'mounting', 'antennas', 'battery', 'accessories', 'programming', 'review', 'quantity'];
@@ -90,7 +91,7 @@
         renderMountingOptions();
         return;
       }
-      if (next === 'quantity') { renderQuantityPicker(); enableCartBtn(); return; }
+      if (next === 'quantity') { renderQuantityPicker(); if (!kbsKitInCart) enableCartBtn(); return; }
       if (kbsCurrentCategory === 'handheld') {
         if (next === 'antennas') renderAllAntennas();
         if (next === 'battery') renderBatteryUpgrades();
@@ -288,6 +289,34 @@
   function renderQuantityPicker() {
     var container = document.getElementById('kbs-qty-picker');
     if (!container) return;
+
+    // If kit was already added to cart, show confirmation instead of qty picker
+    if (kbsKitInCart) {
+      var catMap = { vehicle: 'mobile', mobile: 'mobile', handheld: 'handheld', base: 'base', hf: 'hf', scanner: 'scanner' };
+      var completedMapped = kbsCompletedCategories.map(function(c) { return catMap[c] || c; });
+      var remaining = kbsAllCategories.filter(function(c) {
+        return !completedMapped.includes(catMap[c] || c);
+      });
+      if (remaining.length > 0) {
+        kbsPromptNextCategory(remaining);
+      } else {
+        container.innerHTML =
+          '<div style="text-align:center;padding:20px 0">' +
+            '<div style="font-size:18px;color:var(--rme-gold);margin-bottom:8px;font-family:var(--rme-font-heading);text-transform:uppercase;letter-spacing:1px">Kit Already in Cart</div>' +
+            '<p style="color:#ccc;font-size:15px;margin-bottom:16px">This kit has been added to your cart. You can go to cart to check out, or make changes and re-add.</p>' +
+            '<div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">' +
+              '<a href="/cart/" class="kb-btn kb-btn--primary" style="text-decoration:none;display:inline-flex;align-items:center">Go to Cart</a>' +
+              '<button class="kb-btn kb-btn--secondary" onclick="kbsResetCartState()">Make Changes</button>' +
+            '</div>' +
+          '</div>';
+      }
+      disableCartBtn();
+      var cartBtn = document.getElementById('kbs-cart-btn');
+      if (cartBtn) cartBtn.style.display = 'none';
+      updateScrollPriceBar();
+      return;
+    }
+
     var tier = typeof getVolumeTier === 'function' ? getVolumeTier(kbsKitQty) : null;
     var nextTier = typeof getNextTier === 'function' ? getNextTier(kbsKitQty) : null;
     var unitPrice = calcKitUnitPrice();
@@ -318,6 +347,10 @@
       }
       html += '</div>';
     }
+
+    // Show cart button
+    var cartBtn = document.getElementById('kbs-cart-btn');
+    if (cartBtn) { cartBtn.style.display = ''; }
 
     container.innerHTML = html;
     updateScrollPriceBar();
@@ -366,6 +399,12 @@
   window.kbsAdjustQty = function(delta) {
     kbsKitQty = Math.max(1, Math.min(20, kbsKitQty + delta));
     renderQuantityPicker();
+  };
+
+  window.kbsResetCartState = function() {
+    kbsKitInCart = false;
+    renderQuantityPicker();
+    enableCartBtn();
   };
 
   // ── Price Bar ─────────────────────────────────
@@ -447,17 +486,23 @@
 
     var totalEl = document.getElementById('kbs-total');
     var radioPrice = r ? r.price : 0;
-    var addonsPrice = total - radioPrice;
+    // Compute addons from pre-discount total so individual prices display correctly
+    var addonsPrice = (total + crossCatDiscount) - radioPrice;
 
     if (kbsKitQty > 1) {
-      totalEl.textContent = '$' + grandTotal;
+      var qtyHtml = '$' + grandTotal;
+      if (crossCatDiscount > 0) qtyHtml += ' <span class="kbp-addons" style="color:var(--rme-green)">incl. 5% multi-kit discount</span>';
+      totalEl.innerHTML = qtyHtml;
       var label = document.getElementById('kbs-radio-name');
       if (label) {
         var rName = r ? r.name.replace(' Essentials Kit', '').replace(' Mobile Radio Kit', '') : '';
         label.textContent = rName + ' x' + kbsKitQty + (tier ? ' (' + tier.pct + '% off)' : '');
       }
     } else {
-      totalEl.innerHTML = '$' + radioPrice + (addonsPrice > 0 ? ' <span class="kbp-addons">+ $' + addonsPrice + '</span>' : '');
+      var priceHtml = '$' + radioPrice;
+      if (addonsPrice > 0) priceHtml += ' <span class="kbp-addons">+ $' + addonsPrice + '</span>';
+      if (crossCatDiscount > 0) priceHtml += ' <span class="kbp-addons" style="color:var(--rme-green)">-$' + crossCatDiscount + ' multi-kit discount</span>';
+      totalEl.innerHTML = priceHtml;
     }
 
     // Consult link
@@ -571,6 +616,8 @@
       return !completedMapped.includes(catMap[c] || c);
     });
 
+    kbsKitInCart = true;
+
     if (remaining.length > 0) {
       // Suppress the cart redirect: add items via AJAX but stay on page
       window._kbsSuppressCartRedirect = true;
@@ -630,6 +677,7 @@
     adapterSuppressed = false;
     kbsRadioSelected = false;
     kbsKitQty = 1;
+    kbsKitInCart = false;
     kbsSelectedMount = 'factory';
     selectedRadioKey = '';
 
@@ -1194,6 +1242,7 @@
     selectedRadioKey = key;
     kbsRadioSelected = true;
     kbsKitQty = 1;
+    kbsKitInCart = false;
     kbsSelectedMount = 'factory';
     const radio = radioLineup.find(r => r.key === key);
     if (radio) BASE_PRICE = radio.price;
@@ -1351,6 +1400,7 @@
     selectedRadioKey = radioKey;
     kbsRadioSelected = true;
     kbsKitQty = 1;
+    kbsKitInCart = false;
     kbsSelectedMount = 'factory';
     BASE_PRICE = radio.price;
 
