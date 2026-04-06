@@ -96,11 +96,11 @@
         if (next === 'antennas') renderAllAntennas();
         if (next === 'battery') renderBatteryUpgrades();
         if (next === 'accessories') renderAccessories();
-        if (next === 'programming') renderProgramming();
+        if (next === 'programming') renderProgrammingWithCarryForward();
         if (next === 'review') { renderReview(); fixReviewButtons(); }
       } else {
         renderCategoryProducts(next, kbsCurrentCategory, selectedRadioKey);
-        if (next === 'programming' && typeof renderProgramming === 'function') renderProgramming();
+        if (next === 'programming' && typeof renderProgramming === 'function') renderProgrammingWithCarryForward();
         if (next === 'review') { renderNonHandheldReview(); }
       }
     }
@@ -176,12 +176,12 @@
         if (name === 'antennas') renderAllAntennas();
         if (name === 'battery') renderBatteryUpgrades();
         if (name === 'accessories') renderAccessories();
-        if (name === 'programming') renderProgramming();
+        if (name === 'programming') renderProgrammingWithCarryForward();
       } else {
         if (name === 'antennas' || name === 'battery' || name === 'accessories') {
           renderCategoryProducts(name, kbsCurrentCategory, selectedRadioKey);
         }
-        if (name === 'programming') renderProgramming();
+        if (name === 'programming') renderProgrammingWithCarryForward();
       }
     }
 
@@ -406,6 +406,20 @@
     renderQuantityPicker();
     enableCartBtn();
   };
+
+  // Render programming with carry-forward banner for 2nd+ category
+  function renderProgrammingWithCarryForward() {
+    renderProgramming();
+    if (kbsCompletedCategories.length > 0) {
+      var container = document.getElementById('programming-options');
+      if (container) {
+        var banner = document.createElement('div');
+        banner.style.cssText = 'background:#1a2a1a;border:1px solid #2a3a2a;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:13px;color:#5c5;text-align:left';
+        banner.innerHTML = '<strong>Matched to your other radios.</strong> Programming settings carried forward from your previous kit. Change below if needed.';
+        container.insertBefore(banner, container.firstChild);
+      }
+    }
+  }
 
   // ── Price Bar ─────────────────────────────────
   function updateScrollPriceBar() {
@@ -668,12 +682,11 @@
     var catMap = { vehicle: 'mobile', handheld: 'handheld', base: 'base', hf: 'hf', scanner: 'scanner' };
     kbsCurrentCategory = catMap[catKey] || catKey;
 
-    // Reset product selections
+    // Reset product selections (keep programmingChoice + location data to carry forward)
     selectedAntennas = new Set();
     selectedAddlAntennas = new Set();
     selectedBatteries = new Map();
     selectedAccessories = new Set();
-    programmingChoice = 'standard';
     adapterSuppressed = false;
     kbsRadioSelected = false;
     kbsKitQty = 1;
