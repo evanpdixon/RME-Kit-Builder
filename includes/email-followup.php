@@ -92,6 +92,64 @@ function rme_kb_get_category_label( $lead ) {
     return '';
 }
 
+/**
+ * Build a resume URL with flow state encoded in the hash fragment.
+ * PII fields (zips, notes) are base64-encoded. Email is excluded.
+ */
+function rme_kb_build_resume_url( $lead ) {
+    $base = home_url( '/kit-builder-v2/' );
+    $session = json_decode( $lead->session_data, true );
+    if ( ! $session ) return $base;
+
+    $params = array();
+
+    // Interview answers
+    if ( ! empty( $session['path'] ) )   $params['path']   = $session['path'];
+    if ( ! empty( $session['budget'] ) ) $params['budget'] = $session['budget'];
+    if ( ! empty( $session['reach'] ) )  $params['reach']  = implode( ',', (array) $session['reach'] );
+    if ( ! empty( $session['setup'] ) )  $params['setup']  = implode( ',', (array) $session['setup'] );
+    if ( ! empty( $session['usage'] ) )  $params['usage']  = implode( ',', (array) $session['usage'] );
+    if ( ! empty( $session['needs'] ) )  $params['needs']  = implode( ',', (array) $session['needs'] );
+
+    // Radio & category
+    if ( ! empty( $session['radio'] ) ) $params['radio'] = $session['radio'];
+    if ( ! empty( $session['category'] ) && $session['category'] !== 'handheld' ) $params['cat'] = $session['category'];
+
+    // Product selections
+    if ( ! empty( $session['antennas'] ) )    $params['ant']  = implode( ',', (array) $session['antennas'] );
+    if ( ! empty( $session['addlAntennas'] ) ) $params['ant2'] = implode( ',', (array) $session['addlAntennas'] );
+    if ( ! empty( $session['batteries'] ) ) {
+        $bat_parts = array();
+        foreach ( (array) $session['batteries'] as $key => $qty ) {
+            $bat_parts[] = $key . ':' . intval( $qty );
+        }
+        $params['bat'] = implode( ',', $bat_parts );
+    }
+    if ( ! empty( $session['accessories'] ) ) $params['acc'] = implode( ',', (array) $session['accessories'] );
+    if ( ! empty( $session['mount'] ) && $session['mount'] !== 'factory' ) $params['mount'] = $session['mount'];
+
+    // Programming
+    if ( ! empty( $session['programming'] ) && $session['programming'] !== 'standard' ) {
+        $params['prog'] = $session['programming'];
+    }
+    // PII: base64 encode
+    if ( ! empty( $session['zipPrimary'] ) )     $params['z1']  = base64_encode( $session['zipPrimary'] );
+    if ( ! empty( $session['zipsExtra'] ) )       $params['zx']  = base64_encode( implode( ',', (array) $session['zipsExtra'] ) );
+    if ( ! empty( $session['progNotes'] ) )       $params['pn']  = base64_encode( $session['progNotes'] );
+    if ( ! empty( $session['brandmeisterId'] ) )  $params['dmr'] = base64_encode( $session['brandmeisterId'] );
+
+    // Last active section
+    if ( ! empty( $session['lastSection'] ) ) $params['sec'] = $session['lastSection'];
+
+    if ( empty( $params ) ) return $base;
+
+    $hash_parts = array();
+    foreach ( $params as $k => $v ) {
+        $hash_parts[] = rawurlencode( $k ) . '=' . rawurlencode( $v );
+    }
+    return $base . '#' . implode( '&', $hash_parts );
+}
+
 function rme_kb_send_email( $to, $subject, $body ) {
     $headers = array(
         'From: ' . RME_KB_FROM_NAME . ' <' . RME_KB_FROM_EMAIL . '>',
@@ -338,7 +396,7 @@ function rme_kb_send_followups() {
 
     $config       = get_option( 'rme_kb_config', array() );
     $calendly     = $config['calendlyUrl'] ?? 'https://calendly.com/radiomadeeasy/radio-consultation';
-    $builder_url  = home_url( '/kit-builder/' );
+    $builder_url  = home_url( '/kit-builder-v2/' ); // default fallback
     $social_proof = rme_kb_get_social_proof();
 
     // ── Email 0: 1 hour — Confirmation ──────────────────────────────────
@@ -349,14 +407,15 @@ function rme_kb_send_followups() {
     ) );
 
     foreach ( $leads_1h as $lead ) {
-        $name     = $lead->name ?: 'there';
-        $category = rme_kb_get_category_label( $lead );
+        $name       = $lead->name ?: 'there';
+        $category   = rme_kb_get_category_label( $lead );
+        $resume_url = rme_kb_build_resume_url( $lead );
 
         $subject = "Hey $name, your radio kit is saved";
         $body = "Hey $name,\n\n"
             . "Just a quick note — I saved your radio kit progress on our site."
             . ( $category ? " You were building a $category setup." : "" )
-            . "\n\nWhenever you're ready, you can pick up right where you left off:\n$builder_url\n\n"
+            . "\n\nWhenever you're ready, you can pick up right where you left off:\n$resume_url\n\n"
             . "$social_proof\n\n"
             . "I'll check in tomorrow in case you have any questions. In the meantime, just reply here if anything comes to mind.\n\n"
             . "73,\nEvan Dixon\nRadio Made Easy"
@@ -375,8 +434,9 @@ function rme_kb_send_followups() {
     ) );
 
     foreach ( $leads_24h as $lead ) {
-        $name     = $lead->name ?: 'there';
-        $category = rme_kb_get_category_label( $lead );
+        $name       = $lead->name ?: 'there';
+        $category   = rme_kb_get_category_label( $lead );
+        $resume_url = rme_kb_build_resume_url( $lead );
 
         $subject = $category
             ? "Still deciding on your $category setup, $name?"
@@ -384,7 +444,7 @@ function rme_kb_send_followups() {
 
         $body = "Hey $name,\n\n"
             . "I noticed you were working on a " . ( $category ?: "radio" ) . " kit yesterday but didn't get a chance to finish.\n\n"
-            . "No pressure at all — picking the right radio setup takes some thought. Your progress is still saved:\n$builder_url\n\n"
+            . "No pressure at all — picking the right radio setup takes some thought. Your progress is still saved:\n$resume_url\n\n"
             . "$social_proof\n\n"
             . "If you're not sure which option is the best fit, just hit reply. I read every email and I'm happy to point you in the right direction.\n\n"
             . "73,\nEvan Dixon\nRadio Made Easy"
@@ -403,14 +463,15 @@ function rme_kb_send_followups() {
     ) );
 
     foreach ( $leads_72h as $lead ) {
-        $name = $lead->name ?: 'there';
+        $name       = $lead->name ?: 'there';
+        $resume_url = rme_kb_build_resume_url( $lead );
 
         $subject = "Need a hand picking the right radio, $name?";
         $body = "Hey $name,\n\n"
             . "I know picking the right radio setup can feel overwhelming — there are a lot of options out there. That's exactly why we built Radio Made Easy.\n\n"
             . "If you'd like some guidance, I'd love to hop on a quick call and help you figure out exactly what you need:\n$calendly\n\n"
             . "$social_proof\n\n"
-            . "Or if you'd rather keep exploring on your own:\n$builder_url\n\n"
+            . "Or if you'd rather keep exploring on your own:\n$resume_url\n\n"
             . "Either way, I'm here to help.\n\n"
             . "73,\nEvan Dixon\nRadio Made Easy"
             . rme_kb_email_footer( $lead->email );

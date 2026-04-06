@@ -853,6 +853,32 @@
   opacity: 1;
 }
 
+/* ── Resume Prompt Modal ─────────────── */
+.kbs-resume-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.85);
+  z-index: 99999;
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+}
+.kbs-resume-modal {
+  background: #111; border: 2px solid var(--rme-gold-dim, #3a3000);
+  border-radius: 12px; padding: 32px; max-width: 440px; width: 100%;
+  text-align: center;
+}
+.kbs-resume-modal h3 {
+  color: var(--rme-gold, #fdd351); font-size: 22px; margin: 0 0 8px;
+  font-family: var(--rme-font-heading); text-transform: uppercase; letter-spacing: 1px;
+}
+.kbs-resume-modal p { color: #ccc; font-size: 15px; margin: 0 0 16px; }
+.kbs-resume-summary {
+  background: #0a0a0a; border: 1px solid #2a2a2a; border-radius: 8px;
+  padding: 14px 18px; margin-bottom: 20px; color: var(--rme-gold, #fdd351);
+  font-size: 16px;
+}
+.kbs-resume-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.kbs-resume-actions .kb-btn { min-width: 160px; }
+
 /* ── Modal scroll lock ────────────────── */
 /* Prevent background scrolling when modal is open */
 .modal-overlay.open { overflow-y: auto; }

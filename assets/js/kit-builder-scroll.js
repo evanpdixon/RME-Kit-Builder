@@ -2323,6 +2323,342 @@
     return true;
   }
 
+  // ── URL State Encoding ────────────────────────
+  // Encodes flow state into URL hash so progress survives page reloads,
+  // can be shared, and can be embedded in follow-up emails.
+  // PII fields (zip, notes, Brandmeister ID) are base64-encoded.
+
+  function encodeB64(str) {
+    try { return btoa(unescape(encodeURIComponent(str || ''))); } catch(e) { return ''; }
+  }
+  function decodeB64(str) {
+    try { return decodeURIComponent(escape(atob(str || ''))); } catch(e) { return ''; }
+  }
+
+  function serializeFlowState() {
+    var state = {};
+    // Interview path & answers
+    if (kbsGuidedMode) state.path = 'guided';
+    if (kbsAnswers['budget']) state.budget = kbsAnswers['budget'];
+    if (kbsAnswers['reach'] && kbsAnswers['reach'].length) state.reach = kbsAnswers['reach'].join(',');
+    if (kbsAnswers['setup'] && kbsAnswers['setup'].length) state.setup = kbsAnswers['setup'].join(',');
+    if (kbsAnswers['usage'] && kbsAnswers['usage'].length) state.usage = kbsAnswers['usage'].join(',');
+    if (kbsAnswers['needs'] && kbsAnswers['needs'].length) state.needs = kbsAnswers['needs'].join(',');
+    // Radio & category
+    if (selectedRadioKey) state.radio = selectedRadioKey;
+    if (kbsCurrentCategory && kbsCurrentCategory !== 'handheld') state.cat = kbsCurrentCategory;
+    // Product selections
+    if (selectedAntennas.size) state.ant = [...selectedAntennas].join(',');
+    if (selectedAddlAntennas.size) state.ant2 = [...selectedAddlAntennas].join(',');
+    if (selectedBatteries.size) {
+      var batParts = [];
+      selectedBatteries.forEach(function(qty, key) { batParts.push(key + ':' + qty); });
+      state.bat = batParts.join(',');
+    }
+    if (selectedAccessories.size) state.acc = [...selectedAccessories].join(',');
+    if (kbsSelectedMount !== 'factory') state.mount = kbsSelectedMount;
+    // Programming
+    if (programmingChoice && programmingChoice !== 'standard') state.prog = programmingChoice;
+    // PII fields: base64 encode
+    if (progZipPrimary) state.z1 = encodeB64(progZipPrimary);
+    if (progZipsExtra && progZipsExtra.length) state.zx = encodeB64(progZipsExtra.join(','));
+    if (progNotes) state.pn = encodeB64(progNotes);
+    if (progBrandmeisterId) state.dmr = encodeB64(progBrandmeisterId);
+    if (!progUseShipping) state.ship = '0';
+    // Quantity
+    if (kbsKitQty > 1) state.qty = kbsKitQty;
+    // Current section (for resume position)
+    var activeSection = SECTIONS.find(function(s) { return sectionState[s] === 'active'; });
+    if (activeSection) state.sec = activeSection;
+    return state;
+  }
+
+  function stateToHash(state) {
+    var parts = [];
+    Object.keys(state).forEach(function(k) {
+      parts.push(encodeURIComponent(k) + '=' + encodeURIComponent(state[k]));
+    });
+    return parts.length ? '#' + parts.join('&') : '';
+  }
+
+  function hashToState(hash) {
+    if (!hash || hash.length < 2) return null;
+    var state = {};
+    hash.substring(1).split('&').forEach(function(pair) {
+      var parts = pair.split('=');
+      if (parts.length === 2) state[decodeURIComponent(parts[0])] = decodeURIComponent(parts[1]);
+    });
+    return Object.keys(state).length ? state : null;
+  }
+
+  // Update URL hash after each section completion (replaceState to avoid history spam)
+  function updateUrlState() {
+    var state = serializeFlowState();
+    var hash = stateToHash(state);
+    if (hash) {
+      history.replaceState(history.state, '', window.location.pathname + hash);
+    }
+  }
+
+  // Validate that a radio key still exists and is in stock
+  function validateRadioKey(key) {
+    var allLineups = [].concat(
+      typeof radioLineup !== 'undefined' ? radioLineup : [],
+      typeof mobileRadioLineup !== 'undefined' ? mobileRadioLineup : [],
+      typeof hfRadioLineup !== 'undefined' ? hfRadioLineup : [],
+      typeof scannerRadioLineup !== 'undefined' ? scannerRadioLineup : []
+    );
+    var radio = allLineups.find(function(r) { return r.key === key; });
+    return radio && !radio.outOfStock;
+  }
+
+  // Validate that product keys still exist in their respective arrays
+  function validateProductKeys(keys, productArrays) {
+    var allProducts = [].concat.apply([], productArrays);
+    return keys.filter(function(k) {
+      return allProducts.some(function(p) { return p.key === k && !p.outOfStock; });
+    });
+  }
+
+  // Restore flow state from URL hash
+  function restoreFromHash() {
+    var state = hashToState(window.location.hash);
+    if (!state || !state.radio) return false; // Need at least a radio to restore
+
+    // Validate the radio still exists
+    if (!validateRadioKey(state.radio)) {
+      console.warn('Kit Builder: saved radio "' + state.radio + '" no longer available');
+      return false;
+    }
+
+    return state; // Return parsed state for the prompt to use
+  }
+
+  // Apply a validated state to restore the flow
+  function applyRestoredState(state) {
+    // Restore interview answers
+    if (state.path === 'guided') kbsGuidedMode = true;
+    if (state.budget) kbsAnswers['budget'] = state.budget;
+    if (state.reach) kbsAnswers['reach'] = state.reach.split(',');
+    if (state.setup) kbsAnswers['setup'] = state.setup.split(',');
+    if (state.usage) kbsAnswers['usage'] = state.usage.split(',');
+    if (state.needs) kbsAnswers['needs'] = state.needs.split(',');
+
+    // Determine category
+    var cat = state.cat || 'handheld';
+    kbsCurrentCategory = cat;
+
+    // Set up radio
+    var radioKey = state.radio;
+    if (typeof loadRadioProducts === 'function') loadRadioProducts(radioKey);
+    selectedRadioKey = radioKey;
+    kbsRadioSelected = true;
+    var lineup = kbsGetRadioLineup();
+    var radio = lineup.find(function(r) { return r.key === radioKey; });
+    if (radio) BASE_PRICE = radio.price;
+
+    // Restore product selections
+    selectedAntennas = new Set();
+    selectedAddlAntennas = new Set();
+    selectedBatteries = new Map();
+    selectedAccessories = new Set();
+
+    if (state.ant) {
+      state.ant.split(',').forEach(function(k) { if (k) selectedAntennas.add(k); });
+    }
+    if (state.ant2) {
+      state.ant2.split(',').forEach(function(k) { if (k) selectedAddlAntennas.add(k); });
+    }
+    if (state.bat) {
+      state.bat.split(',').forEach(function(part) {
+        var kv = part.split(':');
+        if (kv[0]) selectedBatteries.set(kv[0], parseInt(kv[1]) || 1);
+      });
+    }
+    if (state.acc) {
+      state.acc.split(',').forEach(function(k) { if (k) selectedAccessories.add(k); });
+    }
+    kbsSelectedMount = state.mount || 'factory';
+
+    // Programming
+    programmingChoice = state.prog || 'standard';
+    if (state.z1) progZipPrimary = decodeB64(state.z1);
+    if (state.zx) progZipsExtra = decodeB64(state.zx).split(',').filter(Boolean);
+    if (state.pn) progNotes = decodeB64(state.pn);
+    if (state.dmr) progBrandmeisterId = decodeB64(state.dmr);
+    if (state.ship === '0') progUseShipping = false;
+
+    // Quantity
+    kbsKitQty = state.qty ? parseInt(state.qty) : 1;
+
+    // Track categories for multi-kit flow
+    var setupCats = state.setup ? state.setup.split(',') : (state.usage ? state.usage.split(',') : []);
+    if (setupCats.length) {
+      kbsAllCategories = CATEGORY_ORDER.filter(function(c) { return setupCats.includes(c); });
+    }
+
+    // Adapt sections for category
+    if (cat !== 'handheld') adaptSectionsForCategory(cat);
+
+    // Mark sections complete up to the resume point
+    var resumeSection = state.sec || 'review';
+    var resumeIdx = SECTIONS.indexOf(resumeSection);
+    if (resumeIdx < 0) resumeIdx = SECTIONS.indexOf('review');
+
+    // Complete all sections before the resume point
+    sectionState['email'] = 'complete';
+    sectionState['interview'] = 'complete';
+    sectionState['radio'] = 'complete';
+
+    for (var i = 3; i < resumeIdx; i++) {
+      var sec = SECTIONS[i];
+      if (sec === 'mounting' && cat !== 'mobile' && cat !== 'base') {
+        document.getElementById('sec-mounting').style.display = 'none';
+        sectionState['mounting'] = 'complete';
+        continue;
+      }
+      sectionState[sec] = 'complete';
+    }
+
+    // Set resume section as active
+    sectionState[resumeSection] = 'active';
+
+    // Render summaries for all completed sections
+    SECTIONS.forEach(function(s) {
+      if (sectionState[s] === 'complete') renderSummary(s);
+    });
+
+    // Render the active section's content
+    if (cat === 'handheld') {
+      if (resumeSection === 'antennas') renderAllAntennas();
+      if (resumeSection === 'battery') renderBatteryUpgrades();
+      if (resumeSection === 'accessories') renderAccessories();
+      if (resumeSection === 'programming') renderProgrammingWithCarryForward();
+      if (resumeSection === 'review') { renderReview(); fixReviewButtons(); }
+      if (resumeSection === 'quantity') { renderQuantityPicker(); enableCartBtn(); }
+    } else {
+      if (resumeSection === 'mounting') renderMountingOptions();
+      else if (resumeSection === 'review') renderNonHandheldReview();
+      else if (resumeSection === 'quantity') { renderQuantityPicker(); enableCartBtn(); }
+      else renderCategoryProducts(resumeSection, cat, radioKey);
+      if (resumeSection === 'programming') renderProgrammingWithCarryForward();
+    }
+
+    applyAllStates();
+    renumberSections();
+    updateScrollPriceBar();
+    updateConsultLinks();
+
+    // Scroll to the active section
+    setTimeout(function() { scrollToSection(resumeSection); }, 500);
+
+    return true;
+  }
+
+  // Show resume prompt when URL hash has saved state
+  function showResumePrompt(state) {
+    var lineup = kbsGetRadioLineup();
+    // Try all lineups to find the radio name
+    var allLineups = [].concat(
+      typeof radioLineup !== 'undefined' ? radioLineup : [],
+      typeof mobileRadioLineup !== 'undefined' ? mobileRadioLineup : [],
+      typeof hfRadioLineup !== 'undefined' ? hfRadioLineup : [],
+      typeof scannerRadioLineup !== 'undefined' ? scannerRadioLineup : []
+    );
+    var radio = allLineups.find(function(r) { return r.key === state.radio; });
+    var radioName = radio ? radio.name.replace(' Essentials Kit', '').replace(' Mobile Radio Kit', '') : state.radio;
+    var sectionLabel = state.sec ? state.sec.charAt(0).toUpperCase() + state.sec.slice(1) : 'Review';
+
+    var overlay = document.createElement('div');
+    overlay.className = 'kbs-resume-overlay';
+    overlay.innerHTML =
+      '<div class="kbs-resume-modal">' +
+        '<h3>Welcome Back</h3>' +
+        '<p>You have a saved kit in progress:</p>' +
+        '<div class="kbs-resume-summary">' +
+          '<strong>' + radioName + '</strong>' +
+          (selectedAntennas.size || selectedAccessories.size ? '<br><span style="color:#888;font-size:13px">' + (selectedAntennas.size + selectedAddlAntennas.size) + ' antenna(s), ' + selectedAccessories.size + ' accessory(ies)</span>' : '') +
+        '</div>' +
+        '<div class="kbs-resume-actions">' +
+          '<button class="kb-btn kb-btn--primary" id="kbs-resume-yes">Pick Up Where I Left Off</button>' +
+          '<button class="kb-btn kb-btn--secondary" id="kbs-resume-no">Start Fresh</button>' +
+        '</div>' +
+      '</div>';
+
+    document.body.appendChild(overlay);
+
+    document.getElementById('kbs-resume-yes').addEventListener('click', function() {
+      overlay.remove();
+      applyRestoredState(state);
+    });
+    document.getElementById('kbs-resume-no').addEventListener('click', function() {
+      overlay.remove();
+      // Clear the hash and start fresh
+      history.replaceState(null, '', window.location.pathname);
+    });
+  }
+
+  // Save session state to server for email resume links
+  function saveSessionToServer() {
+    var email = '';
+    try { email = (typeof kitSession !== 'undefined' && kitSession.email) ? kitSession.email : ''; } catch(e) {}
+    if (!email || typeof rmeKitBuilder === 'undefined') return;
+
+    var activeSection = SECTIONS.find(function(s) { return sectionState[s] === 'active'; });
+    var sessionData = {
+      path: kbsGuidedMode ? 'guided' : 'direct',
+      budget: kbsAnswers['budget'] || '',
+      reach: kbsAnswers['reach'] || [],
+      setup: kbsAnswers['setup'] || [],
+      usage: kbsAnswers['usage'] || [],
+      needs: kbsAnswers['needs'] || [],
+      radio: selectedRadioKey,
+      category: kbsCurrentCategory,
+      antennas: [...selectedAntennas],
+      addlAntennas: [...selectedAddlAntennas],
+      batteries: Object.fromEntries ? Object.fromEntries(selectedBatteries) : {},
+      accessories: [...selectedAccessories],
+      mount: kbsSelectedMount,
+      programming: programmingChoice,
+      zipPrimary: progZipPrimary,
+      zipsExtra: progZipsExtra,
+      progNotes: progNotes,
+      brandmeisterId: progBrandmeisterId,
+      lastSection: activeSection || ''
+    };
+
+    fetch(rmeKitBuilder.ajaxUrl + '?action=rme_kb_update_session', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: email,
+        lastStep: activeSection || '',
+        session: sessionData,
+        nonce: rmeKitBuilder.nonce
+      })
+    }).catch(function() {});
+  }
+
+  // Hook into section completion to update URL and save session
+  var _origCompleteForUrl = window.kbsCompleteSection;
+  window.kbsCompleteSection = function(name) {
+    _origCompleteForUrl(name);
+    // Update URL after state changes settle
+    setTimeout(function() { updateUrlState(); saveSessionToServer(); }, 100);
+  };
+
+  // Also update URL on radio selection and product changes
+  var _origSelectRadio = window.kbsSelectRadio;
+  window.kbsSelectRadio = function(key) {
+    _origSelectRadio(key);
+    setTimeout(updateUrlState, 100);
+  };
+  var _origSelectNH = window.kbsSelectNonHandheld;
+  window.kbsSelectNonHandheld = function(radioKey, category) {
+    _origSelectNH(radioKey, category);
+    setTimeout(updateUrlState, 100);
+  };
+
   // ── Init ──────────────────────────────────────
   document.addEventListener('DOMContentLoaded', function() {
     // Reset any leftover state from base JS
@@ -2331,8 +2667,31 @@
     attachHeaderClicks();
     updateConsultLinks();
     addKeyboardSupport();
+
+    // Check for saved state in URL hash
+    var savedState = restoreFromHash();
+    if (savedState) {
+      // Pre-apply state silently so the prompt can show radio name
+      // (actual restoration happens on user confirmation)
+      var tempLineups = [].concat(
+        typeof radioLineup !== 'undefined' ? radioLineup : [],
+        typeof mobileRadioLineup !== 'undefined' ? mobileRadioLineup : [],
+        typeof hfRadioLineup !== 'undefined' ? hfRadioLineup : [],
+        typeof scannerRadioLineup !== 'undefined' ? scannerRadioLineup : []
+      );
+      // Temporarily set selections so prompt summary is accurate
+      if (savedState.ant) savedState.ant.split(',').forEach(function(k) { selectedAntennas.add(k); });
+      if (savedState.ant2) savedState.ant2.split(',').forEach(function(k) { selectedAddlAntennas.add(k); });
+      if (savedState.acc) savedState.acc.split(',').forEach(function(k) { selectedAccessories.add(k); });
+      showResumePrompt(savedState);
+      // Reset temp state (will be properly applied if user confirms)
+      selectedAntennas = new Set();
+      selectedAddlAntennas = new Set();
+      selectedAccessories = new Set();
+    }
+
     // Set initial history state so first back press stays in builder
-    history.replaceState({ kbSection: 'email' }, '', '');
+    history.replaceState({ kbSection: 'email' }, '', window.location.pathname + window.location.hash);
     // Observe modals for scroll lock
     document.querySelectorAll('.modal-overlay').forEach(function(modal) {
       modalObserver.observe(modal, { attributes: true, attributeFilter: ['class'] });
