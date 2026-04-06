@@ -1,0 +1,234 @@
+[
+  {
+    "severity": "medium",
+    "title": "Jargon in antenna section (desktop): BNC, SMA",
+    "where": "Antennas",
+    "type": "ux",
+    "detail": "Technical terms found: BNC, SMA. A first-time user may not understand these.",
+    "screenshot": "docs/review3-screenshots/desktop/003-d-hh-uv5r-antennas.png"
+  },
+  {
+    "severity": "medium",
+    "title": "Programming mentions \"license\" (desktop)",
+    "where": "Programming",
+    "type": "ux",
+    "detail": "The word \"license\" may confuse unlicensed beginners.",
+    "screenshot": "docs/review3-screenshots/desktop/030-d-hh-dmr-6x2-programming.png"
+  },
+  {
+    "severity": "medium",
+    "title": "Jargon in recommendations (desktop): Part 90, TNC, APRS, Winlink, DMR",
+    "where": "Radio cards",
+    "type": "ux",
+    "detail": "Feature lists contain: Part 90, TNC, APRS, Winlink, DMR. First-time users won't understand these.",
+    "screenshot": "docs/review3-screenshots/desktop/048-g-mid-local-recommendation.png"
+  },
+  {
+    "severity": "medium",
+    "title": "Jargon in antenna section (desktop): GMRS, FRS, MURS, NMO, SO-239, PL-259",
+    "where": "Antennas",
+    "type": "ux",
+    "detail": "Technical terms found: GMRS, FRS, MURS, NMO, SO-239, PL-259. A first-time user may not understand these.",
+    "screenshot": "docs/review3-screenshots/desktop/066-d-vehicle-antennas.png"
+  },
+  {
+    "severity": "medium",
+    "title": "Jargon in antenna section (desktop): GMRS, FRS, MURS, BNC, SO-239",
+    "where": "Antennas",
+    "type": "ux",
+    "detail": "Technical terms found: GMRS, FRS, MURS, BNC, SO-239. A first-time user may not understand these.",
+    "screenshot": "docs/review3-screenshots/desktop/080-d-base-antennas.png"
+  },
+  {
+    "severity": "medium",
+    "title": "Jargon in antenna section (desktop): BNC",
+    "where": "Antennas",
+    "type": "ux",
+    "detail": "Technical terms found: BNC. A first-time user may not understand these.",
+    "screenshot": "docs/review3-screenshots/desktop/100-d-scanner-antennas.png"
+  },
+  {
+    "severity": "medium",
+    "title": "No next-category prompt (desktop)",
+    "where": "Multi-category",
+    "type": "ux",
+    "detail": "After adding first kit, should prompt for next category.",
+    "screenshot": "docs/review3-screenshots/desktop/117-e-multicat-after-cart.png"
+  },
+  {
+    "severity": "medium",
+    "title": "Jargon in antenna section (mobile): BNC, SMA",
+    "where": "Antennas",
+    "type": "ux",
+    "detail": "Technical terms found: BNC, SMA. A first-time user may not understand these.",
+    "screenshot": "docs/review3-screenshots/mobile/122-d-hh-uv5r-antennas.png"
+  },
+  {
+    "severity": "medium",
+    "title": "Programming mentions \"license\" (mobile)",
+    "where": "Programming",
+    "type": "ux",
+    "detail": "The word \"license\" may confuse unlicensed beginners.",
+    "screenshot": "docs/review3-screenshots/mobile/149-d-hh-dmr-6x2-programming.png"
+  },
+  {
+    "severity": "medium",
+    "title": "Jargon in recommendations (mobile): Part 90, TNC, APRS, Winlink, DMR",
+    "where": "Radio cards",
+    "type": "ux",
+    "detail": "Feature lists contain: Part 90, TNC, APRS, Winlink, DMR. First-time users won't understand these.",
+    "screenshot": "docs/review3-screenshots/mobile/167-g-mid-local-recommendation.png"
+  },
+  {
+    "severity": "medium",
+    "title": "Jargon in antenna section (mobile): GMRS, FRS, MURS, NMO, SO-239, PL-259",
+    "where": "Antennas",
+    "type": "ux",
+    "detail": "Technical terms found: GMRS, FRS, MURS, NMO, SO-239, PL-259. A first-time user may not understand these.",
+    "screenshot": "docs/review3-screenshots/mobile/185-d-vehicle-antennas.png"
+  },
+  {
+    "severity": "medium",
+    "title": "Jargon in antenna section (mobile): GMRS, FRS, MURS, BNC, SO-239",
+    "where": "Antennas",
+    "type": "ux",
+    "detail": "Technical terms found: GMRS, FRS, MURS, BNC, SO-239. A first-time user may not understand these.",
+    "screenshot": "docs/review3-screenshots/mobile/199-d-base-antennas.png"
+  },
+  {
+    "severity": "medium",
+    "title": "Jargon in antenna section (mobile): BNC",
+    "where": "Antennas",
+    "type": "ux",
+    "detail": "Technical terms found: BNC. A first-time user may not understand these.",
+    "screenshot": "docs/review3-screenshots/mobile/219-d-scanner-antennas.png"
+  },
+  {
+    "severity": "medium",
+    "title": "No next-category prompt (mobile)",
+    "where": "Multi-category",
+    "type": "ux",
+    "detail": "After adding first kit, should prompt for next category.",
+    "screenshot": "docs/review3-screenshots/mobile/236-e-multicat-after-cart.png"
+  },
+  {
+    "severity": "low",
+    "title": "Jargon in accessories (desktop): GMRS, APRS, SO-239",
+    "where": "Accessories",
+    "type": "ux",
+    "detail": "Terms: GMRS, APRS, SO-239",
+    "screenshot": "docs/review3-screenshots/desktop/005-d-hh-uv5r-accessories.png"
+  },
+  {
+    "severity": "low",
+    "title": "Jargon in accessories (desktop): GMRS, SO-239",
+    "where": "Accessories",
+    "type": "ux",
+    "detail": "Terms: GMRS, SO-239",
+    "screenshot": "docs/review3-screenshots/desktop/013-d-hh-uv5r-mini-accessories.png"
+  },
+  {
+    "severity": "low",
+    "title": "Jargon in accessories (desktop): GMRS, DMR, SO-239",
+    "where": "Accessories",
+    "type": "ux",
+    "detail": "Terms: GMRS, DMR, SO-239",
+    "screenshot": "docs/review3-screenshots/desktop/029-d-hh-dmr-6x2-accessories.png"
+  },
+  {
+    "severity": "low",
+    "title": "Jargon in accessories (desktop): SO-239, PL-259",
+    "where": "Accessories",
+    "type": "ux",
+    "detail": "Terms: SO-239, PL-259",
+    "screenshot": "docs/review3-screenshots/desktop/068-d-vehicle-accessories.png"
+  },
+  {
+    "severity": "low",
+    "title": "Jargon in accessories (desktop): Winlink, SO-239, PL-259",
+    "where": "Accessories",
+    "type": "ux",
+    "detail": "Terms: Winlink, SO-239, PL-259",
+    "screenshot": "docs/review3-screenshots/desktop/089-d-hf-accessories.png"
+  },
+  {
+    "severity": "low",
+    "title": "Jargon in accessories (mobile): GMRS, APRS, SO-239",
+    "where": "Accessories",
+    "type": "ux",
+    "detail": "Terms: GMRS, APRS, SO-239",
+    "screenshot": "docs/review3-screenshots/mobile/124-d-hh-uv5r-accessories.png"
+  },
+  {
+    "severity": "low",
+    "title": "Jargon in accessories (mobile): GMRS, SO-239",
+    "where": "Accessories",
+    "type": "ux",
+    "detail": "Terms: GMRS, SO-239",
+    "screenshot": "docs/review3-screenshots/mobile/132-d-hh-uv5r-mini-accessories.png"
+  },
+  {
+    "severity": "low",
+    "title": "Jargon in accessories (mobile): GMRS, DMR, SO-239",
+    "where": "Accessories",
+    "type": "ux",
+    "detail": "Terms: GMRS, DMR, SO-239",
+    "screenshot": "docs/review3-screenshots/mobile/148-d-hh-dmr-6x2-accessories.png"
+  },
+  {
+    "severity": "low",
+    "title": "Jargon in accessories (mobile): SO-239, PL-259",
+    "where": "Accessories",
+    "type": "ux",
+    "detail": "Terms: SO-239, PL-259",
+    "screenshot": "docs/review3-screenshots/mobile/187-d-vehicle-accessories.png"
+  },
+  {
+    "severity": "low",
+    "title": "Jargon in accessories (mobile): Winlink, SO-239, PL-259",
+    "where": "Accessories",
+    "type": "ux",
+    "detail": "Terms: Winlink, SO-239, PL-259",
+    "screenshot": "docs/review3-screenshots/mobile/208-d-hf-accessories.png"
+  },
+  {
+    "severity": "low",
+    "title": "Large empty space below content (1004.1875px) (mobile)",
+    "where": "Layout",
+    "type": "ux",
+    "detail": "Hidden locked sections leave empty space before footer.",
+    "screenshot": "docs/review3-screenshots/mobile/239-e-sticky-bottom.png"
+  },
+  {
+    "severity": "high",
+    "title": "No recommendations for high/far (desktop)",
+    "where": "Recommendation",
+    "type": "bug",
+    "detail": "Zero radio cards shown.",
+    "screenshot": "docs/review3-screenshots/desktop/055-g-high-far-recommendation.png"
+  },
+  {
+    "severity": "high",
+    "title": "No recommendations for low/listen (desktop)",
+    "where": "Recommendation",
+    "type": "bug",
+    "detail": "Zero radio cards shown.",
+    "screenshot": "docs/review3-screenshots/desktop/063-g-low-listen-recommendation.png"
+  },
+  {
+    "severity": "high",
+    "title": "No recommendations for high/far (mobile)",
+    "where": "Recommendation",
+    "type": "bug",
+    "detail": "Zero radio cards shown.",
+    "screenshot": "docs/review3-screenshots/mobile/174-g-high-far-recommendation.png"
+  },
+  {
+    "severity": "high",
+    "title": "No recommendations for low/listen (mobile)",
+    "where": "Recommendation",
+    "type": "bug",
+    "detail": "Zero radio cards shown.",
+    "screenshot": "docs/review3-screenshots/mobile/182-g-low-listen-recommendation.png"
+  }
+]

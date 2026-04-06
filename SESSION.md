@@ -1,18 +1,27 @@
-# Session: V2 Kit Builder Bug Fixes and Audit
-Started: 2026-04-05
-Status: completed
+# Session: V2 Kit Builder Comprehensive Review #3
+Started: 2026-04-06
+Status: in-progress
 
 ## Goal
-Fix user-reported bugs in V2 kit builder scroll flow and update documentation.
+Full UX/bug review of kit-builder-v2 from a first-time user perspective. Test every option combination in the selection tree across all 5 categories on desktop (1280px) and mobile (375px). Deliver structured report as kit-builder-v2-review-3.md.
 
-## Completed
-- [x] Price bar: cross-cat 5% discount now shown as labeled line item instead of hiding in addons total
-- [x] Cart navigation: kbsKitInCart flag prevents duplicate adds; shows "Kit Already in Cart" with Go to Cart / Make Changes on back-nav
-- [x] Programming carry-forward: 2nd+ category kits inherit programming choice + location data with green banner
-- [x] Updated CLAUDE.md with full V2 architecture docs
-- [x] Deployed all changes to staging12
+## Source
+User request - comprehensive audit covering all paths, edge cases, screenshots at each issue.
+
+## Plan
+- [ ] Read current JS source to map all option paths <-- CURRENT
+- [ ] Build Puppeteer test script for all 5 categories (desktop)
+- [ ] Build Puppeteer test script for all 5 categories (mobile)
+- [ ] Run desktop tests, capture screenshots
+- [ ] Run mobile tests, capture screenshots
+- [ ] Test edge cases (skip optional steps, back navigation, re-edit sections)
+- [ ] Compile findings into kit-builder-v2-review-3.md
+- [ ] Commit and push
 
 ## Key Decisions
-- Price bar shows discount as separate "-$X multi-kit discount" text rather than adjusting radio/addon display prices
-- "Kit Already in Cart" UI gives user clear Go to Cart vs Make Changes choice rather than silently blocking
-- Programming carry-forward preserves all state (choice, locations, DMR ID, itinerant license) rather than just the choice type
+- Using Puppeteer (already installed) instead of Playwright
+- Testing all 5 categories: handheld, vehicle/mobile, base station, HF, scanner
+- Clearing cookies/cart between runs
+
+## Resume Instructions
+Read this file and the review-3.md report for current state.
