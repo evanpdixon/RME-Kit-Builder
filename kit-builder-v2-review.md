@@ -8,6 +8,39 @@
 
 ---
 
+## Screenshot Index
+
+### Desktop (1280x800) - Guided Flow
+| Step | Screenshot |
+|------|-----------|
+| Initial state | ![](docs/review-screenshots-v2/desktop/01-initial-state.png) |
+| Path choice | ![](docs/review-screenshots-v2/desktop/02-path-choice.png) |
+| Q1: Budget | ![](docs/review-screenshots-v2/desktop/04-q1-midrange-selected.png) |
+| Q2: Reach | ![](docs/review-screenshots-v2/desktop/06-q2-local-selected.png) |
+| Q3: Setup type | ![](docs/review-screenshots-v2/desktop/08-q3-handheld-selected.png) |
+| Q4: Features | ![](docs/review-screenshots-v2/desktop/10-q4-features-selected.png) |
+| Recommendation | ![](docs/review-screenshots-v2/desktop/11-recommendation-results.png) |
+| Antennas | ![](docs/review-screenshots-v2/desktop/14-antennas-top.png) |
+| Antenna selected | ![](docs/review-screenshots-v2/desktop/16-antenna-selected.png) |
+| Battery | ![](docs/review-screenshots-v2/desktop/17-battery-section.png) |
+| Accessories | ![](docs/review-screenshots-v2/desktop/18-accessories-section.png) |
+| Programming | ![](docs/review-screenshots-v2/desktop/20-programming-section.png) |
+| Review | ![](docs/review-screenshots-v2/desktop/22-review-section.png) |
+| Quantity | ![](docs/review-screenshots-v2/desktop/24-quantity-section.png) |
+
+### Mobile (375x812) - Direct Flow
+| Step | Screenshot |
+|------|-----------|
+| Category selection | ![](docs/review-screenshots-v2/mobile/05-category-selection.png) |
+| Radio grid (image-on-top) | ![](docs/review-screenshots-v2/mobile/09-radio-grid-top.png) |
+| Antennas | ![](docs/review-screenshots-v2/mobile/13-antennas-top.png) |
+| Battery | ![](docs/review-screenshots-v2/mobile/18-battery-top.png) |
+| Programming | ![](docs/review-screenshots-v2/mobile/22-programming-top.png) |
+| Review | ![](docs/review-screenshots-v2/mobile/26-review-top.png) |
+| Cart result | ![](docs/review-screenshots-v2/mobile/31-quantity-top.png) |
+
+---
+
 ## Previous Issues - Resolved
 
 The following items from the first audit have been fixed and verified:
@@ -39,21 +72,31 @@ The following items from the first audit have been fixed and verified:
 ### High Priority
 
 #### 1. Setup type answer STILL blank in guided recommendation summary
-- **Where:** Interview results page after guided quiz (desktop screenshot 11)
+- **Where:** Interview results page after guided quiz
 - **Type:** Bug
 - **Detail:** The answered-question summary shows "What kind of radio are you looking for? Mid-range" and "What do you need? Waterproof / water resistant, GPS location sharing" correctly, but the "What type of setup do you need?" line is missing entirely. The `renderAnsweredQuestions()` helper skips it because the array answer is empty (the pre-select set `['handheld']` but the Playwright click toggled it off, leaving `[]`). The `resolveAnswerText` fallback works but the `if (Array.isArray(answer) && answer.length === 0) return;` guard skips the empty array before it gets there. The real fix needs to be in the pre-select toggle behavior: if a user clicks Next without changing the pre-selected option, it should keep the pre-selection.
 - **Root cause:** `preSelectSetup()` sets `kbsAnswers['setup'] = ['handheld']`. The UI renders with Handheld pre-selected. If the user clicks Handheld (to "confirm" it), `kbsAnswer()` toggles it OFF since it was already in the array. User must click it again to re-enable. This is unintuitive for pre-selected multi-select options.
 
+![Setup answer missing from results summary](docs/review-screenshots-v2/desktop/11-recommendation-results.png)
+
 #### 2. Dual "Add to Cart" and "Continue to Checkout" buttons on review
-- **Where:** Review section (desktop screenshot 22, mobile screenshot 26-29)
+- **Where:** Review section
 - **Type:** UX concern
 - **Detail:** The review section shows an "ADD TO CART" button (from `renderReview()` in kit-builder.js) AND a "CONTINUE TO CHECKOUT" button (from the section actions in the PHP template). These do different things: "Add to Cart" calls `kbsAddToCart()` directly, while "Continue to Checkout" advances to the quantity section. Having two prominent gold buttons with similar names is confusing. The user doesn't know which one to click.
 - **Suggestion:** Remove the "ADD TO CART" button from the review section's rendered content. The flow should be: Review -> Continue to Checkout -> Quantity -> Add to Cart. Only one path.
+
+Desktop:
+![Dual buttons on desktop review](docs/review-screenshots-v2/desktop/22-review-section.png)
+
+Mobile:
+![Dual buttons on mobile review](docs/review-screenshots-v2/mobile/26-review-top.png)
 
 #### 3. Price bar not fixed to viewport on long pages
 - **Where:** Desktop, scrolled through accessories/antennas sections
 - **Type:** Bug
 - **Detail:** The price bar appears at the page bottom rather than fixed to the viewport bottom on full-page screenshots. When viewing the accessories or antennas sections (which are tall), the price bar scrolls out of view. It should remain fixed at the bottom of the viewport at all times. The CSS has `position: fixed` but something (possibly WordPress theme CSS) may be overriding it.
+
+![Price bar position on full page](docs/review-screenshots-v2/desktop/14-antennas-top.png)
 
 ---
 
@@ -63,17 +106,22 @@ The following items from the first audit have been fixed and verified:
 - **Where:** Sticky price bar, between "TOTAL" and right edge
 - **Type:** Design issue
 - **Detail:** The consultation link ("Book a consultation") in the price bar is smaller now but still takes up space in the bar. On desktop it shows as underlined text next to the price. Consider moving it entirely out of the price bar into a floating help button or only showing it in the section actions.
-- **Screenshot:** Desktop screenshot 22 (review section)
+
+![Consult link in price bar](docs/review-screenshots-v2/desktop/22-review-section.png)
 
 #### 5. "NOAA weather alerts" still in radio feature lists
 - **Where:** Recommendation result cards, radio feature checklists
 - **Type:** Consistency
 - **Detail:** While the category labels and programming section no longer reference GMRS/FRS/NOAA, the radio feature lists on the recommendation cards still mention "Automatic NOAA weather alerts" and "FCC Part 90 commercial certified". These are product specs and arguably appropriate, but inconsistent with the "no acronyms" direction elsewhere in the flow.
 
+![Feature list with NOAA/FCC](docs/review-screenshots-v2/desktop/12-recommendation-cards.png)
+
 #### 6. Quantity section volume discount text partially hidden
-- **Where:** Quantity section, below the +/- picker (desktop screenshot 24)
+- **Where:** Quantity section, below the +/- picker
 - **Type:** Design issue
 - **Detail:** The "Add 1 more for 5% off (Team Pack)" text is partially obscured by the sticky action buttons which now have a gradient background. The gradient covers the nudge text. The sticky Continue buttons overlap with content in this section.
+
+![Volume text covered by gradient](docs/review-screenshots-v2/desktop/24-quantity-section.png)
 
 #### 7. Sticky action buttons gradient looks harsh
 - **Where:** All product sections (antennas, battery, accessories, programming)
@@ -81,14 +129,18 @@ The following items from the first audit have been fixed and verified:
 - **Detail:** The sticky Back/Continue buttons now have a `linear-gradient(transparent 0%, #000 20%)` background which creates a sharp black band above the buttons. This looks unpolished and abrupt. A more gradual gradient (transparent to #000 over more distance) would look better. Also, the gradient should be deeper (more padding-top) to avoid cutting off content just above the buttons.
 
 #### 8. Mobile: large empty space after last section before footer
-- **Where:** Mobile, after programming section or review section (screenshot 25)
+- **Where:** Mobile, after programming section or review section
 - **Type:** Design issue
 - **Detail:** On mobile, after the last active section and before the footer, there's a large empty dark void. This is because the locked sections are now hidden (taking zero space) but the container still has padding or min-height. The footer appears much further down than expected.
+
+![Empty space on mobile](docs/review-screenshots-v2/mobile/25-self-prog-selected.png)
 
 #### 9. Radio feature lists use technical terms
 - **Where:** Recommendation cards on results page
 - **Type:** UX concern
 - **Detail:** The radio feature checklists include terms a newcomer wouldn't understand: "GPS + APRS built in", "Bluetooth TNC for APRS/Winlink", "FCC Part 90 commercial certified", "DMR digital + analog", "NXDN digital modes", "Crossband repeat". A first-time user doesn't know what APRS, TNC, Winlink, DMR, or NXDN are. Consider translating these into benefits: "GPS + APRS built in" -> "GPS tracking and position sharing", "DMR digital + analog" -> "Digital and analog modes for wider compatibility".
+
+![Technical terms in feature list](docs/review-screenshots-v2/desktop/12-recommendation-cards.png)
 
 ---
 
@@ -98,6 +150,8 @@ The following items from the first audit have been fixed and verified:
 - **Where:** Mobile sticky price bar, right side
 - **Type:** Design issue
 - **Detail:** On mobile, the price bar shows a pink phone emoji on the right side (the consultation link with text hidden). Without label text, most users won't know this is a link to book a consultation. It looks like a decorative element.
+
+![Phone icon on mobile price bar](docs/review-screenshots-v2/mobile/13-antennas-top.png)
 
 #### 11. Completed section checkmarks vary in color
 - **Where:** Completed section headers
@@ -114,10 +168,14 @@ The following items from the first audit have been fixed and verified:
 - **Type:** Design issue
 - **Detail:** The factory antenna card still shows a gray SVG placeholder icon rather than a real photo. All upgrade antennas have photos. A real photo would make the included item feel more valuable.
 
+![Factory antenna placeholder](docs/review-screenshots-v2/mobile/13-antennas-top.png)
+
 #### 14. Included battery card still has no product image
 - **Where:** Battery section, factory battery card
 - **Type:** Design issue
 - **Detail:** Same as antenna issue. The included battery shows only text, while upgrade batteries have product photos.
+
+![Battery with no image](docs/review-screenshots-v2/mobile/18-battery-top.png)
 
 ---
 
