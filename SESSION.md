@@ -1,26 +1,18 @@
-# Session: Fix cart navigation and price bar bugs
+# Session: V2 Kit Builder Bug Fixes and Audit
 Started: 2026-04-05
-Status: in-progress
+Status: completed
 
 ## Goal
-Fix user-reported bugs in V2 kit builder scroll flow:
-1. After adding to cart, going back leaves user stuck with no way to proceed without re-adding
-2. RAM Tough Wedge shows $139 on card but price bar only adds $123 (cross-cat discount hidden in addons)
+Fix user-reported bugs in V2 kit builder scroll flow and update documentation.
 
-## Plan
-- [x] Investigate "go back after cart" bug
-- [x] Investigate price bar discrepancy
-- [ ] Fix price bar cross-cat discount display <-- CURRENT
-- [ ] Fix cart navigation with kit-in-cart tracking
-- [ ] Deploy to staging12
-- [ ] Verify fixes
+## Completed
+- [x] Price bar: cross-cat 5% discount now shown as labeled line item instead of hiding in addons total
+- [x] Cart navigation: kbsKitInCart flag prevents duplicate adds; shows "Kit Already in Cart" with Go to Cart / Make Changes on back-nav
+- [x] Programming carry-forward: 2nd+ category kits inherit programming choice + location data with green banner
+- [x] Updated CLAUDE.md with full V2 architecture docs
+- [x] Deployed all changes to staging12
 
 ## Key Decisions
-- Price bar: cross-cat 5% discount ($16 on $329) subtracted from total before computing addonsPrice, making mount appear +$123 not +$139. Fix: apply discount to radio price display.
-- Cart nav: add kbsKitInCart flag, show "already in cart" UI on re-visit to quantity section.
-
-## Resume Instructions
-- Working in kit-builder-scroll.js
-- Two bugs: updateScrollPriceBar() lines 440-461 and quantity section flow
-- Branch: single-page-flow
-- Deploy: git pull on staging12 + cache flush
+- Price bar shows discount as separate "-$X multi-kit discount" text rather than adjusting radio/addon display prices
+- "Kit Already in Cart" UI gives user clear Go to Cart vs Make Changes choice rather than silently blocking
+- Programming carry-forward preserves all state (choice, locations, DMR ID, itinerant license) rather than just the choice type
