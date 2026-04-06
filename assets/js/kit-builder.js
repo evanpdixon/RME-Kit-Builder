@@ -59,54 +59,11 @@ const ICO = {
 };
 
 // ══════════════════════════════════════════════════════
-// ── DEBUG PANEL ──
-// ══════════════════════════════════════════════════════
-
-const _debugLog = [];
-function rmeDebugCopy() {
-  const state = _debugGetState();
-  const text = '=== Kit Builder Debug ===\n' + state + '\n\n=== Log ===\n' + _debugLog.map(e => `${e.ts} ${e.action} ${e.detail || ''}`).join('\n');
-  navigator.clipboard.writeText(text).then(() => {
-    document.querySelectorAll('#rme-kb-debug [onclick*="rmeDebugCopy"]').forEach(btn => {
-      const orig = btn.textContent;
-      btn.textContent = '✓ COPIED!';
-      btn.style.background = '#2a4a2a';
-      btn.style.color = '#4caf50';
-      btn.style.transition = 'all 0.2s';
-      setTimeout(() => { btn.textContent = orig; btn.style.background = ''; btn.style.color = ''; }, 1500);
-    });
-  });
-}
-function _debugGetState() {
-  const phases = ['needs-phase','selector-phase','wizard-phase','mobile-phase','base-phase','hf-phase'];
-  const visible = phases.filter(id => { const el = document.getElementById(id); return el && el.style.display !== 'none'; });
-  const kits = kitSession.kits.length;
-  const idx = kitSession.currentKitIndex;
-  const cat = kitSession.kits[idx] ? kitSession.kits[idx].category : 'none';
-  const status = kitSession.kits[idx] ? kitSession.kits[idx].status : 'none';
-  const radioKey = kitSession.kits[idx] ? kitSession.kits[idx].radioKey : selectedRadioKey;
-  const allRadios = [...(typeof radioLineup !== 'undefined' ? radioLineup : []), ...(typeof mobileRadioLineup !== 'undefined' ? mobileRadioLineup : []), ...(typeof hfRadioLineup !== 'undefined' ? hfRadioLineup : [])];
-  const radioName = allRadios.find(r => r.key === radioKey);
-  return `Phase: ${visible.join(', ') || 'none'} | Kits: ${kits} | Current: #${idx} (${cat}) ${status} | Radio: ${radioName ? radioName.name : radioKey || 'none'} | Prefs: ${kitSession.preferences.join(', ') || 'none'}`;
-}
-function _debugUpdateState() {
-  const el = document.getElementById('rme-kb-debug-state');
-  if (el) el.textContent = _debugGetState();
-}
-function rmeDebug(action, detail) {
-  const ts = new Date().toLocaleTimeString();
-  _debugLog.push({ ts, action, detail });
-  const panel = document.getElementById('rme-kb-debug');
-  const content = document.getElementById('rme-kb-debug-content');
-  if (panel && content) {
-    panel.style.display = 'block';
-    content.innerHTML = _debugLog.map(e =>
-      `<div><span style="color:#666">${e.ts}</span> <span style="color:#4caf50">${e.action}</span> ${e.detail || ''}</div>`
-    ).join('');
-    content.scrollTop = content.scrollHeight;
-  }
-  _debugUpdateState();
-}
+// ── DEBUG ──
+// Flow state is now tracked in the URL hash (see kit-builder-scroll.js).
+// rmeDebug() kept as a no-op stub since it's called throughout.
+function rmeDebug() {}
+function rmeDebugCopy() {}
 
 // ══════════════════════════════════════════════════════
 // ── NEEDS ASSESSMENT + MULTI-KIT SESSION ──
