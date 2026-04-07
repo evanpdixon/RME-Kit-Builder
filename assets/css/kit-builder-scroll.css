@@ -252,9 +252,9 @@
 }
 .kb-section__actions .kbs-consult-escape {
   flex-basis: 100%;
-  font-size: 12px;
-  opacity: 0.6;
-  margin-top: 4px;
+  font-size: 13px;
+  opacity: 0.8;
+  margin-top: 8px;
 }
 
 /* ── Product List (T-Rex Arms style: image left, info right, desc below) ── */
@@ -341,12 +341,13 @@
 
 /* ── Consultation Escape Link ──────────── */
 .kbs-consult-escape {
-  color: var(--rme-gold-dim); font-size: 13px; text-decoration: none;
-  white-space: nowrap; transition: color 0.2s;
-  display: inline-block; padding: 11px 0; min-height: 44px; line-height: 22px;
+  color: #999; font-size: 13px; text-decoration: none;
+  white-space: normal; text-align: center;
+  transition: color 0.3s ease, opacity 0.3s ease;
+  display: inline-block; padding: 11px 0; min-height: 44px; line-height: 1.5;
 }
 .kbs-consult-escape:hover {
-  color: var(--rme-gold); text-decoration: underline;
+  color: var(--rme-gold);
 }
 
 /* ── Buttons ───────────────────────────── */
