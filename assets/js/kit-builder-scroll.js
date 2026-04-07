@@ -637,7 +637,17 @@
     return items;
   }
 
+  var _kbsCartBusy = false;
   window.kbsAddToCart = function() {
+    if (_kbsCartBusy) return;
+    _kbsCartBusy = true;
+    // Disable all cart buttons and show loading state
+    document.querySelectorAll('.kb-btn--cart').forEach(function(btn) {
+      btn.disabled = true;
+      btn._origText = btn.textContent;
+      btn.textContent = 'Adding to cart\u2026';
+      btn.style.opacity = '0.6';
+    });
     var items;
     if (kbsCurrentCategory === 'handheld') {
       if (typeof collectHandheldCartItems !== 'function') return;
@@ -674,10 +684,17 @@
     if (remaining.length > 0) {
       // Suppress the cart redirect: add items via AJAX but stay on page
       window._kbsSuppressCartRedirect = true;
-      rmeKbAddToCart(items, kitName);
-      // The redirect is blocked by our patch; show prompt after AJAX completes
+      rmeKbAddToCart(items, kitName).then(function() {
+        _kbsCartBusy = false;
+        document.querySelectorAll('.kb-btn--cart').forEach(function(btn) {
+          btn.disabled = false;
+          if (btn._origText) btn.textContent = btn._origText;
+          btn.style.opacity = '';
+        });
+      });
     } else {
       rmeKbAddToCart(items, kitName);
+      // Single kit: button stays disabled — page redirects to cart
     }
   };
 
