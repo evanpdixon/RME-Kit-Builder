@@ -471,7 +471,10 @@
 
     const lineup = kbsGetRadioLineup();
     const r = lineup.find(x => x.key === selectedRadioKey) || radioLineup.find(x => x.key === selectedRadioKey);
-    document.getElementById('kbs-radio-name').textContent = r ? r.name.replace(' Essentials Kit', '').replace(' Mobile Radio Kit', '') : '';
+    var catLabels = { handheld: 'Handheld', mobile: 'Vehicle Mobile', base: 'Base Station', hf: 'HF', scanner: 'Scanner' };
+    var catLabel = catLabels[kbsCurrentCategory] || '';
+    var radioName = r ? r.name.replace(' Essentials Kit', '').replace(' Mobile Radio Kit', '') : '';
+    document.getElementById('kbs-radio-name').textContent = catLabel ? catLabel + ' — ' + radioName : radioName;
 
     // Calculate total using existing calcTotal if available, otherwise manual
     let total = r ? r.price : 0;
