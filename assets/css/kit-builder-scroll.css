@@ -228,14 +228,21 @@
 .kb-section__actions {
   margin-top: 20px;
   display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
   position: sticky;
   bottom: 70px; /* above sticky price bar */
   background: linear-gradient(to bottom, transparent 0%, #000 50%);
   padding: 40px 0 8px;
   z-index: 5;
+}
+.kb-section__actions .kb-btn--primary {
+  order: -1; /* primary button always on top */
+}
+.kb-section__actions .kb-btn--secondary {
+  font-size: 0.85rem;
+  padding: 10px 28px;
 }
 #sec-quantity .kb-section__actions {
   position: static;
