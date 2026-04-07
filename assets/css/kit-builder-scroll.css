@@ -233,7 +233,7 @@
   gap: 10px;
   position: sticky;
   bottom: 70px; /* above sticky price bar */
-  background: linear-gradient(to bottom, transparent 0%, #000 50%);
+  background: linear-gradient(to bottom, transparent 0%, #0a0a0a 50%);
   padding: 40px 0 8px;
   z-index: 5;
 }
@@ -673,7 +673,7 @@
 /* ── Sticky Price Bar ──────────────────── */
 .kb-scroll-price-bar {
   position: fixed; bottom: 0; left: 0; right: 0;
-  background: #000; border-top: 2px solid var(--rme-gold, #fdd351);
+  background: #0d0d0d; border-top: 2px solid var(--rme-gold, #fdd351);
   padding: 14px 24px; display: flex; align-items: center; justify-content: center; gap: 24px;
   z-index: 10000;
   padding-bottom: max(14px, env(safe-area-inset-bottom));

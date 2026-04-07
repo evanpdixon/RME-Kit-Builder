@@ -2222,7 +2222,7 @@
 
   // ── Consult Links ─────────────────────────────
   function updateConsultLinks() {
-    const url = typeof getCalendlyUrl === 'function' ? getCalendlyUrl() : 'https://calendly.com/radiomadeeasy/radio-consultation';
+    const url = window.location.origin + '/product/consult/';
     document.querySelectorAll('.kbs-consult-link').forEach(function(a) {
       a.href = url;
     });
