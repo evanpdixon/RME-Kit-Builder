@@ -663,7 +663,10 @@
     }
     var lineup = kbsGetRadioLineup();
     var radio = lineup.find(function(r) { return r.key === selectedRadioKey; }) || radioLineup.find(function(r) { return r.key === selectedRadioKey; });
-    var kitName = radio ? radio.name.replace(' Essentials Kit', '').replace(' Mobile Radio Kit', '') : 'Kit';
+    var catLabelsCart = { handheld: 'Handheld', mobile: 'Vehicle Mobile', base: 'Base Station', hf: 'HF', scanner: 'Scanner' };
+    var catPrefix = catLabelsCart[kbsCurrentCategory] || '';
+    var radioName = radio ? radio.name.replace(' Essentials Kit', '').replace(' Mobile Radio Kit', '') : 'Kit';
+    var kitName = catPrefix ? catPrefix + ': ' + radioName : radioName;
     if (kbsKitQty > 1) kitName += ' x' + kbsKitQty;
 
     // Track completed category
