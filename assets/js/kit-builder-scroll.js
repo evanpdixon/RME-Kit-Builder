@@ -42,8 +42,20 @@
     const el = document.getElementById('sec-' + name);
     if (!el) return;
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    // Delay scroll to let section transition animations begin first
+    // On desktop, scroll so the previous completed section is visible above
     setTimeout(() => {
+      if (window.innerWidth >= 768) {
+        var idx = SECTIONS.indexOf(name);
+        var prevEl = null;
+        for (var pi = idx - 1; pi >= 0; pi--) {
+          var candidate = document.getElementById('sec-' + SECTIONS[pi]);
+          if (candidate && candidate.style.display !== 'none') { prevEl = candidate; break; }
+        }
+        if (prevEl) {
+          prevEl.scrollIntoView({ behavior: prefersReduced ? 'auto' : 'smooth', block: 'start' });
+          return;
+        }
+      }
       el.scrollIntoView({ behavior: prefersReduced ? 'auto' : 'smooth', block: 'start' });
     }, 400);
   }
@@ -89,6 +101,24 @@
         document.getElementById('sec-mounting').style.display = '';
         renumberSections();
         renderMountingOptions();
+        return;
+      }
+      // Skip battery step when hidden (e.g. scanner category)
+      if (next === 'battery' && document.getElementById('sec-battery').style.display === 'none') {
+        sectionState['battery'] = 'complete';
+        // Advance to accessories
+        var accEl = document.getElementById('sec-accessories');
+        if (accEl) { accEl.classList.remove('kb-section--locked'); accEl.classList.add('kb-section--loading'); }
+        scrollToSection('accessories');
+        setTimeout(function() {
+          if (kbsCurrentCategory === 'handheld') renderAccessories();
+          else renderCategoryProducts('accessories', kbsCurrentCategory, selectedRadioKey);
+          sectionState['accessories'] = 'active';
+          if (accEl) accEl.classList.remove('kb-section--loading');
+          applyAllStates();
+          updateScrollPriceBar();
+          updateConsultLinks();
+        }, 800);
         return;
       }
       if (next === 'quantity') { renderQuantityPicker(); if (!kbsKitInCart) enableCartBtn(); return; }
@@ -768,6 +798,7 @@
     document.getElementById('kbs-interview-choice').style.display = 'none';
     document.getElementById('kbs-interview-stack').style.display = '';
     renderInterviewStack();
+    setTimeout(updateUrlState, 100);
   };
 
   window.kbsStartDirect = function() {
@@ -783,8 +814,8 @@
     ];
     var catHtml = catOpts.map(function(o) {
       return '<div class="kbs-iq-opt" onclick="kbsDirectToggleCat(this,&quot;' + o.key + '&quot;)">' +
-        (o.icon ? '<span style="margin-right:6px">' + o.icon + '</span>' : '') + o.label +
-        '<span style="display:block;font-size:12px;color:#888;margin-top:2px">' + o.detail + '</span></div>';
+        (o.icon ? '<span class="kbs-iq-icon">' + o.icon + '</span>' : '') +
+        '<span class="kbs-iq-text">' + o.label + '<span class="kbs-iq-detail">' + o.detail + '</span></span></div>';
     }).join('');
     document.getElementById('kbs-interview-stack').innerHTML =
       '<div class="kbs-iq">' +
@@ -807,6 +838,7 @@
     else { kbsDirectCategories.push(cat); el.classList.add('selected'); }
     const btn = document.getElementById('kbs-direct-next');
     if (btn) btn.disabled = kbsDirectCategories.length === 0;
+    setTimeout(updateUrlState, 100);
   };
 
   window.kbsDirectProceed = function() {
@@ -976,8 +1008,8 @@
                 : answer === o.key;
               return `<div class="kbs-iq-opt ${sel ? 'selected' : ''}"
                 onclick="kbsAnswer('${q.id}','${o.key}',${!!q.multi})">
-                ${o.icon ? '<span style="margin-right:6px">' + o.icon + '</span>' : ''}${o.label}
-                ${o.detail ? '<span style="display:block;font-size:12px;color:#888;margin-top:2px">' + o.detail + '</span>' : ''}
+                ${o.icon ? '<span class="kbs-iq-icon">' + o.icon + '</span>' : ''}
+                <span class="kbs-iq-text">${o.label}${o.detail ? '<span class="kbs-iq-detail">' + o.detail + '</span>' : ''}</span>
               </div>`;
             }).join('')}
           </div>
@@ -989,7 +1021,7 @@
             <button class="kb-btn kb-btn--primary" onclick="kbsNextQ()" ${!hasAnswer ? 'disabled' : ''}>
               ${i === kbsAllQuestions.length - 1 && kbsAllQuestions[i].phase === 'interview' && kbsAllQuestions[i].id !== 'setup' ? 'See Results' : 'Next'}
             </button>
-            <a href="#" class="kbs-consult-escape kbs-consult-link" target="_blank">&#128222; Not sure? Book a consultation</a>
+            <a href="#" class="kbs-consult-escape kbs-consult-link" target="_blank">Still feeling overwhelmed? We're here for you.<br>Book a consultation with a live person.</a>
           </div>
         </div>`;
       }
@@ -1007,6 +1039,7 @@
       kbsAnswers[qId] = optKey;
     }
     renderInterviewStack();
+    setTimeout(updateUrlState, 100);
   };
 
   window.kbsNextQ = function() {
@@ -1033,9 +1066,11 @@
           var heading = document.querySelector('.kbs-results-heading');
           if (heading) heading.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }, 800);
+        setTimeout(updateUrlState, 100);
         return;
       }
       renderInterviewStack();
+      setTimeout(updateUrlState, 100);
       // Slide + fade in from below
       if (stack) {
         stack.style.transform = 'translateY(12px)';
@@ -1181,7 +1216,7 @@
           <button class="kb-btn kb-btn--secondary" onclick="kbsShowAllRadios()">See All Radios</button>
         </div>
         <div class="kbs-results-consult">
-          <a href="#" class="kbs-consult-escape kbs-consult-link" target="_blank">&#128222; Not sure? Book a consultation</a>
+          <a href="#" class="kbs-consult-escape kbs-consult-link" target="_blank">Still feeling overwhelmed? We're here for you.<br>Book a consultation with a live person.</a>
         </div>
       </div>
     `;
@@ -1397,7 +1432,7 @@
           <button class="kb-btn kb-btn--secondary" onclick="kbsRetakeQuiz()">Retake Quiz</button>
         </div>
         <div class="kbs-results-consult">
-          <a href="#" class="kbs-consult-escape kbs-consult-link" target="_blank">&#128222; Not sure? Book a consultation</a>
+          <a href="#" class="kbs-consult-escape kbs-consult-link" target="_blank">Still feeling overwhelmed? We're here for you.<br>Book a consultation with a live person.</a>
         </div>
       </div>`;
 
@@ -1528,6 +1563,7 @@
     kbsSelectedMount = mountKey;
     renderMountingOptions();
     updateScrollPriceBar();
+    setTimeout(updateUrlState, 100);
   };
 
   // Renumber visible sections sequentially so there are no gaps
@@ -1963,9 +1999,11 @@
       else selectedAntennas.add(key);
       renderCategoryProducts('antennas', kbsCurrentCategory, selectedRadioKey);
       updateScrollPriceBar();
+      setTimeout(updateUrlState, 100);
       return;
     }
     _origToggleAntenna(key);
+    setTimeout(updateUrlState, 100);
   };
 
   const _origToggleBattery = window.toggleBattery;
@@ -1976,9 +2014,11 @@
         else selectedBatteries.set(key, 1);
         renderCategoryProducts('battery', kbsCurrentCategory, selectedRadioKey);
         updateScrollPriceBar();
+        setTimeout(updateUrlState, 100);
         return;
       }
       _origToggleBattery(key);
+      setTimeout(updateUrlState, 100);
     };
   }
 
@@ -1990,9 +2030,11 @@
         else selectedAccessories.add(key);
         renderCategoryProducts('accessories', kbsCurrentCategory, selectedRadioKey);
         updateScrollPriceBar();
+        setTimeout(updateUrlState, 100);
         return;
       }
       _origToggleAccessory(key);
+      setTimeout(updateUrlState, 100);
     };
   }
 
@@ -2347,6 +2389,7 @@
     if (kbsAnswers['setup'] && kbsAnswers['setup'].length) state.setup = kbsAnswers['setup'].join(',');
     if (kbsAnswers['usage'] && kbsAnswers['usage'].length) state.usage = kbsAnswers['usage'].join(',');
     if (kbsAnswers['needs'] && kbsAnswers['needs'].length) state.needs = kbsAnswers['needs'].join(',');
+    if (kbsAnswers['preferences'] && kbsAnswers['preferences'].length) state.prefs = kbsAnswers['preferences'].join(',');
     // Radio & category
     if (selectedRadioKey) state.radio = selectedRadioKey;
     if (kbsCurrentCategory && kbsCurrentCategory !== 'handheld') state.cat = kbsCurrentCategory;
@@ -2426,10 +2469,14 @@
   // Restore flow state from URL hash
   function restoreFromHash() {
     var state = hashToState(window.location.hash);
-    if (!state || !state.radio) return false; // Need at least a radio to restore
+    if (!state) return false;
 
-    // Validate the radio still exists
-    if (!validateRadioKey(state.radio)) {
+    // Need at least a radio or some interview answers to restore
+    var hasInterviewData = state.path || state.budget || state.reach || state.usage || state.needs || state.setup || state.prefs;
+    if (!state.radio && !hasInterviewData) return false;
+
+    // Validate the radio still exists (if one was selected)
+    if (state.radio && !validateRadioKey(state.radio)) {
       console.warn('Kit Builder: saved radio "' + state.radio + '" no longer available');
       return false;
     }
@@ -2446,6 +2493,37 @@
     if (state.setup) kbsAnswers['setup'] = state.setup.split(',');
     if (state.usage) kbsAnswers['usage'] = state.usage.split(',');
     if (state.needs) kbsAnswers['needs'] = state.needs.split(',');
+    if (state.prefs) kbsAnswers['preferences'] = state.prefs.split(',');
+
+    // Interview-only restore: no radio selected yet
+    if (!state.radio) {
+      // Complete email, set interview active
+      sectionState['email'] = 'complete';
+      sectionState['interview'] = 'active';
+      applyAllStates();
+      // Show interview UI and replay to current question
+      document.getElementById('kbs-interview-choice').style.display = 'none';
+      document.getElementById('kbs-interview-stack').style.display = '';
+      // Rebuild question list and advance to first unanswered
+      buildQuestionList();
+      kbsStep = 0;
+      for (var qi = 0; qi < kbsAllQuestions.length; qi++) {
+        var qid = kbsAllQuestions[qi].id;
+        if (kbsAnswers[qid] && (!Array.isArray(kbsAnswers[qid]) || kbsAnswers[qid].length > 0)) {
+          kbsStep = qi + 1;
+        } else {
+          break;
+        }
+      }
+      if (kbsStep >= kbsAllQuestions.length) {
+        showScrollResults();
+      } else {
+        renderInterviewStack();
+      }
+      // Scroll to the interview section
+      setTimeout(function() { scrollToSection('interview'); }, 500);
+      return;
+    }
 
     // Determine category
     var cat = state.cat || 'handheld';
@@ -2552,8 +2630,25 @@
     updateScrollPriceBar();
     updateConsultLinks();
 
-    // Scroll to the active section
-    setTimeout(function() { scrollToSection(resumeSection); }, 500);
+    // Scroll to show the previous completed step above the current active one
+    setTimeout(function() {
+      var resumeIdx = SECTIONS.indexOf(resumeSection);
+      // Find the previous visible section
+      var prevSection = null;
+      for (var pi = resumeIdx - 1; pi >= 0; pi--) {
+        var prevEl = document.getElementById('sec-' + SECTIONS[pi]);
+        if (prevEl && prevEl.style.display !== 'none') {
+          prevSection = SECTIONS[pi];
+          break;
+        }
+      }
+      if (prevSection && window.innerWidth >= 768) {
+        var prevEl = document.getElementById('sec-' + prevSection);
+        if (prevEl) prevEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else {
+        scrollToSection(resumeSection);
+      }
+    }, 500);
 
     return true;
   }
@@ -2568,36 +2663,56 @@
       typeof hfRadioLineup !== 'undefined' ? hfRadioLineup : [],
       typeof scannerRadioLineup !== 'undefined' ? scannerRadioLineup : []
     );
-    var radio = allLineups.find(function(r) { return r.key === state.radio; });
-    var radioName = radio ? radio.name.replace(' Essentials Kit', '').replace(' Mobile Radio Kit', '') : state.radio;
+    var radio = state.radio ? allLineups.find(function(r) { return r.key === state.radio; }) : null;
+    var radioName = radio ? radio.name.replace(' Essentials Kit', '').replace(' Mobile Radio Kit', '') : (state.radio || '');
     var sectionLabel = state.sec ? state.sec.charAt(0).toUpperCase() + state.sec.slice(1) : 'Review';
+
+    // Build summary line
+    var summaryHtml = '';
+    if (radioName) {
+      summaryHtml = '<strong>' + radioName + '</strong>';
+      if (selectedAntennas.size || selectedAccessories.size) {
+        summaryHtml += '<br><span style="color:#888;font-size:13px">' + (selectedAntennas.size + selectedAddlAntennas.size) + ' antenna(s), ' + selectedAccessories.size + ' accessory(ies)</span>';
+      }
+    } else {
+      // Interview in progress — show what we know
+      var budgetLabels = { low: 'Economical', mid: 'Mid-range', high: 'The best of the best' };
+      var usageLabels = { handheld: 'Handheld', vehicle: 'Vehicle / Mobile', base: 'Base Station', hf: 'HF (Long-Distance)', scanner: 'Scanner / SDR' };
+      var parts = [];
+      if (state.path === 'guided') parts.push('Guided quiz in progress');
+      if (state.budget) parts.push('Budget: ' + (budgetLabels[state.budget] || state.budget));
+      if (state.usage) parts.push('Type: ' + state.usage.split(',').map(function(u) { return usageLabels[u] || u; }).join(', '));
+      summaryHtml = '<strong>' + (parts.length ? parts.join('<br>') : 'Quiz in progress') + '</strong>';
+    }
 
     var overlay = document.createElement('div');
     overlay.className = 'kbs-resume-overlay';
     overlay.innerHTML =
       '<div class="kbs-resume-modal">' +
         '<h3>Welcome Back</h3>' +
-        '<p>You have a saved kit in progress:</p>' +
-        '<div class="kbs-resume-summary">' +
-          '<strong>' + radioName + '</strong>' +
-          (selectedAntennas.size || selectedAccessories.size ? '<br><span style="color:#888;font-size:13px">' + (selectedAntennas.size + selectedAddlAntennas.size) + ' antenna(s), ' + selectedAccessories.size + ' accessory(ies)</span>' : '') +
+        '<p>You have saved progress:</p>' +
+        '<div class="kbs-resume-summary" id="kbs-resume-yes" style="cursor:pointer">' +
+          summaryHtml +
+          '<div style="margin-top:10px;font-size:13px;color:#ccc;text-transform:uppercase;letter-spacing:1px">Pick Up Where I Left Off</div>' +
         '</div>' +
         '<div class="kbs-resume-actions">' +
-          '<button class="kb-btn kb-btn--primary" id="kbs-resume-yes">Pick Up Where I Left Off</button>' +
           '<button class="kb-btn kb-btn--secondary" id="kbs-resume-no">Start Fresh</button>' +
         '</div>' +
       '</div>';
 
-    document.body.appendChild(overlay);
+    var container = document.getElementById('rme-kit-builder-scroll') || document.body;
+    container.appendChild(overlay);
 
     document.getElementById('kbs-resume-yes').addEventListener('click', function() {
       overlay.remove();
       applyRestoredState(state);
+      // Scroll handled inside applyRestoredState
     });
     document.getElementById('kbs-resume-no').addEventListener('click', function() {
       overlay.remove();
       // Clear the hash and start fresh
       history.replaceState(null, '', window.location.pathname);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   }
 

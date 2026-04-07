@@ -4212,9 +4212,24 @@ function toggleAddlAntenna(key) {
   const item = additionalAntennas.find(x => x.key === key);
   const hasAdapter = selectedAntennas.size > 0 || selectedAddlAntennas.has('extraadapter');
   if (item && item.needsAdapter && !hasAdapter) {
-    // Show adapter prompt
     pendingAntennaKey = key;
-    document.getElementById('adapter-modal').classList.add('open');
+    // Magnetic base mount needs an actual antenna — suggest Foul Weather Whip
+    const isMountAccessory = (key === 'magmount' || key === 'mollemount');
+    const modal = document.getElementById('adapter-modal');
+    const modalBox = modal.querySelector('.modal-box');
+    const btns = modalBox.querySelectorAll('.modal-actions .kb-btn');
+    if (isMountAccessory) {
+      modalBox.querySelector('h3').textContent = 'Antenna Needed';
+      modalBox.querySelector('p').textContent = 'This mount needs a BNC antenna to go with it. We recommend the Foul Weather Whip — a flexible, durable whip that includes the BNC adapter.';
+      btns[0].textContent = 'Add Foul Weather Whip + Mount';
+      btns[1].textContent = 'I Have My Own Antenna';
+    } else {
+      modalBox.querySelector('h3').textContent = 'BNC Adapter Needed';
+      modalBox.querySelector('p').textContent = 'This antenna uses a BNC connector. Your radio has an SMA connector, so you\'ll need an SMA-F to BNC-F Adapter ($5) to use it.';
+      btns[0].textContent = 'Add Adapter + Antenna';
+      btns[1].textContent = 'I Have One Already';
+    }
+    modal.classList.add('open');
     return;
   }
 
@@ -4226,10 +4241,17 @@ function toggleAddlAntenna(key) {
 let pendingAntennaKey = null;
 
 function adapterModalAdd() {
-  // Add both the adapter and the pending antenna
-  adapterSuppressed = false;
-  selectedAddlAntennas.add('extraadapter');
-  selectedAddlAntennas.add(pendingAntennaKey);
+  // Mount accessories: add the Foul Weather Whip (which includes adapter) + the mount
+  var isMountAccessory = (pendingAntennaKey === 'magmount' || pendingAntennaKey === 'mollemount');
+  if (isMountAccessory) {
+    selectedAddlAntennas.add('foulweather');
+    selectedAddlAntennas.add(pendingAntennaKey);
+  } else {
+    // Standard flow: add adapter + the pending antenna
+    adapterSuppressed = false;
+    selectedAddlAntennas.add('extraadapter');
+    selectedAddlAntennas.add(pendingAntennaKey);
+  }
   pendingAntennaKey = null;
   document.getElementById('adapter-modal').classList.remove('open');
   renderAllAntennas();

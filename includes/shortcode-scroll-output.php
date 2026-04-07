@@ -29,16 +29,22 @@
     <div class="kb-section__summary" style="display:none"></div>
     <div class="kb-section__content">
       <div id="kbs-interview-choice" class="kbs-choice-screen">
-        <div class="kbs-choice-card" onclick="kbsStartGuided()">
-          <h3>Help Me Choose</h3>
-          <p>Answer a few quick questions and we'll recommend the best radio for your needs.</p>
+        <div class="kbs-choice-card" onclick="kbsStartGuided()" tabindex="0" role="button">
+          <span class="kbs-choice-icon"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88" fill="currentColor" stroke="none"/></svg></span>
+          <div class="kbs-choice-text">
+            <h3>Help Me Choose</h3>
+            <p>Answer a few quick questions and we'll recommend the best radio for your needs.</p>
+          </div>
         </div>
-        <div class="kbs-choice-card" onclick="kbsStartDirect()">
-          <h3>I Know What I Want</h3>
-          <p>Jump straight to our lineup and pick your radio.</p>
+        <div class="kbs-choice-card" onclick="kbsStartDirect()" tabindex="0" role="button">
+          <span class="kbs-choice-icon"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>
+          <div class="kbs-choice-text">
+            <h3>I Know What I Want</h3>
+            <p>Jump straight to our lineup and pick your radio.</p>
+          </div>
         </div>
         <div style="text-align:center;margin-top:16px;grid-column:1/-1">
-          <a href="#" class="kbs-consult-escape kbs-consult-link" target="_blank">&#128222; Not sure where to start? Book a consultation</a>
+          <a href="#" class="kbs-consult-escape kbs-consult-link" target="_blank">Still feeling overwhelmed? We're here for you.<br>Book a consultation with a live person.</a>
         </div>
       </div>
       <div id="kbs-interview-stack" style="display:none"></div>
@@ -57,7 +63,7 @@
       <div id="kbs-radio-grid" class="radio-grid"></div>
       <div class="kb-section__actions">
         <button class="kb-btn kb-btn--secondary" onclick="kbsGoBack('radio')">Back</button>
-        <a href="#" class="kbs-consult-escape kbs-consult-link" target="_blank">&#128222; Not sure? Book a consultation</a>
+        <a href="#" class="kbs-consult-escape kbs-consult-link" target="_blank">Still feeling overwhelmed? We're here for you.<br>Book a consultation with a live person.</a>
       </div>
     </div>
   </div>
@@ -92,7 +98,7 @@
       <div class="kb-section__actions">
         <button class="kb-btn kb-btn--secondary" onclick="kbsGoBack('antennas')">Back</button>
         <button class="kb-btn kb-btn--primary" onclick="kbsCompleteSection('antennas')">Continue</button>
-        <a href="#" class="kbs-consult-escape kbs-consult-link" target="_blank">&#128222; Not sure? Book a consultation</a>
+        <a href="#" class="kbs-consult-escape kbs-consult-link" target="_blank">Still feeling overwhelmed? We're here for you.<br>Book a consultation with a live person.</a>
       </div>
     </div>
   </div>
@@ -110,7 +116,7 @@
       <div class="kb-section__actions">
         <button class="kb-btn kb-btn--secondary" onclick="kbsGoBack('battery')">Back</button>
         <button class="kb-btn kb-btn--primary" onclick="kbsCompleteSection('battery')">Continue</button>
-        <a href="#" class="kbs-consult-escape kbs-consult-link" target="_blank">&#128222; Not sure? Book a consultation</a>
+        <a href="#" class="kbs-consult-escape kbs-consult-link" target="_blank">Still feeling overwhelmed? We're here for you.<br>Book a consultation with a live person.</a>
       </div>
     </div>
   </div>
@@ -128,7 +134,7 @@
       <div class="kb-section__actions">
         <button class="kb-btn kb-btn--secondary" onclick="kbsGoBack('accessories')">Back</button>
         <button class="kb-btn kb-btn--primary" onclick="kbsCompleteSection('accessories')">Continue</button>
-        <a href="#" class="kbs-consult-escape kbs-consult-link" target="_blank">&#128222; Not sure? Book a consultation</a>
+        <a href="#" class="kbs-consult-escape kbs-consult-link" target="_blank">Still feeling overwhelmed? We're here for you.<br>Book a consultation with a live person.</a>
       </div>
     </div>
   </div>
@@ -146,7 +152,7 @@
       <div class="kb-section__actions">
         <button class="kb-btn kb-btn--secondary" onclick="kbsGoBack('programming')">Back</button>
         <button class="kb-btn kb-btn--primary" onclick="kbsCompleteSection('programming')">Continue</button>
-        <a href="#" class="kbs-consult-escape kbs-consult-link" target="_blank">&#128222; Not sure? Book a consultation</a>
+        <a href="#" class="kbs-consult-escape kbs-consult-link" target="_blank">Still feeling overwhelmed? We're here for you.<br>Book a consultation with a live person.</a>
       </div>
     </div>
   </div>
@@ -163,7 +169,7 @@
       <div class="kb-section__actions">
         <button class="kb-btn kb-btn--secondary" onclick="kbsGoBack('review')">Back</button>
         <button class="kb-btn kb-btn--primary" onclick="kbsCompleteSection('review')">Continue to Checkout</button>
-        <a href="#" class="kbs-consult-escape kbs-consult-link" target="_blank">&#128222; Need help? Book a consultation</a>
+        <a href="#" class="kbs-consult-escape kbs-consult-link" target="_blank">Still feeling overwhelmed? We're here for you.<br>Book a consultation with a live person.</a>
       </div>
     </div>
   </div>
