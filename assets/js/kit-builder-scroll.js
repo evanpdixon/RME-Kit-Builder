@@ -1395,6 +1395,10 @@
 
     // UV-PRO: show color picker before proceeding
     if (key === 'uv-pro') {
+      // Activate radio section so color picker is visible
+      sectionState['radio'] = 'active';
+      applyAllStates();
+      scrollToSection('radio');
       kbsShowColorPicker();
       return;
     }
@@ -1408,6 +1412,9 @@
   function kbsShowColorPicker() {
     var container = document.querySelector('#sec-radio .kb-section__content');
     if (!container) return;
+    // Clear any existing grid content so only the color picker shows
+    var grid = document.getElementById('kbs-radio-grid');
+    if (grid) grid.style.display = 'none';
     var S = (typeof rmeKitBuilder !== 'undefined' && rmeKitBuilder.uploadsUrl) ? rmeKitBuilder.uploadsUrl : '/wp-content/uploads/';
     var colors = [
       { key: 'black', name: 'Black', desc: 'Classic black, the standard UV-PRO finish.', img: S + '2025/09/20250904_100414-EDIT.jpg' },
@@ -1446,6 +1453,8 @@
   window.kbsConfirmColor = function() {
     var picker = document.getElementById('kbs-color-picker');
     if (picker) picker.remove();
+    var grid = document.getElementById('kbs-radio-grid');
+    if (grid) grid.style.display = '';
     renderAllAntennas();
     kbsCompleteSection('radio');
   };
