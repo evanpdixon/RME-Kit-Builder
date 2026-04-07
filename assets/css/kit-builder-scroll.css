@@ -236,6 +236,12 @@
   padding: 40px 0 8px;
   z-index: 5;
 }
+#sec-quantity .kb-section__actions {
+  position: static;
+  background: none;
+  padding: 20px 0 8px;
+  justify-content: center;
+}
 .kb-section__actions .kbs-consult-escape {
   flex-basis: 100%;
   font-size: 12px;

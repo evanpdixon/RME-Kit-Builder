@@ -186,7 +186,7 @@
       <div id="kbs-qty-picker"></div>
       <div class="kb-section__actions">
         <button class="kb-btn kb-btn--secondary" onclick="kbsGoBack('quantity')">Back</button>
-        <button class="kb-btn kb-btn--primary kb-btn--cart" onclick="kbsAddToCart()">&#128722; Add to Cart</button>
+        <button class="kb-btn kb-btn--primary kb-btn--cart" onclick="kbsAddToCart()">Add to Cart</button>
       </div>
     </div>
   </div>
