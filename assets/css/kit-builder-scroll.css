@@ -230,6 +230,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
+  justify-content: center;
   position: sticky;
   bottom: 70px; /* above sticky price bar */
   background: linear-gradient(to bottom, transparent 0%, #000 50%);
