@@ -3267,7 +3267,6 @@ function renderAllAntennas() {
   // ── Section 1: Upgrade Your Antenna ──
   let factoryHtml = `
     <div class="opt-card selected factory-antenna-card" style="cursor:default">
-      <div class="oc-img"><div class="oc-img--placeholder-icon">${typeof ICO !== 'undefined' && ICO.handheld ? ICO.handheld : '📡'}</div></div>
       <div class="oc-body">
         <div class="oc-name">Factory Antenna</div>
         <div class="oc-desc">Standard rubber duck antenna included with your kit.</div>

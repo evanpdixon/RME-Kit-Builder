@@ -85,6 +85,25 @@
         }, 800);
         return;
       }
+      // Skip battery step for scanner category (scanners have no batteries)
+      if (next === 'battery' && kbsCurrentCategory === 'scanner') {
+        document.getElementById('sec-battery').style.display = 'none';
+        sectionState['battery'] = 'complete';
+        renumberSections();
+        // Immediately advance to accessories
+        var accEl = document.getElementById('sec-accessories');
+        if (accEl) { accEl.classList.remove('kb-section--locked'); accEl.classList.add('kb-section--loading'); }
+        scrollToSection('accessories');
+        setTimeout(function() {
+          renderCategoryProducts('accessories', kbsCurrentCategory, selectedRadioKey);
+          sectionState['accessories'] = 'active';
+          if (accEl) accEl.classList.remove('kb-section--loading');
+          applyAllStates();
+          updateScrollPriceBar();
+          updateConsultLinks();
+        }, 800);
+        return;
+      }
       if (next === 'mounting') {
         document.getElementById('sec-mounting').style.display = '';
         renumberSections();
