@@ -86,6 +86,15 @@ function rme_kb_add_to_cart() {
         }
     }
 
+    // Store kit builder discount in session if provided
+    $discount = $data['discount'] ?? null;
+    if ( $discount && ! empty( $discount['amount'] ) && $discount['amount'] > 0 ) {
+        $existing = WC()->session->get( 'rme_kb_discount', array( 'amount' => 0, 'label' => '' ) );
+        $new_amount = $existing['amount'] + absint( $discount['amount'] );
+        $label = sanitize_text_field( $discount['label'] ?: 'Kit Builder Discount' );
+        WC()->session->set( 'rme_kb_discount', array( 'amount' => $new_amount, 'label' => $label ) );
+    }
+
     wp_send_json_success( array(
         'added'    => $added,
         'errors'   => $errors,
@@ -98,12 +107,38 @@ add_action( 'wp_ajax_rme_kb_add_to_cart', 'rme_kb_add_to_cart' );
 add_action( 'wp_ajax_nopriv_rme_kb_add_to_cart', 'rme_kb_add_to_cart' );
 
 /**
+ * Apply kit builder discount as a negative cart fee.
+ */
+function rme_kb_apply_discount( $cart ) {
+    if ( is_admin() && ! defined( 'DOING_AJAX' ) ) return;
+    $discount = WC()->session->get( 'rme_kb_discount' );
+    if ( ! $discount || empty( $discount['amount'] ) || $discount['amount'] <= 0 ) return;
+    $cart->add_fee( $discount['label'], -1 * $discount['amount'], false );
+}
+add_action( 'woocommerce_cart_calculate_fees', 'rme_kb_apply_discount' );
+
+/**
+ * Clear kit builder discount when cart is emptied.
+ */
+function rme_kb_clear_discount_on_empty() {
+    if ( WC()->cart->is_empty() && WC()->session ) {
+        WC()->session->set( 'rme_kb_discount', null );
+    }
+}
+add_action( 'woocommerce_cart_emptied', 'rme_kb_clear_discount_on_empty' );
+add_action( 'woocommerce_cart_item_removed', function() {
+    if ( WC()->cart->is_empty() && WC()->session ) {
+        WC()->session->set( 'rme_kb_discount', null );
+    }
+});
+
+/**
  * Display kit name under each cart item that came from the kit builder.
  */
 function rme_kb_cart_item_name( $name, $cart_item, $cart_item_key ) {
     if ( ! empty( $cart_item['_rme_kit_name'] ) ) {
         $kit = esc_html( $cart_item['_rme_kit_name'] );
-        $name .= '<br><small style="color:#d4af37;font-size:12px;font-weight:normal">Part of: ' . $kit . '</small>';
+        $name .= '<br><small style="color:#d4af37;font-size:12px;font-weight:normal">' . $kit . '</small>';
     }
     return $name;
 }

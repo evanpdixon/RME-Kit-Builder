@@ -684,6 +684,28 @@
 
     kbsKitInCart = true;
 
+    // Calculate any applicable discount
+    var discountAmount = 0;
+    var discountLabel = '';
+    // Cross-category discount: 5% off base price on 2nd+ category
+    if (kbsCompletedKits.length > 0 && typeof BASE_PRICE !== 'undefined') {
+      discountAmount = Math.round(BASE_PRICE * 5 / 100) * kbsKitQty;
+      discountLabel = 'Multi-Kit Discount (5%)';
+    }
+    // Volume discount: same category qty 2+
+    if (kbsKitQty >= 2 && typeof getVolumeTier === 'function' && typeof BASE_PRICE !== 'undefined') {
+      var volTier = getVolumeTier(kbsKitQty);
+      if (volTier) {
+        var volDiscount = Math.round(BASE_PRICE * kbsKitQty * volTier.pct / 100);
+        if (volDiscount > discountAmount) {
+          discountAmount = volDiscount;
+          discountLabel = volTier.label + ' Discount (' + volTier.pct + '%)';
+        }
+      }
+    }
+    // Store discount for the cart handler
+    window._kbsDiscount = { amount: discountAmount, label: discountLabel };
+
     if (remaining.length > 0) {
       // Suppress the cart redirect: add items via AJAX but stay on page
       window._kbsSuppressCartRedirect = true;

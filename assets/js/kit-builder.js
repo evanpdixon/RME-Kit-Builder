@@ -5359,7 +5359,7 @@ function rmeKbAddToCart(items, kitName) {
   return fetch(rmeKitBuilder.ajaxUrl + '?action=rme_kb_add_to_cart&nonce=' + rmeKitBuilder.nonce, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ items: normalized, kitName: kitName || '' })
+    body: JSON.stringify({ items: normalized, kitName: kitName || '', discount: window._kbsDiscount || null })
   })
   .then(r => r.json())
   .then(data => {
