@@ -5366,9 +5366,12 @@ function rmeKbAddToCart(items, kitName) {
     if (data.success) {
       const count = data.data.added.length;
       const errors = data.data.errors;
-      // Update header cart badge
+      // Update header cart badge and refresh WC mini-cart fragments
       const badge = document.querySelector('.rme-cart-count');
       if (badge && data.data.cartCount) badge.textContent = data.data.cartCount;
+      if (typeof jQuery !== 'undefined' && jQuery(document.body).trigger) {
+        jQuery(document.body).trigger('wc_fragment_refresh');
+      }
       // Log partial errors to console but don't block the user
       if (errors.length > 0) {
         console.warn('RME KB: Some items had issues:', errors);
