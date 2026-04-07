@@ -340,9 +340,9 @@
   padding: 14px 28px;
   border-radius: 8px;
   font-size: 14px; font-weight: 600;
-  min-height: 44px;
+  min-height: 48px;
   cursor: pointer;
-  border: none;
+  border: 2px solid transparent;
   text-transform: uppercase;
   letter-spacing: 2px;
   font-family: var(--rme-font-body);
