@@ -2209,6 +2209,17 @@
     });
   }
 
+  // ── Override review Edit buttons for scroll mode ────────
+  // Base JS reviewEditStep() calls goStep() which only works in step mode.
+  // Override to use kbsEditSection() with the correct section name.
+  window.reviewEditStep = function(stepName) {
+    var map = { 'Antennas': 'antennas', 'Battery': 'battery', 'Accessories': 'accessories', 'Programming': 'programming' };
+    var section = map[stepName];
+    if (section && typeof kbsEditSection === 'function') {
+      kbsEditSection(section);
+    }
+  };
+
   // ── Consult Links ─────────────────────────────
   function updateConsultLinks() {
     const url = typeof getCalendlyUrl === 'function' ? getCalendlyUrl() : 'https://calendly.com/radiomadeeasy/radio-consultation';
