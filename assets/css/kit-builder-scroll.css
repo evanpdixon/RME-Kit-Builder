@@ -340,10 +340,13 @@
 }
 
 /* ── Consultation Escape Link ──────────── */
-.kbs-consult-escape {
-  color: #999; font-size: 13px; text-decoration: none;
+.kbs-consult-escape,
+.kbs-consult-escape:hover,
+.kbs-consult-escape:visited,
+.kbs-consult-escape:active {
+  color: #999; font-size: 13px; text-decoration: none !important;
   white-space: normal; text-align: center;
-  transition: color 0.3s ease, opacity 0.3s ease;
+  transition: color 0.3s ease;
   display: inline-block; padding: 11px 0; min-height: 44px; line-height: 1.5;
 }
 .kbs-consult-escape:hover {
