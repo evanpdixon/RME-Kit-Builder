@@ -4728,9 +4728,10 @@ const interviewQuestions = [
   {
     id: 'needs',
     question: "What do you need?",
-    sub: "Select all that apply. Skip if you just want a general-purpose radio.",
+    sub: "Select all that apply.",
     multi: true,
     options: [
+      { key: 'nopreference', icon: ICO.nopref, label: 'Just the basics', detail: 'A solid, reliable radio — just recommend what works best', tags: [] },
       { key: 'water', icon: ICO.droplet, label: 'Waterproof / water resistant', detail: 'Rain, boating, submersion', tags: ['waterproof'] },
       { key: 'gps', icon: ICO.signal, label: 'GPS location sharing', detail: 'Track and share positions with other radios', tags: ['gps'] },
       { key: 'bluetooth', icon: ICO.bluetooth, label: 'Bluetooth', detail: 'Wireless speakermic or phone control', tags: ['bluetooth'] },
@@ -4738,7 +4739,6 @@ const interviewQuestions = [
       { key: 'encryption', icon: ICO.lock, label: 'Secure / encryption capable', detail: 'Private, encrypted communications', tags: ['encryption', 'digital', 'professional', 'commercial'] },
       { key: 'repeater', icon: ICO.crossband, label: 'Built-in repeater mode', detail: 'Your radio becomes a relay to extend range for others', tags: ['crossband', 'grow'] },
       { key: 'channels', icon: ICO.channels, label: 'Increased channel capacity', detail: 'Program repeaters across multiple locations and regions', tags: ['channels'] },
-      { key: 'nopreference', icon: ICO.nopref, label: 'No specific needs', detail: 'Just recommend what works best', tags: [] },
     ]
   },
 ];
