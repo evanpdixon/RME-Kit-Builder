@@ -1393,8 +1393,59 @@
       applyAllStates();
     }
 
+    // UV-PRO: show color picker before proceeding
+    if (key === 'uv-pro') {
+      kbsShowColorPicker();
+      return;
+    }
+
     // Use animated transition for radio → antennas
     // Pre-render antennas content
+    renderAllAntennas();
+    kbsCompleteSection('radio');
+  };
+
+  function kbsShowColorPicker() {
+    var container = document.querySelector('#sec-radio .kb-section__content');
+    if (!container) return;
+    var S = (typeof rmeKitBuilder !== 'undefined' && rmeKitBuilder.uploadsUrl) ? rmeKitBuilder.uploadsUrl : '/wp-content/uploads/';
+    var colors = [
+      { key: 'black', name: 'Black', desc: 'Classic black, the standard UV-PRO finish.', img: S + '2025/09/20250904_100414-EDIT.jpg' },
+      { key: 'tan', name: 'Tan / Coyote', desc: 'Desert tan finish. Blends with earth tones and tactical gear.', img: S + '2025/09/20250904_100414-EDIT.jpg' },
+    ];
+
+    var html = '<div id="kbs-color-picker" style="margin-top:24px">' +
+      '<h3 style="font-family:var(--rme-font-heading);font-size:1.1rem;margin:0 0 12px;color:var(--rme-text)">Choose Your Color</h3>' +
+      '<div style="display:flex;gap:12px;flex-wrap:wrap">';
+    colors.forEach(function(c) {
+      html += '<div class="opt-card' + (uvproRadioColor === c.key ? ' selected' : '') + '" ' +
+        'onclick="kbsPickColor(\'' + c.key + '\')" style="flex:1;min-width:140px;cursor:pointer">' +
+        '<div class="oc-radio"><span></span></div>' +
+        (c.img ? '<div class="oc-img"><img src="' + c.img + '" alt="' + c.name + '"></div>' : '') +
+        '<div class="oc-body"><div class="oc-name">' + c.name + '</div><div class="oc-desc">' + c.desc + '</div></div>' +
+        '</div>';
+    });
+    html += '</div>' +
+      '<div style="margin-top:16px;text-align:center">' +
+      '<button class="kb-btn kb-btn--primary" onclick="kbsConfirmColor()">Continue</button>' +
+      '</div></div>';
+
+    // Append below existing content
+    var existing = document.getElementById('kbs-color-picker');
+    if (existing) existing.remove();
+    container.insertAdjacentHTML('beforeend', html);
+    var picker = document.getElementById('kbs-color-picker');
+    if (picker) picker.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  window.kbsPickColor = function(color) {
+    uvproRadioColor = color;
+    kbsShowColorPicker(); // re-render to update selected state
+  };
+
+  window.kbsConfirmColor = function() {
+    var picker = document.getElementById('kbs-color-picker');
+    if (picker) picker.remove();
     renderAllAntennas();
     kbsCompleteSection('radio');
   };
