@@ -43,7 +43,38 @@ function rme_kb_add_to_cart() {
             $cart_item_data['_rme_kit_name'] = $kit_name;
         }
 
-        $cart_item_key = WC()->cart->add_to_cart( $product_id, $quantity, 0, array(), $cart_item_data );
+        // For variations: resolve parent ID and fill in "any" attributes with defaults
+        $variation_id = 0;
+        $variation_attrs = array();
+        if ( $product->is_type( 'variation' ) ) {
+            $variation_id = $product_id;
+            $product_id = $product->get_parent_id();
+            $parent = wc_get_product( $product_id );
+            if ( $parent ) {
+                foreach ( $parent->get_attributes() as $attr ) {
+                    $attr_name = $attr->get_name();
+                    $tax_name = wc_variation_attribute_name( $attr_name );
+                    // Get the value set on the variation
+                    $var_value = $product->get_attribute( $attr_name );
+                    if ( $var_value ) {
+                        $variation_attrs[ $tax_name ] = $var_value;
+                    } else {
+                        // "Any" attribute — use first option as default
+                        $options = $attr->get_options();
+                        if ( ! empty( $options ) ) {
+                            if ( $attr->is_taxonomy() ) {
+                                $term = get_term( $options[0] );
+                                $variation_attrs[ $tax_name ] = $term ? $term->slug : $options[0];
+                            } else {
+                                $variation_attrs[ $tax_name ] = $options[0];
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        $cart_item_key = WC()->cart->add_to_cart( $product_id, $quantity, $variation_id, $variation_attrs, $cart_item_data );
         if ( $cart_item_key ) {
             $added[] = array(
                 'id'   => $product_id,
@@ -53,6 +84,15 @@ function rme_kb_add_to_cart() {
         } else {
             $errors[] = "Could not add product #{$product_id} to cart.";
         }
+    }
+
+    // Store kit builder discount in session if provided
+    $discount = $data['discount'] ?? null;
+    if ( $discount && ! empty( $discount['amount'] ) && $discount['amount'] > 0 ) {
+        $existing = WC()->session->get( 'rme_kb_discount', array( 'amount' => 0, 'label' => '' ) );
+        $new_amount = $existing['amount'] + absint( $discount['amount'] );
+        $label = sanitize_text_field( $discount['label'] ?: 'Kit Builder Discount' );
+        WC()->session->set( 'rme_kb_discount', array( 'amount' => $new_amount, 'label' => $label ) );
     }
 
     wp_send_json_success( array(
@@ -67,12 +107,38 @@ add_action( 'wp_ajax_rme_kb_add_to_cart', 'rme_kb_add_to_cart' );
 add_action( 'wp_ajax_nopriv_rme_kb_add_to_cart', 'rme_kb_add_to_cart' );
 
 /**
+ * Apply kit builder discount as a negative cart fee.
+ */
+function rme_kb_apply_discount( $cart ) {
+    if ( is_admin() && ! defined( 'DOING_AJAX' ) ) return;
+    $discount = WC()->session->get( 'rme_kb_discount' );
+    if ( ! $discount || empty( $discount['amount'] ) || $discount['amount'] <= 0 ) return;
+    $cart->add_fee( $discount['label'], -1 * $discount['amount'], false );
+}
+add_action( 'woocommerce_cart_calculate_fees', 'rme_kb_apply_discount' );
+
+/**
+ * Clear kit builder discount when cart is emptied.
+ */
+function rme_kb_clear_discount_on_empty() {
+    if ( WC()->cart->is_empty() && WC()->session ) {
+        WC()->session->set( 'rme_kb_discount', null );
+    }
+}
+add_action( 'woocommerce_cart_emptied', 'rme_kb_clear_discount_on_empty' );
+add_action( 'woocommerce_cart_item_removed', function() {
+    if ( WC()->cart->is_empty() && WC()->session ) {
+        WC()->session->set( 'rme_kb_discount', null );
+    }
+});
+
+/**
  * Display kit name under each cart item that came from the kit builder.
  */
 function rme_kb_cart_item_name( $name, $cart_item, $cart_item_key ) {
     if ( ! empty( $cart_item['_rme_kit_name'] ) ) {
         $kit = esc_html( $cart_item['_rme_kit_name'] );
-        $name .= '<br><small style="color:#d4af37;font-size:12px;font-weight:normal">Part of: ' . $kit . '</small>';
+        $name .= '<br><small style="color:#d4af37;font-size:12px;font-weight:normal">' . $kit . '</small>';
     }
     return $name;
 }

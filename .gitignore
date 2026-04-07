@@ -19,4 +19,6 @@ __pycache__/
 # Debug screenshots and temp artifacts
 *.png
 audit-screenshots/
+demo/
+_local-backup/
 empty_cart()

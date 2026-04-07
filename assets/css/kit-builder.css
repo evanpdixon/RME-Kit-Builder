@@ -2,7 +2,7 @@
 #rme-kit-builder {
   --rme-gold: #fdd351;
   --rme-gold-dim: #d4af37;
-  --rme-dark: #000;
+  --rme-dark: #0a0a0a;
   --rme-card: #0a0a0a;
   --rme-card-hover: #111;
   --rme-border: #2a2a2a;
@@ -212,7 +212,7 @@
 /* ── Bottom bar (sticky cart) ─────────────── */
 .rme-kb-bottom-bar {
   position: fixed; bottom: 0; left: 0; right: 0;
-  background: #000; border-top: 2px solid #fdd351;
+  background: #0d0d0d; border-top: 2px solid #fdd351;
   padding: 14px 24px; display: flex; align-items: center; justify-content: center; gap: 24px;
   z-index: 10000;
 }
@@ -262,7 +262,7 @@
   display: flex; align-items: center; gap: 14px;
   padding: 14px 18px; background: var(--rme-card); border: 1px solid var(--rme-border); border-radius: var(--rme-radius);
 }
-#rme-kit-builder .review-item .ri-img { width: 48px; height: 48px; border-radius: 8px; background: #fff; overflow: hidden; flex-shrink: 0; border: 2px solid var(--rme-gold); }
+#rme-kit-builder .review-item .ri-img { width: 48px; height: 48px; border-radius: 8px; background: #1a1a1a; overflow: hidden; flex-shrink: 0; border: 1px solid #333; }
 #rme-kit-builder .review-item .ri-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
 #rme-kit-builder .review-item .ri-name { flex: 1; font-size: 14px; }
 #rme-kit-builder .review-item .ri-name small { color: var(--rme-muted); font-size: 12px; display: block; }
@@ -271,7 +271,7 @@
 #rme-kit-builder .review-item.base .ri-price { color: var(--rme-text); }
 #rme-kit-builder .review-total {
   display: flex; justify-content: space-between; align-items: center;
-  padding: 18px 20px; background: #000; border: 3px solid var(--rme-gold); border-radius: var(--rme-radius);
+  padding: 18px 20px; background: #111; border: 2px solid var(--rme-gold); border-radius: var(--rme-radius);
   margin-top: 8px;
 }
 #rme-kit-builder .review-total .rt-label { font-size: 16px; font-weight: 500; text-transform: uppercase; letter-spacing: 2px; color: var(--rme-gold); }
@@ -308,7 +308,7 @@
 #rme-kit-builder .prog-field label { display: block; font-size: 13px; color: var(--rme-muted); margin-bottom: 6px; font-weight: 500; }
 #rme-kit-builder .prog-field input[type="text"],
 #rme-kit-builder .prog-field textarea {
-  width: 100%; padding: 10px 14px; background: #000; border: 1px solid var(--rme-border);
+  width: 100%; padding: 10px 14px; background: #111; border: 1px solid var(--rme-border);
   border-radius: 6px; color: var(--rme-text); font-size: 14px; font-family: inherit;
   transition: border-color 0.2s;
 }

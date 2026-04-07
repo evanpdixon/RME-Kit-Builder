@@ -898,7 +898,7 @@ const mobileRadioLineup = [
     img: S+'2025/12/uv-50pro-1x1-1.jpg',
     tagline: 'Analog powerhouse',
     pitch: '50W mobile radio with Bluetooth smartphone control, GPS, APRS, and radio-to-radio text messaging. IP54 rated. Fully controllable from the hand mic.',
-    features: ['50W VHF/UHF', '180 memory channels', 'Bluetooth control', 'GPS + APRS', 'Text messaging', 'IP54 water resistant', 'Airband receive', 'Hand mic control'],
+    features: ['50W VHF/UHF', '180 memory channels', 'Bluetooth control', 'GPS tracking and position sharing', 'Text messaging', 'IP54 water resistant', 'Airband receive', 'Hand mic control'],
     tags: ['waterproof', 'gps', 'bluetooth', 'simple', 'professional'],
     digital: false
   },
@@ -906,8 +906,8 @@ const mobileRadioLineup = [
     key: 'd578', name: 'DMR D578 Mobile Radio Kit', price: 549, id: 4157,
     img: S+'2024/04/d578uviiiplus.png',
     tagline: 'Digital & encryption capable',
-    pitch: 'Full DMR digital radio with encryption, tri-band (2M/70cm/1.25M), GPS, APRS, crossband repeater, and Bluetooth. Interoperates with DMR 6X2 PRO and DA-7X2 handhelds.',
-    features: ['DMR digital + analog', 'Encryption capable', '50W tri-band', 'Crossband repeater', 'GPS + APRS', 'Bluetooth', 'Digital text messaging', 'IP54 water resistant'],
+    pitch: 'Full digital radio with encryption, tri-band (2M/70cm/1.25M), GPS, position sharing, built-in repeater, and Bluetooth. Interoperates with DMR 6X2 PRO and DA-7X2 handhelds.',
+    features: ['Digital (DMR) + analog modes', 'Encryption capable', '50W tri-band', 'Built-in repeater mode', 'GPS tracking and position sharing', 'Bluetooth', 'Digital text messaging', 'IP54 water resistant'],
     tags: ['encryption', 'digital', 'crossband', 'gps', 'bluetooth', 'professional'],
     digital: true
   },
@@ -3136,10 +3136,10 @@ const radioProducts = {
       { key: 'usbc-extended', name: 'USB-C Extended Battery (3800mAh) with Cable', desc: 'High-capacity extended battery with built-in USB-C port. Nearly triple the runtime of the factory battery.', price: 29, img: S+'2023/04/20250725_123654.jpg', id: 749 },
     ],
     accessories: [
-      { key: 'cheatsheets', name: 'Radio Cheat Sheets', desc: 'Waterproof laminated quick-reference cards. Common frequencies, GMRS channels, NATO phonetic alphabet, and emergency procedures.', price: 19, img: S+'2023/05/1000007350.jpg', id: 966 },
+      { key: 'cheatsheets', name: 'Radio Cheat Sheets', desc: 'Waterproof laminated quick-reference cards. Common frequencies, radio channels, NATO phonetic alphabet, and emergency procedures.', price: 19, img: S+'2023/05/1000007350.jpg', id: 966 },
       { key: 'speakermic', name: 'UV-5R Speakermic', desc: 'Clip-on speaker-microphone. Mount on your chest rig, collar, or shoulder strap for hands-free communication.', price: 29, img: S+'2023/07/20230530_1403102.jpg', id: 1430 },
       { key: 'eartube', name: 'Acoustic Eartube Headset', desc: 'Covert-style earpiece with push-to-talk. Keeps audio discreet, popular for security, events, and low-profile ops.', price: 19, img: S+'2023/07/20230530_1405362.jpg', id: 1431 },
-      { key: 'aprs', name: 'APRS Cable', desc: 'Audio interface cable connecting your radio to a smartphone. Run Rattlegram or APRSdroid for off-grid text messaging and position reporting.', price: 25, img: S+'2023/06/20230608_164856-1.jpg', id: 1177 },
+      { key: 'aprs', name: 'APRS Cable', desc: 'Audio interface cable connecting your radio to a smartphone. Run Rattlegram or APRSdroid for off-grid text messaging and position sharing.', price: 25, img: S+'2023/06/20230608_164856-1.jpg', id: 1177 },
       { key: 'progcable', name: 'USB Programming Cable', desc: 'Program custom frequencies via CHIRP software on your computer. Essential for serious operators who want full channel control.', price: 25, img: S+'2024/08/uv5r-programming-cable.jpg', id: 4838 },
       { key: 'exo', name: 'Exoskeleton', desc: 'Hard protective shell that prevents accidental PTT button presses and absorbs drops. Essential for field use.', price: 29, img: S+'2022/07/4A7A3860_white_square.png', id: 38 },
       { key: 'saddle', name: 'Kenwood Plug Saddle', desc: 'Rubber port protector that keeps moisture and debris out of the accessory jack when not in use.', price: 9, img: S+'2024/02/4A7A3864-White.png', id: 3701 },
@@ -3155,7 +3155,7 @@ const radioProducts = {
       { key: 'mini-spare', name: 'Extra UV-5R Mini Battery', desc: 'Spare USB-C rechargeable battery for the UV-5R Mini. Swap in the field for extended runtime.', price: 15, img: (typeof rmeKitBuilder!=='undefined'?rmeKitBuilder.pluginUrl:'')+'assets/img/placeholder-battery-mini.svg', id: 9451 },
     ],
     accessories: [
-      { key: 'cheatsheets', name: 'Radio Cheat Sheets', desc: 'Waterproof laminated quick-reference cards. Common frequencies, GMRS channels, NATO phonetic alphabet, and emergency procedures.', price: 19, img: S+'2023/05/1000007350.jpg', id: 966 },
+      { key: 'cheatsheets', name: 'Radio Cheat Sheets', desc: 'Waterproof laminated quick-reference cards. Common frequencies, radio channels, NATO phonetic alphabet, and emergency procedures.', price: 19, img: S+'2023/05/1000007350.jpg', id: 966 },
       { key: 'speakermic', name: 'UV-5R Speakermic', desc: 'Clip-on speaker-microphone. Mount on your chest rig, collar, or shoulder strap for hands-free communication.', price: 29, img: S+'2023/07/20230530_1403102.jpg', id: 1430 },
       { key: 'eartube', name: 'Acoustic Eartube Headset', desc: 'Covert-style earpiece with push-to-talk. Keeps audio discreet, popular for security, events, and low-profile ops.', price: 19, img: S+'2023/07/20230530_1405362.jpg', id: 1431 },
       { key: 'progcable', name: 'USB Programming Cable', desc: 'Program custom frequencies via CHIRP software on your computer.', price: 25, img: S+'2024/08/uv5r-programming-cable.jpg', id: 4838 },
@@ -3171,7 +3171,7 @@ const radioProducts = {
       { key: 'uvpro-spare', name: 'Extra UV-PRO Battery (2600mAh)', desc: 'Spare USB-C rechargeable battery for the UV-PRO. Swap in the field for extended ops without waiting to recharge.', price: 25, img: S+'2025/11/uvpro-battery-black.jpg', id: 8312 },
     ],
     accessories: [
-      { key: 'cheatsheets', name: 'Radio Cheat Sheets', desc: 'Waterproof laminated quick-reference cards. Common frequencies, GMRS channels, NATO phonetic alphabet, and emergency procedures.', price: 19, img: S+'2023/05/1000007350.jpg', id: 966 },
+      { key: 'cheatsheets', name: 'Radio Cheat Sheets', desc: 'Waterproof laminated quick-reference cards. Common frequencies, radio channels, NATO phonetic alphabet, and emergency procedures.', price: 19, img: S+'2023/05/1000007350.jpg', id: 966 },
       { key: 'bs22', name: 'BS-22 Wireless Speakermic', desc: 'Bluetooth wireless speaker-microphone designed for the UV-PRO. No cable, clips to your gear and pairs via Bluetooth.', price: 59, img: S+'2025/12/1000009367.jpg', id: 8491 },
       { key: 'kplug', name: 'K-Plug Adapter', desc: 'Adapter that lets you use standard Kenwood-plug accessories (speakermics, eartubes, headsets) with your UV-PRO.', price: 25, img: S+'2025/11/1000008462.jpg', id: 8268 },
       { key: 'eartube', name: 'Acoustic Eartube Headset', desc: 'Covert-style earpiece with push-to-talk. Requires K-Plug Adapter for the UV-PRO.', price: 19, img: S+'2023/07/20230530_1405362.jpg', id: 1431 },
@@ -3186,7 +3186,7 @@ const radioProducts = {
       { key: 'dmr6x2-spare', name: 'Extra DMR 6X2 PRO Battery (3100mAh)', desc: 'Spare USB-C rechargeable battery. Swap in the field for extended ops. 2-3 days of runtime per battery.', price: 45, img: (typeof rmeKitBuilder!=='undefined'?rmeKitBuilder.pluginUrl:'')+'assets/img/placeholder-battery-dmr.svg', id: 6868 },
     ],
     accessories: [
-      { key: 'cheatsheets', name: 'Radio Cheat Sheets', desc: 'Waterproof laminated quick-reference cards. Common frequencies, GMRS channels, NATO phonetic alphabet, and emergency procedures.', price: 19, img: S+'2023/05/1000007350.jpg', id: 966 },
+      { key: 'cheatsheets', name: 'Radio Cheat Sheets', desc: 'Waterproof laminated quick-reference cards. Common frequencies, radio channels, NATO phonetic alphabet, and emergency procedures.', price: 19, img: S+'2023/05/1000007350.jpg', id: 966 },
       { key: 'speakermic', name: 'UV-5R Speakermic', desc: 'Clip-on speaker-microphone with Kenwood plug. Compatible with the DMR 6X2 PRO.', price: 29, img: S+'2023/07/20230530_1403102.jpg', id: 1430 },
       { key: 'eartube', name: 'Acoustic Eartube Headset', desc: 'Covert-style earpiece with push-to-talk. Kenwood plug, plugs directly into the DMR 6X2 PRO.', price: 19, img: S+'2023/07/20230530_1405362.jpg', id: 1431 },
       { key: 'progcable', name: 'Spare DMR 6X2 PRO Programming Cable', desc: 'Additional spare USB programming cable. One is already included with your kit. This is a backup for a second location or travel bag.', price: 12, img: S+'2025/12/1000009966.jpg', id: 8711 },
@@ -3203,7 +3203,7 @@ const radioProducts = {
       { key: 'da7x2-spare', name: 'Extra DA-7X2 Battery (3100mAh)', desc: 'Spare USB-C rechargeable battery. Swap in the field for extended ops. 2-3 days of runtime per battery.', price: 45, img: (typeof rmeKitBuilder!=='undefined'?rmeKitBuilder.pluginUrl:'')+'assets/img/placeholder-battery-dmr.svg', id: 6868 },
     ],
     accessories: [
-      { key: 'cheatsheets', name: 'Radio Cheat Sheets', desc: 'Waterproof laminated quick-reference cards. Common frequencies, GMRS channels, NATO phonetic alphabet, and emergency procedures.', price: 19, img: S+'2023/05/1000007350.jpg', id: 966 },
+      { key: 'cheatsheets', name: 'Radio Cheat Sheets', desc: 'Waterproof laminated quick-reference cards. Common frequencies, radio channels, NATO phonetic alphabet, and emergency procedures.', price: 19, img: S+'2023/05/1000007350.jpg', id: 966 },
       { key: 'speakermic', name: 'UV-5R Speakermic', desc: 'Clip-on speaker-microphone with Kenwood plug. Compatible with the DA-7X2.', price: 29, img: S+'2023/07/20230530_1403102.jpg', id: 1430 },
       { key: 'eartube', name: 'Acoustic Eartube Headset', desc: 'Covert-style earpiece with push-to-talk. Kenwood plug, plugs directly into the DA-7X2.', price: 19, img: S+'2023/07/20230530_1405362.jpg', id: 1431 },
       { key: 'progcable', name: 'Spare DA-7X2 Programming Cable', desc: 'Additional spare USB programming cable. One is already included with your kit. This is a backup for a second location or travel bag.', price: 12, img: S+'2025/12/1000009966.jpg', id: 8711 },
@@ -4211,9 +4211,24 @@ function toggleAddlAntenna(key) {
   const item = additionalAntennas.find(x => x.key === key);
   const hasAdapter = selectedAntennas.size > 0 || selectedAddlAntennas.has('extraadapter');
   if (item && item.needsAdapter && !hasAdapter) {
-    // Show adapter prompt
     pendingAntennaKey = key;
-    document.getElementById('adapter-modal').classList.add('open');
+    // Magnetic base mount needs an actual antenna — suggest Foul Weather Whip
+    const isMountAccessory = (key === 'magmount' || key === 'mollemount');
+    const modal = document.getElementById('adapter-modal');
+    const modalBox = modal.querySelector('.modal-box');
+    const btns = modalBox.querySelectorAll('.modal-actions .kb-btn');
+    if (isMountAccessory) {
+      modalBox.querySelector('h3').textContent = 'Antenna Needed';
+      modalBox.querySelector('p').textContent = 'This mount needs a BNC antenna to go with it. We recommend the Foul Weather Whip — a flexible, durable whip that includes the BNC adapter.';
+      btns[0].textContent = 'Add Foul Weather Whip + Mount';
+      btns[1].textContent = 'I Have My Own Antenna';
+    } else {
+      modalBox.querySelector('h3').textContent = 'BNC Adapter Needed';
+      modalBox.querySelector('p').textContent = 'This antenna uses a BNC connector. Your radio has an SMA connector, so you\'ll need an SMA-F to BNC-F Adapter ($5) to use it.';
+      btns[0].textContent = 'Add Adapter + Antenna';
+      btns[1].textContent = 'I Have One Already';
+    }
+    modal.classList.add('open');
     return;
   }
 
@@ -4225,10 +4240,17 @@ function toggleAddlAntenna(key) {
 let pendingAntennaKey = null;
 
 function adapterModalAdd() {
-  // Add both the adapter and the pending antenna
-  adapterSuppressed = false;
-  selectedAddlAntennas.add('extraadapter');
-  selectedAddlAntennas.add(pendingAntennaKey);
+  // Mount accessories: add the Foul Weather Whip (which includes adapter) + the mount
+  var isMountAccessory = (pendingAntennaKey === 'magmount' || pendingAntennaKey === 'mollemount');
+  if (isMountAccessory) {
+    selectedAddlAntennas.add('foulweather');
+    selectedAddlAntennas.add(pendingAntennaKey);
+  } else {
+    // Standard flow: add adapter + the pending antenna
+    adapterSuppressed = false;
+    selectedAddlAntennas.add('extraadapter');
+    selectedAddlAntennas.add(pendingAntennaKey);
+  }
   pendingAntennaKey = null;
   document.getElementById('adapter-modal').classList.remove('open');
   renderAllAntennas();
@@ -4645,16 +4667,16 @@ const radioLineup = [
     tagline: 'More channels, smaller price',
     pitch: 'Packs 999 memory channels into the most affordable kit we offer. Built-in USB-C charging (no cradle needed) and Bluetooth programming from your phone. Also picks up aircraft frequencies.',
     solves: ['More coverage area / channels', 'Listen to aircraft', 'USB-C charging'],
-    features: ['999 memory channels', 'USB-C charging built in', 'Airband receive', 'Automatic NOAA weather alerts', 'Bluetooth phone programming'],
+    features: ['999 memory channels', 'USB-C charging built in', 'Airband receive', 'Automatic weather alerts', 'Bluetooth phone programming'],
     tags: ['budget', 'simple', 'channels', 'airband', 'usbc', 'compact', 'noaa']
   },
   {
     key: 'uv-pro', name: 'UV-PRO Essentials Kit', price: 159, id: 7862,
     img: S+'2025/09/20250904_100414-EDIT.jpg',
     tagline: 'Waterproof & connected',
-    pitch: 'IP67 waterproof, GPS location sharing, text messaging, and full Bluetooth TNC support for APRS and Winlink. Simple enough to start using immediately, but with room to grow into advanced digital modes. The only handheld we offer with Bluetooth smartphone control.',
+    pitch: 'IP67 waterproof, GPS location sharing, text messaging, and Bluetooth TNC support for off-grid messaging. Simple enough to start using immediately, but with room to grow into advanced digital modes. The only handheld we offer with Bluetooth smartphone control.',
     solves: ['Waterproof / water use', 'GPS / location sharing', 'Bluetooth / app control', 'Room to grow'],
-    features: ['IP67 waterproof', '180 memory channels', 'GPS + APRS built in', 'USB-C charging built in', 'Analog text messaging', 'Bluetooth TNC for APRS/Winlink', 'Mobile app control', 'Airband receive', 'Automatic NOAA weather alerts', 'FCC Part 90 commercial certified'],
+    features: ['IP67 waterproof', '180 memory channels', 'GPS tracking and position sharing', 'USB-C charging built in', 'Analog text messaging', 'Bluetooth TNC for off-grid messaging', 'Mobile app control', 'Airband receive', 'Automatic weather alerts', 'Commercial use certified'],
     tags: ['waterproof', 'gps', 'bluetooth', 'airband', 'grow', 'professional', 'usbc', 'channels', 'noaa', 'commercial']
   },
   {
@@ -4663,16 +4685,16 @@ const radioLineup = [
     tagline: 'Digital & encryption capable',
     pitch: 'Full DMR digital radio with encryption capability for private communications. 4000 memory channels, GPS, APRS, and digital text messaging. Our most economical path to encryption-capable digital radio.',
     solves: ['Privacy / encryption capable', 'More coverage area / channels', 'GPS / location sharing', 'Digital text messaging'],
-    features: ['DMR digital + analog', 'Encryption capable', '4000 memory channels', 'GPS + APRS', 'Digital text messaging', 'USB-C battery', 'IP54 water resistant', 'Automatic NOAA weather alerts', 'FCC Part 90 commercial certified'],
+    features: ['Digital (DMR) + analog modes', 'Encryption capable', '4000 memory channels', 'GPS tracking and position sharing', 'Digital text messaging', 'USB-C battery', 'IP54 water resistant', 'Automatic weather alerts', 'Commercial use certified'],
     tags: ['encryption', 'digital', 'channels', 'gps', 'professional', 'bluetooth', 'water-resistant', 'usbc', 'grow', 'noaa', 'commercial']
   },
   {
     key: 'da-7x2', name: 'DA-7X2 Essentials Kit', price: 299, id: 9050,
     img: S+'2026/02/1000011350.jpg',
     tagline: 'The best we offer',
-    pitch: 'Everything the DMR 6X2 PRO does, plus true dual receive, crossband repeat (use it as a portable repeater), airband monitoring, NXDN digital mode, and Bluetooth PTT. For operators who want no compromises.',
+    pitch: 'Everything the DMR 6X2 PRO does, plus true dual receive, built-in repeater mode (extend range for others), airband monitoring, extra digital modes, and Bluetooth PTT. For operators who want no compromises.',
     solves: ['Privacy / encryption capable', 'Crossband repeat', 'Listen to aircraft', 'Maximum capability'],
-    features: ['DMR + NXDN digital modes', 'Encryption capable', '4000 memory channels', 'Crossband repeat', 'True dual receive', 'Digital text messaging', 'GPS + APRS', 'Airband receive', 'Bluetooth PTT', 'USB-C battery', 'IP54 water resistant', 'Automatic NOAA weather alerts', 'FCC Part 90 commercial certified'],
+    features: ['Digital (DMR) modes, widest compatibility', 'Encryption capable', '4000 memory channels', 'Built-in repeater mode', 'True dual receive', 'Digital text messaging', 'GPS tracking and position sharing', 'Airband receive', 'Bluetooth PTT', 'USB-C battery', 'IP54 water resistant', 'Automatic weather alerts', 'Commercial use certified'],
     tags: ['encryption', 'digital', 'crossband', 'airband', 'professional', 'premium', 'bluetooth', 'water-resistant', 'usbc', 'gps', 'grow', 'channels', 'noaa', 'commercial']
   },
 ];
@@ -4705,17 +4727,17 @@ const interviewQuestions = [
   {
     id: 'needs',
     question: "What do you need?",
-    sub: "Select all that apply. Skip if you just want a general-purpose radio.",
+    sub: "Select all that apply.",
     multi: true,
     options: [
+      { key: 'nopreference', icon: ICO.nopref, label: 'Just the basics', detail: 'A solid, reliable radio — just recommend what works best', tags: [] },
       { key: 'water', icon: ICO.droplet, label: 'Waterproof / water resistant', detail: 'Rain, boating, submersion', tags: ['waterproof'] },
-      { key: 'gps', icon: ICO.signal, label: 'GPS location sharing', detail: 'Track and share positions via APRS', tags: ['gps'] },
+      { key: 'gps', icon: ICO.signal, label: 'GPS location sharing', detail: 'Track and share positions with other radios', tags: ['gps'] },
       { key: 'bluetooth', icon: ICO.bluetooth, label: 'Bluetooth', detail: 'Wireless speakermic or phone control', tags: ['bluetooth'] },
       { key: 'texting', icon: ICO.channels, label: 'Text messaging', detail: 'Send text over radio without cell service', tags: ['grow', 'digital'] },
       { key: 'encryption', icon: ICO.lock, label: 'Secure / encryption capable', detail: 'Private, encrypted communications', tags: ['encryption', 'digital', 'professional', 'commercial'] },
       { key: 'repeater', icon: ICO.crossband, label: 'Built-in repeater mode', detail: 'Your radio becomes a relay to extend range for others', tags: ['crossband', 'grow'] },
       { key: 'channels', icon: ICO.channels, label: 'Increased channel capacity', detail: 'Program repeaters across multiple locations and regions', tags: ['channels'] },
-      { key: 'nopreference', icon: ICO.nopref, label: 'No specific needs', detail: 'Just recommend what works best', tags: [] },
     ]
   },
 ];
@@ -4739,6 +4761,37 @@ if (_adminConfig) {
     interviewQuestions.length = 0;
     _adminConfig.interviewQuestions.forEach(q => interviewQuestions.push(q));
   }
+}
+
+// ── Apply live WooCommerce prices ──
+// Overrides hardcoded prices with current WC prices passed from PHP via wp_localize_script.
+if (typeof rmeKitBuilder !== 'undefined' && rmeKitBuilder.prices) {
+  const _wcPrices = rmeKitBuilder.prices;
+  function _applyPrices(obj) {
+    if (Array.isArray(obj)) {
+      obj.forEach(item => _applyPrices(item));
+    } else if (obj && typeof obj === 'object') {
+      if (obj.id && _wcPrices[String(obj.id)] !== undefined) {
+        obj.price = _wcPrices[String(obj.id)];
+      }
+      Object.values(obj).forEach(val => {
+        if (Array.isArray(val) || (val && typeof val === 'object' && !val.tagName)) {
+          _applyPrices(val);
+        }
+      });
+    }
+  }
+  _applyPrices(radioLineup);
+  _applyPrices(mobileRadioLineup);
+  _applyPrices(hfRadioLineup);
+  _applyPrices(scannerRadioLineup);
+  _applyPrices(mobileProducts);
+  _applyPrices(baseProducts);
+  _applyPrices(hfProducts);
+  _applyPrices(coaxProducts);
+  _applyPrices(scannerProducts);
+  _applyPrices(sharedAdditionalAntennas);
+  _applyPrices(radioProducts);
 }
 
 let interviewStep = 0;
@@ -5305,16 +5358,19 @@ function rmeKbAddToCart(items, kitName) {
   return fetch(rmeKitBuilder.ajaxUrl + '?action=rme_kb_add_to_cart&nonce=' + rmeKitBuilder.nonce, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ items: normalized, kitName: kitName || '' })
+    body: JSON.stringify({ items: normalized, kitName: kitName || '', discount: window._kbsDiscount || null })
   })
   .then(r => r.json())
   .then(data => {
     if (data.success) {
       const count = data.data.added.length;
       const errors = data.data.errors;
-      // Update header cart badge
+      // Update header cart badge and refresh WC mini-cart fragments
       const badge = document.querySelector('.rme-cart-count');
       if (badge && data.data.cartCount) badge.textContent = data.data.cartCount;
+      if (typeof jQuery !== 'undefined' && jQuery(document.body).trigger) {
+        jQuery(document.body).trigger('wc_fragment_refresh');
+      }
       // Log partial errors to console but don't block the user
       if (errors.length > 0) {
         console.warn('RME KB: Some items had issues:', errors);

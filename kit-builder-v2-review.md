@@ -193,82 +193,7 @@ Mobile:
 
 ### Still Needs Attention
 - **Pre-select toggle on setup question:** When `preSelectSetup()` pre-selects "Handheld" based on reach answers, clicking the pre-selected option toggles it OFF rather than confirming it. This means users who click the highlighted option to "confirm" their choice accidentally deselect it. Fix: either don't count clicks on pre-selected items as toggles, or add a visual indicator that the option is already selected.
-
-### Recently Fixed
-- **Dual cart buttons in review:** FIXED. `renderReview()` CTA buttons suppressed in V2 scroll mode via `window._rmeScrollMode` check. Only "Continue to Checkout" from the section template remains.
-- **Mounting section state leak:** FIXED. Phase 4 of `kbsCompleteSection` now checks if `renderNext()` already handled a section skip before overwriting `sectionState`. URL hash no longer shows `sec=mounting` for handheld kits.
-
----
-
-## Automated Test Results (2026-04-06)
-
-**35 passed, 3 failed out of 38 tests.** 2 bugs found and fixed (see above).
-
-### A. URL State Encoding (8/10 -> 10/10 after fix)
-| Test | Result |
-|------|--------|
-| A1. URL updates on radio selection | PASS - hash contains `radio=uv5r` |
-| A2. URL updates on antenna selection | PASS - hash contains `ant=foulweather` |
-| A3. URL updates on programming choice | PASS (after mounting fix) |
-| A4. URL updates on quantity | PASS (after mounting fix) |
-| A5. URL contains interview answers | PASS - `budget=mid&reach=local&setup=handheld` |
-| A6. PII is base64 encoded | PASS - zip 90210 stored as base64, not plaintext |
-| A7. Resume prompt appears on hash URL | PASS - "Welcome Back" modal shown |
-| A8. Resume restores state correctly | PASS - antennas active, UV-5R in price bar |
-| A9. Start Fresh clears hash | PASS - hash cleared, email section active |
-| A10. URL survives page refresh | PASS - prompt appears with correct radio |
-
-### B. Full Guided Flow (14/14)
-| Test | Result |
-|------|--------|
-| B11. Email capture | PASS |
-| B12. Help Me Choose path | PASS |
-| B13. Budget question | PASS |
-| B14. Reach question wording | PASS - "How far do you need to communicate?" |
-| B15. Setup type - no license text | PASS |
-| B16. Features + See Results | PASS |
-| B17. Radio recommendation | PASS - two cards shown |
-| B18. Antenna labels + adapter text | PASS - "OUTDOOR & ACTIVE USE", plain adapter language |
-| B19. Battery runtime text | PASS - "approximately X hours" |
-| B20. Accessories | PASS |
-| B21. Programming text | PASS - "local channels and weather alerts", "I'll Program It Myself" |
-| B22. Review button text | PASS - "Continue to Checkout" |
-| B23. Quantity picker | PASS |
-| B24. Checkmarks on completed sections | PASS - checkmark character, not "(DONE)" |
-
-### C. Direct Path (6/6)
-| Test | Result |
-|------|--------|
-| C25. Skip email | PASS |
-| C26. I Know What I Want | PASS |
-| C27. Category labels - no license text | PASS |
-| C28. Select Handheld | PASS |
-| C29. Mobile radio grid layout | PASS - image-on-top cards |
-| C30. UV-5R selection + price bar | PASS - $59 |
-
-### D. Price Bar (3/3)
-| Test | Result |
-|------|--------|
-| D31. Shows total not base+addons | PASS - $104 |
-| D32. No Add to Cart in price bar | PASS |
-| D33. TOTAL label | PASS |
-
-### E. Review Section (1/2 -> 2/2 after fix)
-| Test | Result |
-|------|--------|
-| E34. Remove confirmation dialog | PASS |
-| E35. No dual buttons | PASS (after fix) - single CTA path |
-
-### F. Hidden Sections (1/1)
-| Test | Result |
-|------|--------|
-| F36. Locked sections hidden | PASS |
-
-### G. Edge Cases (2/2)
-| Test | Result |
-|------|--------|
-| G37. Out of stock handling | PASS (no OOS radios currently) |
-| G38. Empty kit review | PASS |
+- **Dual cart buttons in review:** The review section has both "ADD TO CART" (from renderReview) and "CONTINUE TO CHECKOUT" (from section template). These need to be consolidated into a single flow path.
 
 ---
 
@@ -276,13 +201,13 @@ Mobile:
 
 | Severity | Count |
 |----------|-------|
-| High Priority | 1 (setup pre-select toggle) |
+| High Priority | 3 |
 | Medium Priority | 6 |
 | Low Priority / Polish | 5 |
 
-**20 of 23 original issues resolved.** Dual button and mounting state bugs found in testing and fixed.
+**18 of 23 original issues resolved.** 3 new issues identified, plus 2 carried forward (setup answer still blank in edge case, dual buttons in review).
 
-**Top actions before launch:**
-1. Fix the pre-select toggle behavior on the setup type question
-2. Smooth the sticky action button gradient and fix the volume discount text being covered
-3. Clean up remaining GMRS references in product descriptions (cheat sheets, radio features)
+**Top 3 actions before launch:**
+1. Fix the dual button situation in the review section (remove "ADD TO CART" from renderReview, let the flow go Review -> Quantity -> Add to Cart)
+2. Fix the pre-select toggle behavior on the setup type question so clicking a pre-selected option doesn't deselect it
+3. Smooth the sticky action button gradient and fix the volume discount text being covered
