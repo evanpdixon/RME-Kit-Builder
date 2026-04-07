@@ -2689,7 +2689,12 @@
     if (radioName) {
       summaryHtml = '<strong>' + radioName + '</strong>';
       if (selectedAntennas.size || selectedAccessories.size) {
-        summaryHtml += '<br><span style="color:#888;font-size:13px">' + (selectedAntennas.size + selectedAddlAntennas.size) + ' antenna(s), ' + selectedAccessories.size + ' accessory(ies)</span>';
+        var antCount = selectedAntennas.size + selectedAddlAntennas.size;
+        var accCount = selectedAccessories.size;
+        var parts = [];
+        if (antCount) parts.push(antCount + (antCount === 1 ? ' antenna' : ' antennas'));
+        if (accCount) parts.push(accCount + (accCount === 1 ? ' accessory' : ' accessories'));
+        summaryHtml += '<br><span style="color:#888;font-size:13px">' + parts.join(', ') + '</span>';
       }
     } else {
       // Interview in progress — show what we know
