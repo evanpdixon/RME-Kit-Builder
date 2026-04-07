@@ -43,7 +43,38 @@ function rme_kb_add_to_cart() {
             $cart_item_data['_rme_kit_name'] = $kit_name;
         }
 
-        $cart_item_key = WC()->cart->add_to_cart( $product_id, $quantity, 0, array(), $cart_item_data );
+        // For variations: resolve parent ID and fill in "any" attributes with defaults
+        $variation_id = 0;
+        $variation_attrs = array();
+        if ( $product->is_type( 'variation' ) ) {
+            $variation_id = $product_id;
+            $product_id = $product->get_parent_id();
+            $parent = wc_get_product( $product_id );
+            if ( $parent ) {
+                foreach ( $parent->get_attributes() as $attr ) {
+                    $attr_name = $attr->get_name();
+                    $tax_name = wc_variation_attribute_name( $attr_name );
+                    // Get the value set on the variation
+                    $var_value = $product->get_attribute( $attr_name );
+                    if ( $var_value ) {
+                        $variation_attrs[ $tax_name ] = $var_value;
+                    } else {
+                        // "Any" attribute — use first option as default
+                        $options = $attr->get_options();
+                        if ( ! empty( $options ) ) {
+                            if ( $attr->is_taxonomy() ) {
+                                $term = get_term( $options[0] );
+                                $variation_attrs[ $tax_name ] = $term ? $term->slug : $options[0];
+                            } else {
+                                $variation_attrs[ $tax_name ] = $options[0];
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        $cart_item_key = WC()->cart->add_to_cart( $product_id, $quantity, $variation_id, $variation_attrs, $cart_item_data );
         if ( $cart_item_key ) {
             $added[] = array(
                 'id'   => $product_id,
