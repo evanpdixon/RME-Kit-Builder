@@ -191,7 +191,7 @@
   border-color: #2a2a2a;
 }
 .kb-section--complete .kb-section__number {
-  background: var(--rme-green);
+  background: #8aaa8a;
   color: #111;
   transform: scale(0.85);
 }
@@ -232,8 +232,8 @@
   gap: 12px;
   position: sticky;
   bottom: 70px; /* above sticky price bar */
-  background: linear-gradient(to bottom, transparent 0%, #000 20%);
-  padding: 24px 0 8px;
+  background: linear-gradient(to bottom, transparent 0%, #000 50%);
+  padding: 40px 0 8px;
   z-index: 5;
 }
 .kb-section__actions .kbs-consult-escape {
@@ -670,13 +670,27 @@
 .kbp-subtotal-label { color: #666; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
 .kbp-total { font-size: 24px; font-weight: 700; color: #fdd351; white-space: nowrap; }
 .kbp-addons { font-size: 14px; font-weight: 500; color: #c4a83a; }
-.kbp-consult {
-  font-size: 12px; color: #888; text-decoration: none; padding: 6px 12px;
-  white-space: nowrap;
+/* ── Floating Help Button ──────────────── */
+.kbs-consult-float {
+  position: fixed;
+  bottom: 80px; right: 20px;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  color: #c4a83a;
+  font-size: 20px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  text-decoration: none;
+  z-index: 10001;
+  transition: background 0.2s, border-color 0.2s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
 }
-.kbp-consult span { color: #aaa; text-decoration: underline; font-size: 11px; }
-.kbp-consult:hover { color: #fdd351; }
-.kbp-consult:hover span { color: #fdd351; }
+.kbs-consult-float:hover {
+  background: #222;
+  border-color: #c4a83a;
+  color: #fdd351;
+}
 .kb-btn--cart {
   padding: 14px 36px;
   font-size: 16px;
@@ -695,8 +709,7 @@
   .kbp-label { font-size: 12px; }
   .kbp-total { font-size: 22px; }
   .kb-scroll-price-bar .kb-btn--cart { display: none; }
-  .kbp-consult { padding: 6px 8px; font-size: 16px; line-height: 1; }
-  .kbp-consult span { display: none; }
+  .kbs-consult-float { bottom: 70px; right: 12px; width: 40px; height: 40px; font-size: 18px; }
   .kbs-iq-options { grid-template-columns: 1fr; }
   /* Keep active indicator on mobile: use top border instead of left */
   .kb-section--active { border-color: var(--rme-border); border-left-width: 1px; border-top: 3px solid var(--rme-gold); }
@@ -930,7 +943,7 @@ body.kb-modal-open { overflow: hidden; }
 .kb-section--complete .kb-section__header::after {
   content: '\2713';
   font-size: 16px;
-  color: #6a6;
+  color: #8aaa8a;
   margin-left: auto;
 }
 .kb-section--active .kb-section__header::after {

@@ -237,5 +237,7 @@
     <span class="kbp-subtotal-label">Total</span>
     <span class="kbp-total" id="kbs-total"></span>
   </div>
-  <a href="#" id="kbs-consult-btn" class="kbp-consult kbs-consult-link" target="_blank">&#128222; <span>Book a consultation</span></a>
 </div>
+
+<!-- Floating Help Button -->
+<a href="#" id="kbs-consult-float" class="kbs-consult-float kbs-consult-link" target="_blank" title="Book a consultation" style="display:none">?</a>

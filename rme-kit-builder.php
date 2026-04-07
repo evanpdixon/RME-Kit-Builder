@@ -76,6 +76,53 @@ function rme_kb_enqueue_scroll_assets() {
 }
 
 /**
+ * Get live WooCommerce prices for all kit builder products.
+ * Returns an associative array of product_id => price (float).
+ */
+function rme_kb_get_live_prices() {
+    if ( ! function_exists( 'wc_get_product' ) ) {
+        return array();
+    }
+
+    $prices = array();
+    $product_ids = rme_kb_extract_product_ids();
+
+    foreach ( $product_ids as $pid ) {
+        $product = wc_get_product( $pid );
+        if ( $product ) {
+            $prices[ (string) $pid ] = (float) $product->get_price();
+        }
+    }
+
+    return $prices;
+}
+
+/**
+ * Extract all product IDs referenced in the kit builder JS data.
+ * Cached in a transient to avoid re-parsing on every page load.
+ */
+function rme_kb_extract_product_ids() {
+    $cached = get_transient( 'rme_kb_product_ids' );
+    if ( $cached !== false ) {
+        return $cached;
+    }
+
+    $js_file = RME_KB_PATH . 'assets/js/kit-builder.js';
+    if ( ! file_exists( $js_file ) ) {
+        return array();
+    }
+
+    $contents = file_get_contents( $js_file );
+    preg_match_all( '/\bid:\s*(\d+)/', $contents, $matches );
+    $ids = array_unique( array_map( 'intval', $matches[1] ) );
+    $ids = array_filter( $ids, function( $id ) { return $id > 0; } );
+    $ids = array_values( $ids );
+
+    set_transient( 'rme_kb_product_ids', $ids, DAY_IN_SECONDS );
+    return $ids;
+}
+
+/**
  * Enqueue CSS and JS only on pages with the shortcode.
  */
 function rme_kb_enqueue_assets() {
@@ -107,6 +154,7 @@ function rme_kb_enqueue_assets() {
         'mountsUrl'    => RME_KB_URL . 'assets/data/vehicle-mounts.json',
         'pluginUrl'    => RME_KB_URL,
         'calendlyUrl'  => $config['calendlyUrl'] ?? 'https://calendly.com/radiomadeeasy/radio-consultation',
+        'prices'       => rme_kb_get_live_prices(),
     ) );
 }
 

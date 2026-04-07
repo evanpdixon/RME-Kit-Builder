@@ -14,6 +14,12 @@
   // Signal to kit-builder.js that step-based navigation should not fire
   window._rmeScrollMode = true;
 
+  // Move price bar to document.body so no parent transform/filter can break position:fixed
+  var _priceBar = document.getElementById('kb-scroll-price-bar');
+  if (_priceBar && _priceBar.parentElement !== document.body) {
+    document.body.appendChild(_priceBar);
+  }
+
   // Track whether a radio has been selected in THIS flow (not leftover from base JS)
   let kbsRadioSelected = false;
 
@@ -457,9 +463,11 @@
   // ── Price Bar ─────────────────────────────────
   function updateScrollPriceBar() {
     const bar = document.getElementById('kb-scroll-price-bar');
+    const floatBtn = document.getElementById('kbs-consult-float');
     if (!bar) return;
-    if (!kbsRadioSelected) { bar.style.display = 'none'; return; }
+    if (!kbsRadioSelected) { bar.style.display = 'none'; if (floatBtn) floatBtn.style.display = 'none'; return; }
     bar.style.display = '';
+    if (floatBtn) floatBtn.style.display = '';
 
     const lineup = kbsGetRadioLineup();
     const r = lineup.find(x => x.key === selectedRadioKey) || radioLineup.find(x => x.key === selectedRadioKey);
@@ -1033,8 +1041,14 @@
     if (multi) {
       if (!kbsAnswers[qId]) kbsAnswers[qId] = [];
       const idx = kbsAnswers[qId].indexOf(optKey);
-      if (idx >= 0) kbsAnswers[qId].splice(idx, 1);
-      else kbsAnswers[qId].push(optKey);
+      if (idx >= 0) {
+        // Don't deselect the last remaining option — user must select something else first
+        if (kbsAnswers[qId].length > 1) {
+          kbsAnswers[qId].splice(idx, 1);
+        }
+      } else {
+        kbsAnswers[qId].push(optKey);
+      }
     } else {
       kbsAnswers[qId] = optKey;
     }
