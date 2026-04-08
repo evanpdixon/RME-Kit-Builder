@@ -295,7 +295,7 @@
 
 /* Column 3: check row 1, price row 2, tight stack mirroring image height */
 #rme-kit-builder-scroll #rme-kit-builder .opt-card .oc-check { grid-row: 1; grid-column: 3; align-self: center; justify-self: center; margin: 0; }
-#rme-kit-builder-scroll #rme-kit-builder .opt-card .oc-body { grid-row: 1; grid-column: 2; align-self: center; }
+#rme-kit-builder-scroll #rme-kit-builder .opt-card .oc-body { grid-row: 1; grid-column: 2; align-self: center; min-width: 0; overflow: hidden; }
 #rme-kit-builder-scroll #rme-kit-builder .opt-card .oc-name { font-size: 15px; font-weight: 600; }
 #rme-kit-builder-scroll #rme-kit-builder .opt-card .oc-price {
   grid-row: 2; grid-column: 3; align-self: center; justify-self: center;
@@ -360,6 +360,8 @@
   border-radius: 8px;
   font-size: 14px; font-weight: 600;
   min-height: 48px;
+  height: 48px;
+  box-sizing: border-box;
   cursor: pointer;
   border: 2px solid transparent;
   text-transform: uppercase;
@@ -711,7 +713,7 @@
   color: #fdd351;
 }
 .kb-btn--cart {
-  padding: 14px 36px;
+  padding: 12px 36px;
   font-size: 16px;
 }
 
