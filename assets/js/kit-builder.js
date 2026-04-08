@@ -3122,7 +3122,7 @@ const sharedAdditionalAntennas = [
   { key: 'wearable', name: 'Wearable BNC Antenna', bestUse: 'Best for: Hands-Free Carry', desc: 'Low-profile antenna that lays flat against your body. Clips to a vest, backpack strap, or belt for a streamlined setup while you move.', price: 69, img: S+'2022/10/20221006_154507.jpg', id: 460, needsAdapter: true },
   { key: 'slimjim', name: 'Roll Up Slim Jim Antenna', bestUse: 'Best for: Maximum Range', desc: 'Portable antenna you can hang from a tree branch, window, or ridgeline. Dramatically extends your range. Great for camping, emergencies, or home use.', price: 49, img: S+'2022/08/12200-2-scaled.jpg', id: 99, needsAdapter: true },
   { key: 'magmount', name: 'Magnetic BNC Antenna Base', bestUse: 'Best for: Vehicle Use', desc: 'Magnetic base mount for any antenna. Stick on a vehicle roof, toolbox, or any metal surface for instant mobile range boost.', price: 39, img: S+'2022/10/IMGP8553-scaled.jpg', id: 521, needsAdapter: true },
-  { key: 'mollemount', name: 'BNC MOLLE Antenna Mount', bestUse: 'Best for: Backpack & Vest Mounting', desc: 'Attach any antenna to the webbing on your vest or backpack. Keeps the antenna off the radio so it\'s not in the way.', price: 19, img: S+'2025/12/1000009993.jpg', id: 8717, needsAdapter: true },
+  { key: 'mollemount', name: 'BNC MOLLE Antenna Mount', bestUse: 'Best for: Backpack & Vest Mounting', desc: 'Attach any antenna to the webbing on your vest or backpack. Keeps the antenna off the radio so it\'s not in the way. Includes BNC coax cable and 2-inch clip.', price: 69, img: S+'2025/12/1000009993.jpg', id: 8717, needsAdapter: true },
   { key: 'extraadapter', name: 'Extra SMA-F to BNC-F Adapter', desc: 'Spare BNC adapter so you can leave one on a mag mount or other accessory and still have one for the radio. One adapter is already included if you selected an antenna upgrade.', price: 5, img: S+'2022/09/smaftobncf.jpg', id: 456, needsAdapter: false, isAdapter: true },
 ];
 
@@ -4052,10 +4052,10 @@ function renderReview() {
   const volTier = getVolumeTier(catCount);
   const total = calcTotal();
   if (volTier) {
-    const discount = Math.round(BASE_PRICE * volTier.pct / 100);
+    const discount = Math.round(total * volTier.pct / 100);
     items.push(`
       <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 16px;background:#1a2a1a;border:1px solid #2a3a2a;border-radius:8px;margin-top:8px">
-        <span style="color:#5c5;font-size:14px;font-weight:500">${volTier.label} Discount (${volTier.pct}% off base)</span>
+        <span style="color:#5c5;font-size:14px;font-weight:500">${volTier.label} Discount (${volTier.pct}%)</span>
         <span style="color:#5c5;font-size:16px;font-weight:700">-$${discount}</span>
       </div>
     `);

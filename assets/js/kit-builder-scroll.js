@@ -553,12 +553,13 @@
     if (programmingChoice === 'multi') total += 10;
 
     // Apply cross-category 5% discount when building 2nd+ category
-    var crossCatDiscount = kbsCompletedCategories.length > 0 ? Math.round(BASE_PRICE * 5 / 100) : 0;
+    var crossCatDiscount = kbsCompletedCategories.length > 0 ? Math.round(total * 5 / 100) : 0;
     total -= crossCatDiscount;
 
-    // Apply quantity and volume discount
+    // Apply quantity and volume discount (on full kit total, not just base price)
     var tier = (kbsKitQty >= 2 && typeof getVolumeTier === 'function') ? getVolumeTier(kbsKitQty) : null;
-    var perKitDiscount = tier ? Math.round(BASE_PRICE * tier.pct / 100) : 0;
+    var preDiscountTotal = total + crossCatDiscount; // full per-kit total before any discounts
+    var perKitDiscount = tier ? Math.round(preDiscountTotal * tier.pct / 100) : 0;
     var grandTotal = (total - perKitDiscount) * kbsKitQty;
 
     var totalEl = document.getElementById('kbs-total');
@@ -703,19 +704,20 @@
 
     kbsKitInCart = true;
 
-    // Calculate any applicable discount
+    // Calculate any applicable discount (based on full kit total, not just base price)
     var discountAmount = 0;
     var discountLabel = '';
-    // Cross-category discount: 5% off base price on 2nd+ category
-    if (kbsCompletedKits.length > 0 && typeof BASE_PRICE !== 'undefined') {
-      discountAmount = Math.round(BASE_PRICE * 5 / 100) * kbsKitQty;
+    var kitTotal = (typeof calcTotal === 'function') ? calcTotal() : BASE_PRICE;
+    // Cross-category discount: 5% off full kit on 2nd+ category
+    if (kbsCompletedKits.length > 1 && typeof kitTotal !== 'undefined') {
+      discountAmount = Math.round(kitTotal * 5 / 100) * kbsKitQty;
       discountLabel = 'Multi-Kit Discount (5%)';
     }
     // Volume discount: same category qty 2+
-    if (kbsKitQty >= 2 && typeof getVolumeTier === 'function' && typeof BASE_PRICE !== 'undefined') {
+    if (kbsKitQty >= 2 && typeof getVolumeTier === 'function' && typeof kitTotal !== 'undefined') {
       var volTier = getVolumeTier(kbsKitQty);
       if (volTier) {
-        var volDiscount = Math.round(BASE_PRICE * kbsKitQty * volTier.pct / 100);
+        var volDiscount = Math.round(kitTotal * kbsKitQty * volTier.pct / 100);
         if (volDiscount > discountAmount) {
           discountAmount = volDiscount;
           discountLabel = volTier.label + ' Discount (' + volTier.pct + '%)';
