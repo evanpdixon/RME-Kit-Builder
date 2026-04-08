@@ -1444,10 +1444,10 @@
       '</div>' +
       '<div class="color-picker" style="justify-content:center;margin-bottom:20px">' +
         '<span class="color-picker-label">Color:</span>' +
-        '<div class="color-swatch color-swatch--black' + (uvproRadioColor === 'black' ? ' active' : '') + '" ' +
-          'onclick="kbsPickColor(\'black\')" title="Black"></div>' +
         '<div class="color-swatch color-swatch--tan' + (uvproRadioColor === 'tan' ? ' active' : '') + '" ' +
           'onclick="kbsPickColor(\'tan\')" title="Tan / Coyote"></div>' +
+        '<div class="color-swatch color-swatch--black' + (uvproRadioColor === 'black' ? ' active' : '') + '" ' +
+          'onclick="kbsPickColor(\'black\')" title="Black"></div>' +
         '<span class="color-swatch-name">' + (uvproRadioColor === 'black' ? 'Black' : 'Tan / Coyote') + '</span>' +
       '</div>' +
       '<div style="text-align:center">' +
