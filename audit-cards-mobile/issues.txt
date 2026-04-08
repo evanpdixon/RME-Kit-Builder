@@ -1,0 +1,60 @@
+INTERVIEW OPTION HEIGHT VARIANCE [Direct-Categories]: 81, 102px
+INTERVIEW OPTION HEIGHT VARIANCE [Handheld-Radios]: 81, 102px
+CARD HEIGHT VARIANCE [Handheld-Antennas] grid-1: 7 heights, range 121-309px across 9 cards
+INTERVIEW OPTION HEIGHT VARIANCE [Handheld-Antennas]: 81, 102px
+CARD HEIGHT VARIANCE [Handheld-Battery] grid-1: 7 heights, range 121-309px across 9 cards
+CARD HEIGHT VARIANCE [Handheld-Battery] grid-2: 3 heights, range 139-262px across 3 cards
+INTERVIEW OPTION HEIGHT VARIANCE [Handheld-Battery]: 81, 102px
+CARD HEIGHT VARIANCE [Handheld-Accessories] grid-1: 7 heights, range 121-309px across 9 cards
+CARD HEIGHT VARIANCE [Handheld-Accessories] grid-2: 3 heights, range 139-262px across 3 cards
+CARD HEIGHT VARIANCE [Handheld-Accessories] grid-3: 6 heights, range 173-233px across 10 cards
+INTERVIEW OPTION HEIGHT VARIANCE [Handheld-Accessories]: 81, 102px
+CARD HEIGHT VARIANCE [Handheld-Programming] grid-1: 7 heights, range 121-309px across 9 cards
+CARD HEIGHT VARIANCE [Handheld-Programming] grid-2: 3 heights, range 139-262px across 3 cards
+CARD HEIGHT VARIANCE [Handheld-Programming] grid-3: 6 heights, range 173-233px across 10 cards
+CARD HEIGHT VARIANCE [Handheld-Programming] grid-4: 3 heights, range 186-394px across 3 cards
+INTERVIEW OPTION HEIGHT VARIANCE [Handheld-Programming]: 81, 102px
+CARD HEIGHT VARIANCE [Handheld-Review] grid-1: 7 heights, range 121-309px across 9 cards
+CARD HEIGHT VARIANCE [Handheld-Review] grid-2: 3 heights, range 139-262px across 3 cards
+CARD HEIGHT VARIANCE [Handheld-Review] grid-3: 6 heights, range 173-233px across 10 cards
+CARD HEIGHT VARIANCE [Handheld-Review] grid-4: 3 heights, range 186-394px across 3 cards
+BTN HEIGHT MISMATCH [Handheld-Review]: "Back"=49px, "Continue to Checkout"=45px
+INTERVIEW OPTION HEIGHT VARIANCE [Handheld-Review]: 81, 102px
+INTERVIEW OPTION HEIGHT VARIANCE [Vehicle-Radios]: 81, 102px
+INTERVIEW OPTION HEIGHT VARIANCE [Vehicle-Mounting]: 81, 102px
+CARD HEIGHT VARIANCE [Vehicle-Antennas] grid-1: 7 heights, range 180-275px across 7 cards
+INTERVIEW OPTION HEIGHT VARIANCE [Vehicle-Antennas]: 81, 102px
+CARD HEIGHT VARIANCE [Vehicle-Battery] grid-1: 7 heights, range 180-275px across 7 cards
+INTERVIEW OPTION HEIGHT VARIANCE [Vehicle-Battery]: 81, 102px
+CARD HEIGHT VARIANCE [Vehicle-Accessories] grid-1: 7 heights, range 180-275px across 7 cards
+CARD HEIGHT VARIANCE [Vehicle-Accessories] grid-3: 3 heights, range 179-215px across 3 cards
+INTERVIEW OPTION HEIGHT VARIANCE [Vehicle-Accessories]: 81, 102px
+CARD HEIGHT VARIANCE [Vehicle-Programming] grid-1: 7 heights, range 180-275px across 7 cards
+CARD HEIGHT VARIANCE [Vehicle-Programming] grid-3: 3 heights, range 179-215px across 3 cards
+CARD HEIGHT VARIANCE [Vehicle-Programming] grid-4: 3 heights, range 186-394px across 3 cards
+INTERVIEW OPTION HEIGHT VARIANCE [Vehicle-Programming]: 81, 102px
+CARD HEIGHT VARIANCE [Vehicle-Review] grid-1: 7 heights, range 180-275px across 7 cards
+CARD HEIGHT VARIANCE [Vehicle-Review] grid-3: 3 heights, range 179-215px across 3 cards
+CARD HEIGHT VARIANCE [Vehicle-Review] grid-4: 3 heights, range 186-394px across 3 cards
+BTN HEIGHT MISMATCH [Vehicle-Review]: "Back"=49px, "Continue to Checkout"=45px
+INTERVIEW OPTION HEIGHT VARIANCE [Vehicle-Review]: 81, 102px
+RADIO CARD HEIGHT VARIANCE [Scanner-Radios]: 3 heights, range 299-319px
+INTERVIEW OPTION HEIGHT VARIANCE [Scanner-Radios]: 81, 102px
+CARD HEIGHT VARIANCE [Scanner-Antennas] grid-1: 2 heights, range 238-287px across 2 cards
+RADIO CARD HEIGHT VARIANCE [Scanner-Antennas]: 3 heights, range 299-319px
+INTERVIEW OPTION HEIGHT VARIANCE [Scanner-Antennas]: 81, 102px
+CARD HEIGHT VARIANCE [Scanner-Accessories] grid-1: 2 heights, range 238-287px across 2 cards
+CARD HEIGHT VARIANCE [Scanner-Accessories] grid-3: 3 heights, range 119-197px across 4 cards
+RADIO CARD HEIGHT VARIANCE [Scanner-Accessories]: 3 heights, range 299-319px
+INTERVIEW OPTION HEIGHT VARIANCE [Scanner-Accessories]: 81, 102px
+CARD HEIGHT VARIANCE [Scanner-Programming] grid-1: 2 heights, range 238-287px across 2 cards
+CARD HEIGHT VARIANCE [Scanner-Programming] grid-3: 3 heights, range 119-197px across 4 cards
+CARD HEIGHT VARIANCE [Scanner-Programming] grid-4: 3 heights, range 186-394px across 3 cards
+RADIO CARD HEIGHT VARIANCE [Scanner-Programming]: 3 heights, range 299-319px
+INTERVIEW OPTION HEIGHT VARIANCE [Scanner-Programming]: 81, 102px
+CARD HEIGHT VARIANCE [Scanner-Review] grid-1: 2 heights, range 238-287px across 2 cards
+CARD HEIGHT VARIANCE [Scanner-Review] grid-3: 3 heights, range 119-197px across 4 cards
+CARD HEIGHT VARIANCE [Scanner-Review] grid-4: 3 heights, range 186-394px across 3 cards
+BTN HEIGHT MISMATCH [Scanner-Review]: "Back"=49px, "Continue to Checkout"=45px
+RADIO CARD HEIGHT VARIANCE [Scanner-Review]: 3 heights, range 299-319px
+INTERVIEW OPTION HEIGHT VARIANCE [Scanner-Review]: 81, 102px

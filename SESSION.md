@@ -1,27 +1,21 @@
 # Session: V2 Kit Builder Comprehensive Review #3
 Started: 2026-04-06
-Status: in-progress
+Status: completed
 
 ## Goal
 Full UX/bug review of kit-builder-v2 from a first-time user perspective. Test every option combination in the selection tree across all 5 categories on desktop (1280px) and mobile (375px). Deliver structured report as kit-builder-v2-review-3.md.
 
-## Source
-User request - comprehensive audit covering all paths, edge cases, screenshots at each issue.
+## Completed
+- [x] Read JS source to map all option paths
+- [x] Build Puppeteer test script covering all 5 categories
+- [x] Run desktop tests (22 tests, 119 screenshots)
+- [x] Run mobile tests (22 tests, 120 screenshots)
+- [x] Test edge cases (skip optional, back nav, re-edit, multi-category)
+- [x] Compile findings into kit-builder-v2-review-3.md
+- [x] Commit and push
 
-## Plan
-- [ ] Read current JS source to map all option paths <-- CURRENT
-- [ ] Build Puppeteer test script for all 5 categories (desktop)
-- [ ] Build Puppeteer test script for all 5 categories (mobile)
-- [ ] Run desktop tests, capture screenshots
-- [ ] Run mobile tests, capture screenshots
-- [ ] Test edge cases (skip optional steps, back navigation, re-edit sections)
-- [ ] Compile findings into kit-builder-v2-review-3.md
-- [ ] Commit and push
-
-## Key Decisions
-- Using Puppeteer (already installed) instead of Playwright
-- Testing all 5 categories: handheld, vehicle/mobile, base station, HF, scanner
-- Clearing cookies/cart between runs
-
-## Resume Instructions
-Read this file and the review-3.md report for current state.
+## Key Findings
+- 1 HIGH bug: Scanner flow broken (battery skip logic missing in state machine)
+- 4 MEDIUM UX concerns: jargon in feature lists, license text, volume discount obscured
+- 4 LOW polish items: placeholder images, empty mobile space, accessory jargon
+- 42 of 44 tests pass, 2 fail (scanner category on both viewports)
