@@ -897,7 +897,7 @@ const mobileRadioLineup = [
     key: 'uv50pro', name: 'UV-50PRO Essentials Kit', price: 329, id: 8487,
     img: S+'2025/12/uv-50pro-1x1-1.jpg',
     tagline: 'Analog powerhouse',
-    pitch: '50W mobile radio with Bluetooth smartphone control, GPS, APRS, and radio-to-radio text messaging. IP54 rated. Fully controllable from the hand mic.',
+    pitch: '50W mobile radio with Bluetooth smartphone control, GPS, APRS location sharing, and radio-to-radio text messaging. IP54 rated. Fully controllable from the hand mic.',
     features: ['50W VHF/UHF', '180 memory channels', 'Bluetooth control', 'GPS tracking and position sharing', 'Text messaging', 'IP54 water resistant', 'Airband receive', 'Hand mic control'],
     tags: ['waterproof', 'gps', 'bluetooth', 'simple', 'professional'],
     digital: false
@@ -906,8 +906,8 @@ const mobileRadioLineup = [
     key: 'd578', name: 'DMR D578 Mobile Radio Kit', price: 549, id: 4157,
     img: S+'2024/04/d578uviiiplus.png',
     tagline: 'Digital & encryption capable',
-    pitch: 'Full digital radio with encryption, tri-band (2M/70cm/1.25M), GPS, position sharing, built-in repeater, and Bluetooth. Interoperates with DMR 6X2 PRO and DA-7X2 handhelds.',
-    features: ['Digital (DMR) + analog modes', 'Encryption capable', '50W tri-band', 'Built-in repeater mode', 'GPS tracking and position sharing', 'Bluetooth', 'Digital text messaging', 'IP54 water resistant'],
+    pitch: 'Full DMR digital voice and SMS radio with encryption, tri-band (2M/70cm/1.25M), GPS, position sharing, built-in repeater, and Bluetooth. Interoperates with DMR 6X2 PRO and DA-7X2 handhelds.',
+    features: ['Digital (DMR digital voice and SMS) + analog modes', 'Encryption capable', '50W tri-band', 'Built-in repeater mode', 'GPS tracking and position sharing', 'Bluetooth', 'Digital text messaging', 'IP54 water resistant'],
     tags: ['encryption', 'digital', 'crossband', 'gps', 'bluetooth', 'professional'],
     digital: true
   },
@@ -2681,8 +2681,8 @@ const scannerRadioLineup = [
     key: 'sds200', name: 'Uniden SDS200 Digital Scanner Base Station', price: 799, id: 7512,
     img: S+'2025/06/SDS200_square.png',
     tagline: 'Best for home, office, or desk use. Plug in and listen.',
-    pitch: 'Full-featured base station scanner with the best audio and largest display. Decodes P25, DMR, EDACS, and NXDN digital systems. AC or DC powered for home, office, or vehicle use. Arrives pre-programmed for your area.',
-    features: ['P25 Phase I & II, DMR, EDACS, NXDN', 'Close Call: detect nearby signals instantly', 'Scan by zip code or GPS location', 'AC and DC power options', 'Best-in-class audio quality'],
+    pitch: 'Full-featured base station scanner with the best audio and largest display. Decodes all major digital systems (P25, DMR, EDACS, NXDN). AC or DC powered for home, office, or vehicle use. Arrives pre-programmed for your area.',
+    features: ['P25, DMR, EDACS, NXDN (all major digital systems)', 'Close Call: detect nearby signals instantly', 'Scan by zip code or GPS location', 'AC and DC power options', 'Best-in-class audio quality'],
     includes: ['SDS200 Scanner', 'BNC Telescoping Antenna', 'USB Programming Cable', 'AC Power Adapter', 'DC Power Harness', 'microSD Card (8GB)'],
     formFactor: 'base',
   },
@@ -2691,7 +2691,7 @@ const scannerRadioLineup = [
     img: S+'2025/02/unidensds100.png',
     tagline: 'Best for on the go. Battery powered, fits in your hand.',
     pitch: 'Same digital decoding as the SDS200 in a portable, battery-powered package. Take it to events, on the road, or keep it on your belt. USB rechargeable with extended battery included. Arrives pre-programmed for your area.',
-    features: ['P25 Phase I & II, DMR, EDACS, NXDN', 'Close Call: detect nearby signals instantly', 'Scan by zip code or GPS location', 'USB rechargeable, 5400mAh extended battery', 'Compact and portable with belt clip'],
+    features: ['P25, DMR, EDACS, NXDN (all major digital systems)', 'Close Call: detect nearby signals instantly', 'Scan by zip code or GPS location', 'USB rechargeable, 5400mAh extended battery', 'Compact and portable with belt clip'],
     includes: ['SDS100 Scanner', 'SMA Antenna + BNC Adapter', 'USB Programming/Charging Cable', 'AC Wall Charger', 'Extended Battery (5400mAh)', 'Belt Clip', 'microSD Card (8GB)'],
     formFactor: 'handheld',
   },
@@ -2710,7 +2710,7 @@ const scannerRadioLineup = [
     img: S+'2026/01/1000011075.png',
     tagline: 'Best audio and touchscreen. Premium home monitoring.',
     pitch: 'Uniden\'s flagship scanner with a full-color touchscreen, advanced digital decoding, and premium audio. All the capabilities of the SDS200 with a next-generation interface. Arrives pre-programmed for your area.',
-    features: ['P25 Phase I & II, DMR, EDACS, NXDN', 'Full-color touchscreen interface', 'Close Call: detect nearby signals instantly', 'Scan by zip code or GPS location', 'Premium audio with built-in speaker'],
+    features: ['P25, DMR, EDACS, NXDN (all major digital systems)', 'Full-color touchscreen interface', 'Close Call: detect nearby signals instantly', 'Scan by zip code or GPS location', 'Premium audio with built-in speaker'],
     includes: ['SDS150 Scanner', 'BNC Antenna', 'USB Programming Cable', 'AC Power Adapter', 'microSD Card'],
     formFactor: 'base',
   },
@@ -3139,7 +3139,7 @@ const radioProducts = {
       { key: 'cheatsheets', name: 'Radio Cheat Sheets', desc: 'Waterproof laminated quick-reference cards. Common frequencies, radio channels, NATO phonetic alphabet, and emergency procedures.', price: 19, img: S+'2023/05/1000007350.jpg', id: 966 },
       { key: 'speakermic', name: 'UV-5R Speakermic', desc: 'Clip-on speaker-microphone. Mount on your chest rig, collar, or shoulder strap for hands-free communication.', price: 29, img: S+'2023/07/20230530_1403102.jpg', id: 1430 },
       { key: 'eartube', name: 'Acoustic Eartube Headset', desc: 'Covert-style earpiece with push-to-talk. Keeps audio discreet, popular for security, events, and low-profile ops.', price: 19, img: S+'2023/07/20230530_1405362.jpg', id: 1431 },
-      { key: 'aprs', name: 'APRS Cable', desc: 'Audio interface cable connecting your radio to a smartphone. Run Rattlegram or APRSdroid for off-grid text messaging and position sharing.', price: 25, img: S+'2023/06/20230608_164856-1.jpg', id: 1177 },
+      { key: 'aprs', name: 'APRS Cable (Off-Grid Messaging)', desc: 'Audio interface cable connecting your radio to a smartphone. Run Rattlegram or APRSdroid for off-grid text messaging and position sharing via APRS.', price: 25, img: S+'2023/06/20230608_164856-1.jpg', id: 1177 },
       { key: 'progcable', name: 'USB Programming Cable', desc: 'Program custom frequencies via CHIRP software on your computer. Essential for serious operators who want full channel control.', price: 25, img: S+'2024/08/uv5r-programming-cable.jpg', id: 4838 },
       { key: 'exo', name: 'Exoskeleton', desc: 'Hard protective shell that prevents accidental PTT button presses and absorbs drops. Essential for field use.', price: 29, img: S+'2022/07/4A7A3860_white_square.png', id: 38 },
       { key: 'saddle', name: 'Kenwood Plug Saddle', desc: 'Rubber port protector that keeps moisture and debris out of the accessory jack when not in use.', price: 9, img: S+'2024/02/4A7A3864-White.png', id: 3701 },
@@ -4674,18 +4674,18 @@ const radioLineup = [
     key: 'uv-pro', name: 'UV-PRO Essentials Kit', price: 159, id: 7862,
     img: S+'2025/09/20250904_100414-EDIT.jpg',
     tagline: 'Waterproof & connected',
-    pitch: 'IP67 waterproof, GPS location sharing, text messaging, and Bluetooth TNC support for off-grid messaging. Simple enough to start using immediately, but with room to grow into advanced digital modes. The only handheld we offer with Bluetooth smartphone control.',
+    pitch: 'IP67 waterproof, GPS location sharing, text messaging, and Bluetooth support for off-grid messaging. Simple enough to start using immediately, but with room to grow into advanced digital modes. The only handheld we offer with Bluetooth smartphone control.',
     solves: ['Waterproof / water use', 'GPS / location sharing', 'Bluetooth / app control', 'Room to grow'],
-    features: ['IP67 waterproof', '180 memory channels', 'GPS tracking and position sharing', 'USB-C charging built in', 'Analog text messaging', 'Bluetooth TNC for off-grid messaging', 'Mobile app control', 'Airband receive', 'Automatic weather alerts', 'Commercial use certified'],
+    features: ['IP67 waterproof', '180 memory channels', 'GPS tracking and position sharing', 'USB-C charging built in', 'Analog text messaging', 'Bluetooth for off-grid messaging', 'Mobile app control', 'Airband receive', 'Automatic weather alerts', 'Commercial use certified'],
     tags: ['waterproof', 'gps', 'bluetooth', 'airband', 'grow', 'professional', 'usbc', 'channels', 'noaa', 'commercial']
   },
   {
     key: 'dmr-6x2', name: 'DMR 6X2 PRO Essentials Kit', price: 249, id: 2931,
     img: S+'2023/11/20250904_100231-EDIT.jpg',
     tagline: 'Digital & encryption capable',
-    pitch: 'Full DMR digital radio with encryption capability for private communications. 4000 memory channels, GPS, APRS, and digital text messaging. Our most economical path to encryption-capable digital radio.',
+    pitch: 'Full DMR digital voice and SMS radio with encryption capability for private communications. 4000 memory channels, GPS, APRS location sharing, and digital text messaging. Our most economical path to encryption-capable digital radio.',
     solves: ['Privacy / encryption capable', 'More coverage area / channels', 'GPS / location sharing', 'Digital text messaging'],
-    features: ['Digital (DMR) + analog modes', 'Encryption capable', '4000 memory channels', 'GPS tracking and position sharing', 'Digital text messaging', 'USB-C battery', 'IP54 water resistant', 'Automatic weather alerts', 'Commercial use certified'],
+    features: ['Digital (DMR digital voice and SMS) + analog modes', 'Encryption capable', '4000 memory channels', 'GPS tracking and position sharing', 'APRS location sharing and text messaging', 'USB-C battery', 'IP54 water resistant', 'Automatic weather alerts', 'Commercial use certified'],
     tags: ['encryption', 'digital', 'channels', 'gps', 'professional', 'bluetooth', 'water-resistant', 'usbc', 'grow', 'noaa', 'commercial']
   },
   {
@@ -4694,7 +4694,7 @@ const radioLineup = [
     tagline: 'The best we offer',
     pitch: 'Everything the DMR 6X2 PRO does, plus true dual receive, built-in repeater mode (extend range for others), airband monitoring, extra digital modes, and Bluetooth PTT. For operators who want no compromises.',
     solves: ['Privacy / encryption capable', 'Crossband repeat', 'Listen to aircraft', 'Maximum capability'],
-    features: ['Digital (DMR) modes, widest compatibility', 'Encryption capable', '4000 memory channels', 'Built-in repeater mode', 'True dual receive', 'Digital text messaging', 'GPS tracking and position sharing', 'Airband receive', 'Bluetooth PTT', 'USB-C battery', 'IP54 water resistant', 'Automatic weather alerts', 'Commercial use certified'],
+    features: ['Digital (DMR digital voice and SMS), widest compatibility', 'Encryption capable', '4000 memory channels', 'Built-in repeater mode', 'True dual receive', 'APRS location sharing and text messaging', 'GPS tracking and position sharing', 'Airband receive', 'Bluetooth PTT', 'USB-C battery', 'IP54 water resistant', 'Automatic weather alerts', 'Commercial use certified'],
     tags: ['encryption', 'digital', 'crossband', 'airband', 'professional', 'premium', 'bluetooth', 'water-resistant', 'usbc', 'gps', 'grow', 'channels', 'noaa', 'commercial']
   },
 ];
@@ -4910,7 +4910,7 @@ function getPersonalizedReasons(radio) {
   // Use case match
   if (a.use === 'water' && radio.tags.includes('waterproof')) reasons.push('IP67 waterproof, fully submersible for the wet environments you described');
   if (a.use === 'water' && !radio.tags.includes('waterproof') && radio.tags.includes('water-resistant')) reasons.push('IP54 water resistant. Handles rain and splashes');
-  if (a.use === 'outdoor' && radio.tags.includes('gps')) reasons.push('GPS & APRS, perfect for the outdoor use you mentioned');
+  if (a.use === 'outdoor' && radio.tags.includes('gps')) reasons.push('GPS and APRS location sharing, perfect for the outdoor use you mentioned');
   // Needs-based reasons (from combined question)
   const needs = a.needs || [];
   if (needs.includes('encryption') && radio.tags.includes('commercial')) reasons.push('FCC Part 90 commercial certified, approved for business and commercial use');
@@ -4922,7 +4922,7 @@ function getPersonalizedReasons(radio) {
   if (needs.includes('outdoor') && radio.tags.includes('gps')) reasons.push('Built-in GPS for position tracking in the field');
   if (needs.includes('outdoor') && radio.tags.includes('waterproof')) reasons.push('Waterproof build for outdoor conditions');
   if (needs.includes('encryption') && radio.tags.includes('encryption')) reasons.push('Encryption capable. Supports private, encrypted communications');
-  if (needs.includes('gps') && radio.tags.includes('gps')) reasons.push('GPS location sharing via APRS. Track and share positions');
+  if (needs.includes('gps') && radio.tags.includes('gps')) reasons.push('GPS location sharing via APRS (track and share positions over radio)');
   if (needs.includes('texting') && radio.tags.includes('digital')) reasons.push('Digital text messaging over radio, no cell service needed');
   if (needs.includes('airband') && radio.tags.includes('airband')) reasons.push('Airband receive. Listen to aircraft frequencies');
   if (needs.includes('repeater') && radio.tags.includes('crossband')) reasons.push('Crossband repeat capability. Extend your range using this radio as a relay');
@@ -5222,7 +5222,7 @@ function confirmRadioSelection(key) {
       items: ['Baofeng UV-5R Mini radio (pre-programmed)', 'Factory antenna, USB-C battery, belt clip', 'USB-C charging cable', 'RME Quick Start Guide']
     },
     'uv-pro': {
-      desc: 'IP67 waterproof with GPS, text messaging, and Bluetooth. Simple enough to start immediately, powerful enough to grow into APRS and digital modes.',
+      desc: 'IP67 waterproof with GPS, text messaging, and Bluetooth. Simple enough to start immediately, powerful enough to grow into APRS location sharing and digital modes.',
       items: ['Baofeng UV-PRO radio (pre-programmed)', 'Factory antenna, USB-C battery, belt clip', 'USB-C charging cable', 'RME Quick Start Guide']
     },
     'dmr-6x2': {
