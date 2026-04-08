@@ -1435,26 +1435,25 @@
     var grid = document.getElementById('kbs-radio-grid');
     if (grid) grid.style.display = 'none';
     var S = (typeof rmeKitBuilder !== 'undefined' && rmeKitBuilder.uploadsUrl) ? rmeKitBuilder.uploadsUrl : '/wp-content/uploads/';
-    var colors = [
-      { key: 'black', name: 'Black', desc: 'Classic black, the standard UV-PRO finish.', img: S + '2025/09/20250904_100414-EDIT.jpg' },
-      { key: 'tan', name: 'Tan / Coyote', desc: 'Desert tan finish. Blends with earth tones and tactical gear.', img: S + '2025/09/20250904_100414-EDIT.jpg' },
-    ];
 
     var html = '<div id="kbs-color-picker" style="margin-top:24px">' +
-      '<h3 style="font-family:var(--rme-font-heading);font-size:1.1rem;margin:0 0 12px;color:var(--rme-text)">Choose Your Color</h3>' +
-      '<div style="display:flex;gap:12px;flex-wrap:wrap">';
-    colors.forEach(function(c) {
-      html += '<div class="opt-card' + (uvproRadioColor === c.key ? ' selected' : '') + '" ' +
-        'onclick="kbsPickColor(\'' + c.key + '\')" style="flex:1;min-width:140px;cursor:pointer">' +
-        '<div class="oc-radio"><span></span></div>' +
-        (c.img ? '<div class="oc-img"><img src="' + c.img + '" alt="' + c.name + '"></div>' : '') +
-        '<div class="oc-body"><div class="oc-name">' + c.name + '</div><div class="oc-desc">' + c.desc + '</div></div>' +
-        '</div>';
-    });
-    html += '</div>' +
-      '<div style="margin-top:16px;text-align:center">' +
-      '<button class="kb-btn kb-btn--primary" onclick="kbsConfirmColor()">Continue</button>' +
-      '</div></div>';
+      '<h3 style="font-family:var(--rme-font-heading);font-size:1.1rem;margin:0 0 16px;color:var(--rme-text)">Choose Your Color</h3>' +
+      '<div style="max-width:400px;margin:0 auto 20px">' +
+        '<img src="' + S + '2025/09/20250904_100414-EDIT.jpg" alt="UV-PRO Black and Tan" ' +
+          'style="width:100%;border-radius:8px;border:1px solid var(--rme-border)">' +
+      '</div>' +
+      '<div class="color-picker" style="justify-content:center;margin-bottom:20px">' +
+        '<span class="color-picker-label">Color:</span>' +
+        '<div class="color-swatch color-swatch--black' + (uvproRadioColor === 'black' ? ' active' : '') + '" ' +
+          'onclick="kbsPickColor(\'black\')" title="Black"></div>' +
+        '<div class="color-swatch color-swatch--tan' + (uvproRadioColor === 'tan' ? ' active' : '') + '" ' +
+          'onclick="kbsPickColor(\'tan\')" title="Tan / Coyote"></div>' +
+        '<span class="color-swatch-name">' + (uvproRadioColor === 'black' ? 'Black' : 'Tan / Coyote') + '</span>' +
+      '</div>' +
+      '<div style="text-align:center">' +
+        '<button class="kb-btn kb-btn--primary" onclick="kbsConfirmColor()">Continue</button>' +
+      '</div>' +
+    '</div>';
 
     // Append below existing content
     var existing = document.getElementById('kbs-color-picker');
