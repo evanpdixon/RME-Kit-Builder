@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comms Compass — Development Dashboard</title>
+<style>
+  :root {
+    --bg: #111113;
+    --surface: #1a1a1e;
+    --surface2: #222226;
+    --border: rgba(255,255,255,0.06);
+    --text: #f0ece4;
+    --dim: #9a9590;
+    --muted: #6b6560;
+    --gold: #c9a84c;
+    --gold-dim: rgba(201,168,76,0.15);
+    --green: #4caf80;
+    --green-bg: rgba(76,175,128,0.12);
+    --red: #d45050;
+    --red-bg: rgba(212,80,80,0.12);
+    --orange: #d4884b;
+    --orange-bg: rgba(212,136,75,0.12);
+    --blue: #5b8dd9;
+    --blue-bg: rgba(91,141,217,0.12);
+    --purple: #9b6dd9;
+    --font: 'Segoe UI', system-ui, sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.5; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 24px 20px 80px; }
+  h1 { color: var(--gold); font-size: 1.5rem; margin-bottom: 4px; }
+  .subtitle { color: var(--dim); font-size: 0.85rem; margin-bottom: 24px; }
+
+  /* Stats row */
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .stat { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; text-align: center; }
+  .stat-val { font-size: 1.8rem; font-weight: 700; color: var(--gold); }
+  .stat-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--dim); margin-top: 2px; }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 4px; margin-bottom: 20px; flex-wrap: wrap; }
+  .tab { padding: 8px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; cursor: pointer; font-size: 0.82rem; color: var(--dim); transition: all 0.2s; }
+  .tab:hover { border-color: var(--gold); color: var(--text); }
+  .tab.active { background: var(--surface2); border-color: var(--gold); color: var(--gold); font-weight: 600; }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* Cards */
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 12px; }
+  .card h2 { color: var(--gold); font-size: 1rem; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  .card h3 { color: var(--gold); font-size: 0.9rem; margin: 16px 0 8px; }
+
+  /* Checklist */
+  .checklist { list-style: none; }
+  .checklist li { padding: 10px 0; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; gap: 10px; font-size: 0.85rem; }
+  .checklist li:last-child { border-bottom: none; }
+  .check { flex-shrink: 0; width: 20px; height: 20px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 700; margin-top: 1px; }
+  .check-done { background: var(--green-bg); color: var(--green); }
+  .check-open { background: var(--red-bg); color: var(--red); }
+  .check-wip { background: var(--orange-bg); color: var(--orange); }
+  .check-low { background: var(--blue-bg); color: var(--blue); }
+  .item-text { flex: 1; }
+  .item-label { font-weight: 600; }
+  .item-detail { color: var(--dim); font-size: 0.8rem; margin-top: 2px; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; margin-left: 6px; vertical-align: middle; }
+  .badge-done { background: var(--green-bg); color: var(--green); }
+  .badge-open { background: var(--red-bg); color: var(--red); }
+  .badge-medium { background: var(--orange-bg); color: var(--orange); }
+  .badge-low { background: var(--blue-bg); color: var(--blue); }
+
+  /* Timeline */
+  .timeline { position: relative; padding-left: 24px; }
+  .timeline::before { content: ''; position: absolute; left: 8px; top: 4px; bottom: 4px; width: 2px; background: var(--border); }
+  .tl-item { position: relative; padding: 6px 0 16px; }
+  .tl-item::before { content: ''; position: absolute; left: -19px; top: 10px; width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--border); background: var(--surface); }
+  .tl-item.milestone::before { border-color: var(--gold); background: var(--gold); }
+  .tl-date { color: var(--muted); font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+  .tl-text { font-size: 0.85rem; }
+  .tl-commits { color: var(--dim); font-size: 0.75rem; }
+
+  /* Version table */
+  table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  th { text-align: left; color: var(--gold); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; padding: 8px 12px; border-bottom: 1px solid var(--border); }
+  td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  .ver { color: var(--gold); font-weight: 600; font-family: monospace; }
+
+  /* Progress bar */
+  .progress-bar { background: var(--surface2); border-radius: 8px; height: 12px; overflow: hidden; margin: 8px 0; }
+  .progress-fill { height: 100%; border-radius: 8px; transition: width 0.5s ease; }
+  .progress-label { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--dim); }
+
+  @media (max-width: 600px) {
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .tabs { overflow-x: auto; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; }
+    .tab { white-space: nowrap; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Comms Compass</h1>
+  <p class="subtitle">Development dashboard. Tracking all work from theme migration through launch.</p>
+
+  <div class="stats" id="stats"></div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('checklist')">Release Checklist</div>
+    <div class="tab" onclick="switchTab('timeline')">Timeline</div>
+    <div class="tab" onclick="switchTab('tests')">Test Coverage</div>
+    <div class="tab" onclick="switchTab('versions')">Versions</div>
+    <div class="tab" onclick="switchTab('images')">Missing Images</div>
+  </div>
+
+  <div id="tab-checklist" class="tab-content active"></div>
+  <div id="tab-timeline" class="tab-content"></div>
+  <div id="tab-tests" class="tab-content"></div>
+  <div id="tab-versions" class="tab-content"></div>
+  <div id="tab-images" class="tab-content"></div>
+</div>
+
+<script>
+const checklist = [
+  // Blockers
+  { id: 'scanner-skip', label: 'Scanner battery skip logic', detail: 'State machine skips mounting for non-vehicle but had no battery skip for scanner. Users stuck after antennas.', severity: 'blocker', status: 'done', fixDate: '2026-04-06' },
+
+  // High
+  { id: 'dual-buttons', label: 'Dual Add to Cart / Continue buttons in review', detail: 'renderReview() created an Add to Cart button AND the template had Continue to Checkout. Removed duplicate.', severity: 'high', status: 'done', fixDate: '2026-04-06' },
+  { id: 'price-bar-fixed', label: 'Price bar CSS position:fixed', detail: 'Price bar was scrolling out of view on long pages. Theme CSS was overriding position:fixed.', severity: 'high', status: 'done', fixDate: '2026-04-07' },
+  { id: 'preselect-toggle', label: 'Setup type pre-select toggle bug', detail: 'Clicking a pre-selected option in guided flow toggled it OFF instead of confirming. Edge case in recommendation summary.', severity: 'high', status: 'done', fixDate: '2026-04-07' },
+  { id: 'first-kit-discount', label: 'Cross-category discount applied to first kit', detail: 'kbsCompletedKits.length > 0 check fired after pushing current kit. Changed to > 1.', severity: 'high', status: 'done', fixDate: '2026-04-07' },
+  { id: 'discount-base-only', label: 'Discounts calculated on base price only, not full kit', detail: 'Volume and cross-category discounts used BASE_PRICE instead of full kit total. Now uses calcTotal().', severity: 'high', status: 'done', fixDate: '2026-04-07' },
+  { id: 'molle-price', label: 'MOLLE mount showed bracket price ($19) instead of BNC coax variant ($69)', detail: 'JS data had price:19 (bracket only) but WC variation 8719 (BNC coax, the default) is $69.', severity: 'high', status: 'done', fixDate: '2026-04-07' },
+
+  // Medium
+  { id: 'radio-jargon', label: 'Radio feature jargon (APRS, TNC, DMR, NXDN, P25)', detail: 'Translate technical terms to benefits. "GPS + APRS" becomes "GPS tracking and position sharing".', severity: 'medium', status: 'open' },
+  { id: 'antenna-jargon', label: 'Antenna connector jargon (NMO, SO-239, PL-259, SMA, BNC)', detail: 'Add plain-language subtitles. Remove frequency ranges from kit builder cards.', severity: 'medium', status: 'open' },
+  { id: 'dmr-license-text', label: 'DMR programming "license holders only" text', detail: 'Reword to "Have a ham radio license? Enter your Brandmeister ID." Less gatekeeping.', severity: 'medium', status: 'open' },
+  { id: 'volume-nudge', label: 'Volume discount nudge text obscured by sticky buttons', detail: 'Text sits behind the gradient area of the sticky action buttons.', severity: 'medium', status: 'open' },
+  { id: 'consult-pricebar', label: 'Consultation link in price bar takes space', detail: 'Move to floating help button or section actions only.', severity: 'medium', status: 'done', fixDate: '2026-04-07' },
+
+  // Low / Polish
+  { id: 'factory-antenna-img', label: 'Factory antenna uses SVG placeholder', detail: 'Need real product photo for the included antenna card.', severity: 'low', status: 'open' },
+  { id: 'factory-battery-img', label: 'Factory battery uses SVG placeholder', detail: 'Need real product photo for the included battery card.', severity: 'low', status: 'open' },
+  { id: 'scanner-antenna-img', label: 'Scanner antennas use SVG placeholders', detail: 'Wideband Discone and Telescoping antennas need product photos.', severity: 'low', status: 'open' },
+  { id: 'mobile-gap', label: 'Large empty space on mobile below last section', detail: '1004px gap between content and footer. Locked sections hidden but container padding remains.', severity: 'low', status: 'open' },
+  { id: 'cheatsheets-gmrs', label: 'Cheat Sheets description mentions "GMRS channels"', detail: 'Should say "radio channels" to match no-acronyms direction.', severity: 'low', status: 'open' },
+  { id: 'factory-antenna-text', label: 'Factory Antenna text overlapping checkbox on mobile', detail: 'No-image card grid used auto column width. Fixed to 60px with 8px gap.', severity: 'low', status: 'done', fixDate: '2026-04-07' },
+  { id: 'button-heights', label: 'Review page button height mismatch (Back vs Continue)', detail: 'Secondary had 2px border, primary had none. Gave all buttons 2px transparent border.', severity: 'low', status: 'done', fixDate: '2026-04-07' },
+  { id: 'uvpro-color-mobile', label: 'UV-PRO color picker unusable on mobile', detail: 'Two side-by-side cards with images broke at 375px. Replaced with single image + color swatches.', severity: 'low', status: 'done', fixDate: '2026-04-07' },
+];
+
+const timeline = [
+  { date: 'Mar 16', text: 'Initial plugin structure and staging integration', milestone: false },
+  { date: 'Mar 27-28', text: 'Fix 8 critical staging bugs, add scanner support, fender mounts, battery eliminators', milestone: false },
+  { date: 'Mar 31', text: 'Email capture system, consultation escape hatch, follow-up email sequence', milestone: false },
+  { date: 'Apr 1', text: 'Puppeteer test suite (100 tests), mobile optimization, PostHog analytics', milestone: true },
+  { date: 'Apr 1', text: 'Theme integration: disable old kit-builder.php, add homepage CTA', milestone: true },
+  { date: 'Apr 2-3', text: 'Interview flow: base/mobile programming, HF preferences, SVG icons, back button fix', milestone: false },
+  { date: 'Apr 4', text: 'V2 single-page scroll variant built from scratch. 60+ commits in one day.', milestone: true },
+  { date: 'Apr 5', text: 'V2 audit, major fixes (18 of 23 issues), mounting step, cross-category discount, v2.0.0', milestone: true },
+  { date: 'Apr 5', text: 'Review Report #1: 23 findings documented with screenshots', milestone: false },
+  { date: 'Apr 6', text: 'URL state persistence, resume links, debug panel removal, review #3 audit (44 tests)', milestone: false },
+  { date: 'Apr 6', text: 'Scanner flow fix (blocker), factory antenna fix, dual button fix', milestone: true },
+  { date: 'Apr 7', text: 'Comms Compass rebrand, v2.4.0. Cart discounts as WC fees, mini-cart refresh.', milestone: true },
+  { date: 'Apr 7', text: 'UV-PRO color picker redesign, MOLLE mount price fix, discount calculation overhaul', milestone: false },
+  { date: 'Apr 7', text: 'Button height consistency, factory antenna mobile fix, test generation prompt', milestone: false },
+];
+
+const testCoverage = [
+  { category: 'Handheld', radios: 'UV-5R, UV-5R Mini, UV-PRO, DMR 6X2 PRO, DA-7X2', desktop: 'PASS', mobile: 'PASS' },
+  { category: 'Vehicle', radios: 'UV-50PRO, D578', desktop: 'PASS', mobile: 'PASS' },
+  { category: 'Base Station', radios: 'D578', desktop: 'PASS', mobile: 'PASS' },
+  { category: 'HF', radios: 'G90, FT-891', desktop: 'PASS', mobile: 'PASS' },
+  { category: 'Scanner', radios: 'SDR, SDS200, SR2, BC125AT', desktop: 'PASS', mobile: 'PASS' },
+  { category: 'Guided: Budget/Nearby', radios: 'Auto-recommend', desktop: 'PASS', mobile: 'PASS' },
+  { category: 'Guided: Mid/Local', radios: 'Auto-recommend', desktop: 'PASS', mobile: 'PASS' },
+  { category: 'Guided: High/Far', radios: 'HF redirect', desktop: 'PASS', mobile: 'PASS' },
+  { category: 'Guided: Budget/Listen', radios: 'Scanner redirect', desktop: 'PASS', mobile: 'PASS' },
+  { category: 'Edge: Skip optional', radios: 'UV-5R Mini, $39', desktop: 'PASS', mobile: 'PASS' },
+  { category: 'Edge: Re-edit section', radios: 'Change radio mid-flow', desktop: 'PASS', mobile: 'PASS' },
+  { category: 'Edge: Multi-category', radios: 'Handheld + Vehicle', desktop: 'PASS', mobile: 'PASS' },
+  { category: 'Edge: Back navigation', radios: 'Battery to Antennas', desktop: 'PASS', mobile: 'PASS' },
+];
+
+const versions = [
+  { ver: '2.5.0', date: '2026-04-07', changes: 'UV-PRO color picker fix, discount overhaul, MOLLE mount price, Comms Compass rebrand' },
+  { ver: '2.4.0', date: '2026-04-07', changes: 'Black box elimination (#000 to #111), consult link redesign, cart improvements, variation attribute auto-fill' },
+  { ver: '2.3.0', date: '2026-04-07', changes: 'Button stacking, price bar category labels, pluralization fixes, quantity section cleanup' },
+  { ver: '2.0.0', date: '2026-04-05', changes: 'First V2 production build. Complete scroll UI, all 5 categories, interview flow, volume discounts, cross-category flow' },
+  { ver: '1.9.0', date: '2026-04-04', changes: 'Feature label updates, pre-launch polish' },
+];
+
+const missingImages = [
+  { area: 'Handheld', items: ['Factory Antenna (included)', 'Factory Battery (included)'], priority: 'high' },
+  { area: 'Scanner', items: ['Wideband Discone Antenna', 'Telescoping Wideband Antenna', 'SDS100 Battery + Charger', 'USB-C Adapter', 'RAM Scanner Hanger'], priority: 'high' },
+  { area: 'Vehicle/Mobile', items: ['7 antenna mount variants', 'RAM Tough Wedge', 'Console Toyota Tacoma', '5 power products', 'Magnetic Mic', 'Antenna Jack Relocation Cable'], priority: 'medium' },
+  { area: 'Base Station', items: ['Comet GP-3 Antenna', 'Comet GP-6 Antenna'], priority: 'medium' },
+  { area: 'HF', items: ['3 End Fed Half Wave variants', 'Antenna Jack Relocation Cable'], priority: 'medium' },
+];
+
+// Render stats
+function renderStats() {
+  const done = checklist.filter(c => c.status === 'done').length;
+  const total = checklist.length;
+  const open = checklist.filter(c => c.status === 'open').length;
+  const blockers = checklist.filter(c => c.severity === 'blocker' && c.status === 'open').length;
+  const testPass = testCoverage.filter(t => t.desktop === 'PASS' && t.mobile === 'PASS').length;
+  document.getElementById('stats').innerHTML = `
+    <div class="stat"><div class="stat-val">${done}/${total}</div><div class="stat-label">Checklist Done</div></div>
+    <div class="stat"><div class="stat-val">${blockers}</div><div class="stat-label">Blockers</div></div>
+    <div class="stat"><div class="stat-val">${open}</div><div class="stat-label">Open Items</div></div>
+    <div class="stat"><div class="stat-val">${testPass}/${testCoverage.length}</div><div class="stat-label">Tests Passing</div></div>
+    <div class="stat"><div class="stat-val">v${versions[0].ver}</div><div class="stat-label">Current Version</div></div>
+    <div class="stat"><div class="stat-val">141+</div><div class="stat-label">Total Commits</div></div>
+  `;
+}
+
+// Render checklist
+function renderChecklist() {
+  const el = document.getElementById('tab-checklist');
+  const pct = Math.round(checklist.filter(c => c.status === 'done').length / checklist.length * 100);
+
+  let html = `<div class="card">
+    <h2>Launch Readiness</h2>
+    <div class="progress-label"><span>${pct}% complete</span><span>${checklist.filter(c => c.status === 'done').length} of ${checklist.length} items</span></div>
+    <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${pct === 100 ? 'var(--green)' : 'var(--gold)'}"></div></div>
+  </div>`;
+
+  const groups = [
+    { title: 'Blockers', items: checklist.filter(c => c.severity === 'blocker') },
+    { title: 'High Priority', items: checklist.filter(c => c.severity === 'high') },
+    { title: 'Medium Priority', items: checklist.filter(c => c.severity === 'medium') },
+    { title: 'Low Priority / Polish', items: checklist.filter(c => c.severity === 'low') },
+  ];
+
+  groups.forEach(g => {
+    if (g.items.length === 0) return;
+    const doneCount = g.items.filter(i => i.status === 'done').length;
+    html += `<div class="card"><h2>${g.title} <span style="color:var(--dim);font-size:0.8rem;font-weight:400">${doneCount}/${g.items.length}</span></h2><ul class="checklist">`;
+    g.items.forEach(item => {
+      const isDone = item.status === 'done';
+      const checkClass = isDone ? 'check-done' : (item.severity === 'blocker' || item.severity === 'high') ? 'check-open' : item.severity === 'medium' ? 'check-wip' : 'check-low';
+      const icon = isDone ? '\u2713' : '\u2022';
+      const badgeClass = isDone ? 'badge-done' : item.severity === 'blocker' ? 'badge-open' : item.severity === 'high' ? 'badge-open' : item.severity === 'medium' ? 'badge-medium' : 'badge-low';
+      const badgeText = isDone ? 'Fixed' + (item.fixDate ? ' ' + item.fixDate : '') : item.severity.toUpperCase();
+      html += `<li>
+        <div class="check ${checkClass}">${icon}</div>
+        <div class="item-text">
+          <div class="item-label">${item.label} <span class="badge ${badgeClass}">${badgeText}</span></div>
+          <div class="item-detail">${item.detail}</div>
+        </div>
+      </li>`;
+    });
+    html += '</ul></div>';
+  });
+
+  el.innerHTML = html;
+}
+
+// Render timeline
+function renderTimeline() {
+  let html = '<div class="card"><h2>Development Timeline</h2><div class="timeline">';
+  timeline.forEach(t => {
+    html += `<div class="tl-item${t.milestone ? ' milestone' : ''}">
+      <div class="tl-date">${t.date}</div>
+      <div class="tl-text">${t.text}</div>
+    </div>`;
+  });
+  html += '</div></div>';
+  document.getElementById('tab-timeline').innerHTML = html;
+}
+
+// Render tests
+function renderTests() {
+  const pass = testCoverage.filter(t => t.desktop === 'PASS' && t.mobile === 'PASS').length;
+  let html = `<div class="card"><h2>Test Coverage <span style="color:var(--dim);font-size:0.8rem;font-weight:400">${pass}/${testCoverage.length} passing</span></h2>
+  <table><tr><th>Flow</th><th>Radios</th><th>Desktop</th><th>Mobile</th></tr>`;
+  testCoverage.forEach(t => {
+    const dIcon = t.desktop === 'PASS' ? '\u2713 Pass' : '\u2717 Fail';
+    const mIcon = t.mobile === 'PASS' ? '\u2713 Pass' : '\u2717 Fail';
+    const dColor = t.desktop === 'PASS' ? 'var(--green)' : 'var(--red)';
+    const mColor = t.mobile === 'PASS' ? 'var(--green)' : 'var(--red)';
+    html += `<tr><td>${t.category}</td><td style="color:var(--dim)">${t.radios}</td><td style="color:${dColor}">${dIcon}</td><td style="color:${mColor}">${mIcon}</td></tr>`;
+  });
+  html += '</table></div>';
+  html += '<div class="card"><h2>Test Resources</h2><ul class="checklist">';
+  html += '<li><div class="check check-done">\u2713</div><div class="item-text"><div class="item-label">Regression Suite</div><div class="item-detail">test-regression.js: end-to-end flows, state machine, URL persistence, adapter modals</div></div></li>';
+  html += '<li><div class="check check-done">\u2713</div><div class="item-text"><div class="item-label">Visual Audit Script</div><div class="item-detail">audit-v2-review3.js: 44 tests across all categories with screenshot capture</div></div></li>';
+  html += '<li><div class="check check-done">\u2713</div><div class="item-text"><div class="item-label">Test Generation Prompt</div><div class="item-detail">docs/test-generation-prompt.md: reusable prompt for generating Puppeteer tests</div></div></li>';
+  html += '<li><div class="check check-done">\u2713</div><div class="item-text"><div class="item-label">Logic Tester</div><div class="item-detail">logic.html: visual branching flow and decision tree</div></div></li>';
+  html += '</ul></div>';
+  document.getElementById('tab-tests').innerHTML = html;
+}
+
+// Render versions
+function renderVersions() {
+  let html = '<div class="card"><h2>Version History</h2><table><tr><th>Version</th><th>Date</th><th>Changes</th></tr>';
+  versions.forEach(v => {
+    html += `<tr><td class="ver">${v.ver}</td><td style="color:var(--dim);white-space:nowrap">${v.date}</td><td>${v.changes}</td></tr>`;
+  });
+  html += '</table></div>';
+  document.getElementById('tab-versions').innerHTML = html;
+}
+
+// Render missing images
+function renderImages() {
+  let html = '';
+  missingImages.forEach(g => {
+    const badgeClass = g.priority === 'high' ? 'badge-open' : 'badge-medium';
+    html += `<div class="card"><h2>${g.area} <span class="badge ${badgeClass}">${g.priority}</span></h2><ul class="checklist">`;
+    g.items.forEach(item => {
+      html += `<li><div class="check check-open">\u2022</div><div class="item-text"><div class="item-label">${item}</div></div></li>`;
+    });
+    html += '</ul></div>';
+  });
+  document.getElementById('tab-images').innerHTML = html;
+}
+
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+}
+
+// Init
+renderStats();
+renderChecklist();
+renderTimeline();
+renderTests();
+renderVersions();
+renderImages();
+</script>
+</body>
+</html>
