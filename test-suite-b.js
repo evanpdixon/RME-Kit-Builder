@@ -638,36 +638,30 @@ async function testGuidedPath(browser, pathDef) {
       }
     });
 
-    // Verify the selected category matches expectations via DOM state
+    // Verify the selected category via the price bar label
     // (kbsCurrentCategory is let-scoped and not accessible from page.evaluate)
     await step(`Verify category is ${pathDef.expectedCategory}`, async () => {
-      const detected = await page.evaluate(() => {
-        const mountingSec = document.getElementById('sec-mounting');
-        const batterySec = document.getElementById('sec-battery');
-        const mountingVisible = mountingSec && !mountingSec.classList.contains('kb-section--locked');
-        const batteryLocked = batterySec && batterySec.classList.contains('kb-section--locked');
-        // Read selected radio name from review or radio summary
-        const radioSummary = document.querySelector('#sec-radio .kb-section__summary');
-        const radioText = radioSummary ? radioSummary.textContent.toLowerCase() : '';
-        return { mountingVisible, batteryLocked, radioText };
+      // The price bar shows "Category: RadioName" in #kbs-radio-name
+      const priceBarLabel = await page.evaluate(() => {
+        const el = document.getElementById('kbs-radio-name');
+        return el ? el.textContent.trim().toLowerCase() : '';
       });
-      // Infer category from section visibility:
-      // scanner: no mounting, battery locked/skipped
-      // hf: no mounting, battery visible
-      // mobile/base: mounting visible, battery visible
-      // handheld: no mounting, battery visible
-      let inferredCategory;
-      if (detected.batteryLocked) {
-        inferredCategory = 'scanner';
-      } else if (detected.mountingVisible) {
-        inferredCategory = 'mobile'; // or 'base', but test only expects 'mobile' or 'base'
-      } else if (detected.radioText.includes('g90') || detected.radioText.includes('ft-891') || detected.radioText.includes('hf')) {
-        inferredCategory = 'hf';
-      } else {
-        inferredCategory = 'handheld';
+      const catMap = {
+        'handheld': 'handheld',
+        'vehicle mobile': 'mobile',
+        'base station': 'base',
+        'hf': 'hf',
+        'scanner': 'scanner'
+      };
+      let detectedCategory = 'unknown';
+      for (const [label, cat] of Object.entries(catMap)) {
+        if (priceBarLabel.startsWith(label)) {
+          detectedCategory = cat;
+          break;
+        }
       }
-      console.log(`      ${DIM}(Inferred category: ${inferredCategory}, mounting visible: ${detected.mountingVisible}, battery locked: ${detected.batteryLocked})${RESET}`);
-      return inferredCategory === pathDef.expectedCategory;
+      console.log(`      ${DIM}(Price bar: "${priceBarLabel}", detected: ${detectedCategory})${RESET}`);
+      return detectedCategory === pathDef.expectedCategory;
     });
 
     // Check JS errors

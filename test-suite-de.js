@@ -546,29 +546,35 @@ async function testD3_BatteryQty2(page, step, assert) {
   });
 
   await step('Select a spare battery opt-card', async () => {
-    // The battery section has a factory battery info display at top, then spare battery opt-cards below
-    // Need to scroll down and click an actual purchasable battery card
+    // The battery section has a factory battery info display at top, then purchasable spare battery opt-cards below.
+    // The factory battery shows "Included" and has no price. Spare batteries show "+$XX/ea".
+    // We need to scroll down and click a PURCHASABLE card (one with a price), not the factory info card.
     const clicked = await page.evaluate(() => {
       const sec = document.getElementById('sec-battery');
       if (!sec) return false;
       const cards = sec.querySelectorAll('.opt-card');
-      // Find a card that has a price (spare batteries show +$XX/ea)
+      // First pass: find cards with a price indicator (not "Included")
       for (const card of cards) {
         const text = card.textContent;
-        if (text.includes('/ea') || text.includes('USB-C') || text.includes('Spare') || text.includes('Battery')) {
+        // Purchasable cards have "+$XX/ea" or a dollar amount, and NOT "Included"
+        if ((text.includes('/ea') || text.match(/\+\$\d+/)) && !text.includes('Included')) {
           card.scrollIntoView({ behavior: 'instant', block: 'center' });
           card.click();
           return true;
         }
       }
-      // Fallback: click first opt-card
-      if (cards.length > 0) {
-        cards[0].scrollIntoView({ behavior: 'instant', block: 'center' });
-        cards[0].click();
-        return true;
+      // Second pass: find cards with USB-C in the name (spare batteries)
+      for (const card of cards) {
+        const text = card.textContent;
+        if (text.includes('USB-C') && !text.includes('Included')) {
+          card.scrollIntoView({ behavior: 'instant', block: 'center' });
+          card.click();
+          return true;
+        }
       }
       return false;
     });
+    await sleep(500);
     return clicked;
   });
 
