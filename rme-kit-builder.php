@@ -84,17 +84,36 @@ function rme_kb_get_live_prices() {
         return array();
     }
 
+    // Variable products with default variations.
+    // For these parent IDs, fetch the price of the default variation instead
+    // of the parent (which returns the cheapest variation).
+    $default_variations = rme_kb_get_default_variations();
+
     $prices = array();
     $product_ids = rme_kb_extract_product_ids();
 
     foreach ( $product_ids as $pid ) {
-        $product = wc_get_product( $pid );
+        $fetch_id = isset( $default_variations[ $pid ] ) ? $default_variations[ $pid ] : $pid;
+        $product = wc_get_product( $fetch_id );
         if ( $product ) {
+            // Key by parent ID so JS _applyPrices() can match it
             $prices[ (string) $pid ] = (float) $product->get_price();
         }
     }
 
     return $prices;
+}
+
+/**
+ * Default variation IDs for variable products.
+ * Mirrors the _default entries from variationMap in kit-builder.js.
+ * Parent ID => default variation ID used in the kit builder UI.
+ */
+function rme_kb_get_default_variations() {
+    return array(
+        8717 => 8719,  // BNC MOLLE Antenna Mount: 2-inch + BNC coax
+        966  => 9111,  // Cheat Sheets: UV-5R variant
+    );
 }
 
 /**
