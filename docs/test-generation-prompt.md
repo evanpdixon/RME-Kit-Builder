@@ -1,4 +1,4 @@
-# Comms Compass (Kit Builder V2) - Automated Test Generation Prompt
+# Comms Compass - Automated Test Generation Prompt
 
 Use this prompt when generating Puppeteer test scripts for the Comms Compass flow. Copy the entire prompt below the line, including the architecture reference and test matrix. Adapt the "What to Test" section based on the specific testing need.
 
@@ -6,7 +6,7 @@ Use this prompt when generating Puppeteer test scripts for the Comms Compass flo
 
 ## Prompt
 
-You are writing a Puppeteer test suite for the Comms Compass, a single-page radio kit builder wizard at `https://staging12.radiomadeeasy.com/kit-builder-v2/`. The wizard is built as a vertical scroll of sections that unlock progressively. Users select a radio category, choose a radio, then walk through product add-on sections before adding to cart.
+You are writing a Puppeteer test suite for the Comms Compass, a single-page radio kit builder wizard at `https://staging12.radiomadeeasy.com/comms-compass/`. The wizard is built as a vertical scroll of sections that unlock progressively. Users select a radio category, choose a radio, then walk through product add-on sections before adding to cart.
 
 ### Critical Testing Rules
 
@@ -20,16 +20,61 @@ await page.waitForFunction(
   'antennas'
 );
 ```
+Use `page.waitForSelector` for elements that appear dynamically:
+```javascript
+await page.waitForSelector('.result-card', { visible: true, timeout: 10000 });
+```
+Only use `sleep()` as a last resort after a transition where no reliable DOM signal exists, and keep it under 500ms.
 
-3. **Dismiss the Mailchimp popup first.** On every fresh page load, check for and dismiss the Mailchimp popup overlay. It blocks clicks if not dismissed. Look for a close button or "No, thanks" text.
+3. **Dismiss the Mailchimp popup first.** On every fresh page load, wait 2 seconds then check for and dismiss the Mailchimp popup overlay. It blocks clicks if not dismissed. Use this helper:
+```javascript
+async function dismissPopup(page) {
+  await page.evaluate(() => {
+    const btns = document.querySelectorAll('button, a, div[role="button"]');
+    for (const b of btns) {
+      if (b.textContent.trim().toUpperCase().includes('NO, THANKS') ||
+          b.textContent.trim().toUpperCase().includes('NO THANKS')) {
+        b.click(); return;
+      }
+    }
+    // Also try closing any modal overlay
+    const overlay = document.querySelector('.mc-closeModal, .mc-modal-close, [data-action="close"]');
+    if (overlay) overlay.click();
+  });
+}
+```
 
-4. **Take a screenshot on every failure.** When an assertion fails, capture a viewport screenshot to the `_screenshots/` directory with a descriptive filename including the test name and section.
+4. **Take a screenshot on every assertion.** Capture a viewport screenshot for EVERY test step (not just failures). Save to `_screenshots/{suite}/{test-name}/{step-number}-{description}.png`. On failure, additionally save a full-page screenshot with `-FAIL` suffix. This creates a visual record of the entire test run.
 
 5. **Each test gets a fresh page with cleared state.** Clear localStorage, sessionStorage, and cookies before each test. The wizard persists state in localStorage and URL hash. Stale state causes false results.
+```javascript
+async function freshLoad(page, url) {
+  const client = await page.target().createCDPSession();
+  await client.send('Network.clearBrowserCookies');
+  await client.send('Network.clearBrowserCache');
+  await client.detach();
+  await page.goto(url, { waitUntil: 'networkidle2', timeout: 45000 });
+  await page.evaluate(() => { try { localStorage.clear(); sessionStorage.clear(); } catch(e){} });
+  await new Promise(r => setTimeout(r, 2000));
+  await dismissPopup(page);
+  await new Promise(r => setTimeout(r, 500));
+}
+```
 
 6. **Test both viewports.** Run each flow test at desktop (1280x900) AND mobile (375x812). Many layout and interaction bugs only appear on one viewport. Mobile uses `isMobile: true` in Puppeteer's viewport config.
 
+7. **Verify element visibility before clicking.** Before clicking any element, verify it exists and is visible. Use `page.waitForSelector` with `{ visible: true }` or check `offsetParent !== null` via `page.evaluate`. Stale or hidden elements cause silent failures.
+
+8. **Collect and report JavaScript console errors.** Listen for `pageerror` and `console` error events. Report them in the test output. Any unexpected JS error is a test failure even if the assertions pass.
+```javascript
+const jsErrors = [];
+page.on('pageerror', err => jsErrors.push(err.message));
+page.on('console', msg => { if (msg.type() === 'error') jsErrors.push(msg.text()); });
+```
+
 ### Architecture Reference
+
+**Page URL:** `https://staging12.radiomadeeasy.com/comms-compass/` (also accessible at `/kit-builder-v2/`)
 
 **Section flow order:** email, interview, radio, mounting, antennas, battery, accessories, programming, review, quantity
 
@@ -50,9 +95,9 @@ await page.waitForFunction(
 1. **Guided ("Help Me Choose"):** Multi-step interview (budget, reach, setup type, preferences) leading to recommendation cards. Recommendation auto-selects a radio.
 2. **Direct ("I Know What I Want"):** User picks category checkboxes, then selects radio from a grid.
 
-**UV-PRO special behavior:** After selecting UV-PRO radio, a color picker modal appears (Black vs Tan/Coyote). Must select a color before proceeding.
+**UV-PRO special behavior:** After selecting UV-PRO radio, a color picker appears with a single product image and color swatches (Tan first, Black second). Black is pre-selected. User picks a color and clicks Continue before proceeding to antennas.
 
-**Multi-category flow:** Users can select multiple categories in Direct mode. After adding first kit to cart, they're prompted to build the next category with a 5% cross-category discount.
+**Multi-category flow:** Users can select multiple categories in Direct mode. After adding first kit to cart, they're prompted to build the next category with a 5% cross-category discount on the full kit total (not just base price).
 
 **Key DOM elements:**
 - Sections: `#sec-email`, `#sec-interview`, `#sec-radio`, `#sec-mounting`, `#sec-antennas`, `#sec-battery`, `#sec-accessories`, `#sec-programming`, `#sec-review`, `#sec-quantity`
@@ -68,9 +113,11 @@ await page.waitForFunction(
 - Interview choice buttons: text "Help Me Choose" and "I Know What I Want" inside `#sec-interview`
 - Category checkboxes in Direct mode: `.kbs-iq-opt` elements with category names
 - Continue button after category selection: `.kb-btn--primary` inside `#sec-interview`
+- Color picker swatches: `.color-swatch--black`, `.color-swatch--tan` inside `#kbs-color-picker`
+- Color picker confirm: `.kb-btn--primary` inside `#kbs-color-picker`
 
 **How to click through a section:**
-1. Wait for section to be active (has `kb-section--active` class)
+1. Wait for section to be active: `await page.waitForFunction(name => document.getElementById('sec-' + name)?.classList.contains('kb-section--active'), { timeout: 10000 }, sectionName);`
 2. Optionally interact with product cards (click `.opt-card` to select/deselect)
 3. Click the Continue button: find `.kb-btn--primary` inside `#sec-{name} .kb-section__actions` that is visible
 4. Wait for the NEXT section to become active
@@ -84,18 +131,43 @@ await page.waitForFunction(
 6. Click the Continue button in the interview section
 7. Wait for radio section to be active
 8. Click the `.radio-pick` card matching the desired radio
-9. Wait for the next section (mounting or antennas, depending on category) to be active
+9. For UV-PRO: wait for `#kbs-color-picker` to appear, click a color swatch, click Continue inside the picker
+10. Wait for the next section (mounting or antennas, depending on category) to be active
 
 **How to click a Continue button within a section:**
 ```javascript
-await page.evaluate(secName => {
-  const sec = document.getElementById('sec-' + secName);
-  if (!sec) return;
-  const btns = sec.querySelectorAll('.kb-section__actions .kb-btn--primary');
-  for (const btn of btns) {
-    if (btn.offsetParent !== null && !btn.disabled) { btn.click(); break; }
-  }
-}, 'antennas');
+async function clickContinue(page, sectionName) {
+  await page.evaluate(secName => {
+    const sec = document.getElementById('sec-' + secName);
+    if (!sec) return;
+    const btns = sec.querySelectorAll('.kb-section__actions .kb-btn--primary');
+    for (const btn of btns) {
+      if (btn.offsetParent !== null && !btn.disabled) { btn.click(); break; }
+    }
+  }, sectionName);
+}
+```
+
+**How to wait for and verify a section is active with content:**
+```javascript
+async function waitForSection(page, name) {
+  await page.waitForFunction(
+    n => {
+      const el = document.getElementById('sec-' + n);
+      return el && el.classList.contains('kb-section--active');
+    },
+    { timeout: 15000 },
+    name
+  );
+  // Verify it has rendered content
+  const hasContent = await page.evaluate(n => {
+    const el = document.getElementById('sec-' + n);
+    if (!el) return false;
+    const content = el.querySelector('.kb-section__content');
+    return content && content.offsetHeight > 20 && content.innerHTML.trim().length > 50;
+  }, name);
+  return hasContent;
+}
 ```
 
 **Programming section special behavior:**
@@ -111,7 +183,7 @@ await page.evaluate(secName => {
 
 **Quantity section:**
 - Shows a +/- picker for kit quantity
-- Volume discount tiers at qty 2+ (5%, 10%, 15%, 20%)
+- Volume discount tiers at qty 2+ (5%, 10%, 15%, 20%) applied to full kit total
 - "Add to Cart" button (`.kb-btn--cart`) sends AJAX to WooCommerce
 
 ### Test Matrix
@@ -122,7 +194,7 @@ await page.evaluate(secName => {
 |----------|-------|----------------|
 | Handheld | UV-5R | Cheapest, baseline flow |
 | Handheld | UV-5R Mini | Smallest/cheapest |
-| Handheld | UV-PRO | Color picker modal (Black/Tan) |
+| Handheld | UV-PRO | Color picker (Tan/Black swatches) |
 | Handheld | DMR 6X2 PRO | DMR programming fields |
 | Handheld | DA-7X2 | DMR programming fields, most expensive |
 | Vehicle | UV-50PRO | Mounting step visible |
@@ -145,6 +217,7 @@ Each flow test should:
 7. On quantity: verify Add to Cart button is enabled
 8. Verify price bar shows correct radio name and a dollar amount throughout
 9. Check for zero JavaScript console errors
+10. Screenshot every section transition
 
 **B. Guided path tests (both viewports):**
 
@@ -163,6 +236,7 @@ Each guided test should:
 4. Verify recommendation cards appear
 5. Click the primary recommendation's "Select This Radio" button
 6. Verify the flow advances to the correct post-radio section
+7. Screenshot each interview question and the recommendation result
 
 **C. Edge case tests (both viewports):**
 
@@ -172,11 +246,55 @@ Each guided test should:
 | Re-edit section | Complete through accessories, click the completed antennas summary to re-edit. Verify downstream sections re-lock. |
 | Back navigation | From battery, click Back. Verify antennas section re-activates. |
 | Multi-category | Select Handheld + Vehicle in Direct. Complete handheld kit, verify prompted for next category. |
-| UV-PRO color picker | Select UV-PRO, verify color modal appears, select Tan, verify flow continues. |
+| UV-PRO color picker | Select UV-PRO, verify color picker appears with swatches, select Tan, verify label changes, click Continue, verify flow advances. |
 | Remove from review | Complete to review, remove an antenna. Verify price updates and item disappears. |
 | URL state persistence | Complete to antennas, copy URL hash, reload page, verify resume prompt appears. |
 
-**D. UI/layout assertions (both viewports):**
+**D. Selection combination tests (desktop only, unless noted):**
+
+These test that every interactive selection within each section works correctly. For each, verify the price bar updates and the review section reflects the selection.
+
+| Section | Test | Verify |
+|---------|------|--------|
+| Antennas (handheld) | Select Foul Weather Whip only | Price adds $40, BNC adapter auto-included ($5), review shows both |
+| Antennas (handheld) | Select all 3 upgrades (Stubby + Foul Weather + Signal Stick) | All 3 in review, single adapter ($5), prices sum correctly |
+| Antennas (handheld) | Select Foul Weather + Mag Mount additional | Both in review, adapter included, mag mount price correct |
+| Antennas (handheld) | Select Foul Weather + MOLLE Mount additional | MOLLE shows $69 (not $19), both in review |
+| Antennas (handheld) | Select Slim Jim additional antenna only | Slim Jim in review at $49, adapter auto-added |
+| Antennas (handheld) | No upgrades (factory only) | Review shows just base kit, no adapter charge |
+| Battery (handheld) | Select 1 spare battery | Price adds correctly, review shows battery |
+| Battery (handheld) | Select 2 spare batteries via qty stepper | Price = 2x battery price, review shows x2 |
+| Battery (UV-PRO) | Select battery, change color to Tan | Color swatch shows Tan active, "Differs from radio" note if radio is Black |
+| Accessories (handheld) | Select Cheat Sheets only | Price adds $19, review shows cheat sheets |
+| Accessories (handheld) | Select all available accessories | All in review, total correct |
+| Accessories (UV-PRO) | Select K-Plug Adapter | Price adds $25 |
+| Accessories (UV-PRO) | Select BS-22 Wireless Speakermic | Price adds $59 |
+| Programming | Standard (default) | $0 added, shipping address checkbox visible |
+| Programming | Multi-Location | $10 added, multiple zip fields visible |
+| Programming | Self-Program | $0 added, description mentions CHIRP |
+| Programming (DMR) | Standard on DMR 6X2 PRO | Brandmeister ID field visible |
+| Quantity | Qty 1 | No discount shown |
+| Quantity | Qty 2 | 5% discount on full kit total shown |
+| Quantity | Qty 5 | 10% discount on full kit total shown |
+| Quantity | Qty 10 | 15% discount on full kit total shown |
+| Mounting (vehicle) | Factory bracket selected (default) | Correct mount in review |
+| Mounting (vehicle) | RAM Tough Wedge selected | Different mount in review, price reflects |
+| Antennas (vehicle) | Select vehicle antenna | Category-specific antenna in review |
+| Antennas (HF) | Select HF antenna | HF-specific antenna in review |
+| Antennas (scanner) | Select scanner antenna | Scanner-specific antenna in review |
+
+**E. Price verification tests (desktop only):**
+
+| Test | Expected Total |
+|------|----------------|
+| UV-5R Mini, no upgrades, self-program, qty 1 | $39 |
+| UV-5R, factory antenna, standard programming, qty 1 | $59 |
+| UV-PRO, Foul Weather + adapter, 1 spare battery, cheat sheets, standard, qty 1 | $159 + $40 + $5 + $25 + $19 = $248 |
+| UV-PRO, same as above, qty 2 | $248 * 2 - 5% discount = $471.20 (verify discount = ~$25) |
+| DA-7X2, no upgrades, standard, qty 1 | $299 |
+| SDS200, no upgrades, standard, qty 1 | $799 |
+
+**F. UI/layout assertions (both viewports):**
 
 For every section in every flow, additionally check:
 1. All `.kb-btn` buttons within the same `.kb-section__actions` have the same `offsetHeight`
@@ -193,16 +311,50 @@ Generate a single `test-comms-compass.js` file that:
 - Groups tests into labeled suites with console output showing progress
 - Runs all tests sequentially (not parallel) to avoid race conditions
 - Prints a summary at the end: total pass, total fail, list of failures
-- Saves failure screenshots to `_screenshots/` directory
+- Saves ALL screenshots (pass and fail) to `_screenshots/{suite}/{step}.png`
+- Generates a JSON results file `_screenshots/results.json` with structure:
+```json
+{
+  "timestamp": "ISO date",
+  "viewport": "desktop|mobile",
+  "suites": [
+    {
+      "name": "Handheld - UV-5R",
+      "status": "pass|fail",
+      "steps": [
+        { "name": "Skip email", "status": "pass", "screenshot": "path.png" },
+        { "name": "Select category", "status": "fail", "screenshot": "path.png", "error": "reason" }
+      ],
+      "jsErrors": []
+    }
+  ],
+  "summary": { "total": 44, "passed": 42, "failed": 2 }
+}
+```
 - Exits with code 1 if any tests failed, code 0 if all passed
 - Has a `--desktop-only` or `--mobile-only` CLI flag to run a subset
 - Has a `--category=handheld` CLI flag to test only one category
+- Has a `--suite=A` flag to run only section A, B, C, D, E, or F of the test matrix
+
+### Results Documentation
+
+After the test run completes, results should be reviewed and documented in the **Deployment Tracker** dashboard at `C:\Claude\rme-command-center\deployments\index.html`. The dashboard has a Test Coverage tab with a flow matrix and test resources section.
+
+**Update process:**
+1. Review `_screenshots/results.json` for any failures
+2. For each failure: examine the screenshot, identify the root cause, file a fix
+3. Update the `TESTS` array in the deployment tracker to reflect current pass/fail status
+4. Add new timeline entries for significant test runs or regressions discovered
+5. Update checklist items if a test revealed a previously unknown bug
+6. Copy key screenshots (failures, regressions, before/after fixes) to `_screenshots/documented/` for permanent reference
+
+**What to report:**
+- Total pass/fail counts by viewport
+- Any new JS console errors discovered
+- Any UI layout regressions (button heights, card overlap, price bar position)
+- Flow-breaking bugs vs cosmetic issues
+- Comparison to previous test run if available
 
 ### What to Test
 
-[Describe the specific testing need here. Examples:]
-
-- "Run the full test matrix above (A through D) for all radios, both viewports."
-- "Test only the scanner category flows (SDR, SDS200, SR2, BC125AT) to verify the battery skip fix."
-- "Test only the UI/layout assertions (section D) across all categories to verify button heights and card layouts."
-- "Test the guided path flows (section B) to verify recommendation logic."
+Run the full test matrix (A through F) for all radios, both viewports where noted. This is a comprehensive regression test after today's fixes: scanner battery skip, MOLLE mount price correction, discount calculation overhaul, UV-PRO color picker redesign, factory antenna mobile fix, and button height normalization.
