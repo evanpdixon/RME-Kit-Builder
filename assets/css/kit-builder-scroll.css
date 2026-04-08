@@ -323,7 +323,8 @@
 
 /* Cards without images: simpler 2-column grid */
 #rme-kit-builder-scroll #rme-kit-builder .opt-card:not(:has(.oc-img)) {
-  grid-template-columns: 1fr auto;
+  grid-template-columns: 1fr 60px;
+  gap: 0 8px;
 }
 #rme-kit-builder-scroll #rme-kit-builder .opt-card:not(:has(.oc-img)) .oc-check { grid-column: 2; grid-row: 1; justify-self: end; }
 #rme-kit-builder-scroll #rme-kit-builder .opt-card:not(:has(.oc-img)) .oc-price { grid-column: 2; grid-row: 2; justify-self: end; }
