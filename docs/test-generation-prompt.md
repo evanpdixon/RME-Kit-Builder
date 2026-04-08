@@ -89,7 +89,7 @@ page.on('console', msg => { if (msg.type() === 'error') jsErrors.push(msg.text()
 - **Vehicle/Mobile** (key: `mobile`): UV-50PRO, D578
 - **Base Station** (key: `base`): UV-50PRO, D578 (same radios as vehicle)
 - **HF** (key: `hf`): G90, FT-891
-- **Scanner** (key: `scanner`): SDR, SDS200, SR2, BC125AT
+- **Scanner** (key: `scanner`): SDS200, SDS100, SDR, SDS150
 
 **Two entry paths:**
 1. **Guided ("Help Me Choose"):** Multi-step interview (budget, reach, setup type, preferences) leading to recommendation cards. Recommendation auto-selects a radio.
@@ -202,10 +202,10 @@ async function waitForSection(page, name) {
 | Base | D578 | Mounting visible, base-specific antenna products |
 | HF | G90 | No mounting, HF-specific antennas |
 | HF | FT-891 | No mounting, different HF antenna options |
-| Scanner | SDR | No mounting, no battery (skip), scanner products |
-| Scanner | SDS200 | No mounting, no battery (skip), most expensive scanner |
-| Scanner | SR2 | No mounting, no battery (skip) |
-| Scanner | BC125AT | No mounting, no battery (skip) |
+| Scanner | SDS200 | No mounting, no battery (skip), base station form factor |
+| Scanner | SDS100 | No mounting, no battery (skip), handheld form factor |
+| Scanner | SDR | No mounting, no battery (skip), requires computer |
+| Scanner | SDS150 | No mounting, no battery (skip) |
 
 Each flow test should:
 1. Fresh load, dismiss popup, skip email

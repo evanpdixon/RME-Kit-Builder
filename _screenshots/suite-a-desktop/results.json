@@ -1,0 +1,1873 @@
+{
+  "timestamp": "2026-04-08T04:22:07.427Z",
+  "viewport": "desktop",
+  "url": "https://staging12.radiomadeeasy.com/comms-compass/",
+  "suites": [
+    {
+      "name": "Handheld - UV-5R",
+      "viewport": "desktop",
+      "status": "pass",
+      "passed": 23,
+      "failed": 0,
+      "steps": [
+        {
+          "name": "Fresh load page",
+          "status": "pass",
+          "screenshot": "01-Fresh_load_page.png"
+        },
+        {
+          "name": "Skip email",
+          "status": "pass",
+          "screenshot": "02-Skip_email.png"
+        },
+        {
+          "name": "Select Direct path",
+          "status": "pass",
+          "screenshot": "03-Select_Direct_path.png"
+        },
+        {
+          "name": "Select category: Handheld",
+          "status": "pass",
+          "screenshot": "04-Select_category__Handheld.png"
+        },
+        {
+          "name": "Continue to radio selection",
+          "status": "pass",
+          "screenshot": "05-Continue_to_radio_selection.png"
+        },
+        {
+          "name": "Select radio: UV-5R",
+          "status": "pass",
+          "screenshot": "06-Select_radio__UV-5R.png"
+        },
+        {
+          "name": "Verify mounting section is skipped",
+          "status": "pass",
+          "screenshot": "07-Verify_mounting_section_is_skipped.png"
+        },
+        {
+          "name": "Section active: antennas",
+          "status": "pass",
+          "screenshot": "08-Section_active__antennas.png"
+        },
+        {
+          "name": "Continue past antennas",
+          "status": "pass",
+          "screenshot": "09-Continue_past_antennas.png"
+        },
+        {
+          "name": "Section active: battery",
+          "status": "pass",
+          "screenshot": "10-Section_active__battery.png"
+        },
+        {
+          "name": "Continue past battery",
+          "status": "pass",
+          "screenshot": "11-Continue_past_battery.png"
+        },
+        {
+          "name": "Section active: accessories",
+          "status": "pass",
+          "screenshot": "12-Section_active__accessories.png"
+        },
+        {
+          "name": "Continue past accessories",
+          "status": "pass",
+          "screenshot": "13-Continue_past_accessories.png"
+        },
+        {
+          "name": "Section active: programming",
+          "status": "pass",
+          "screenshot": "14-Section_active__programming.png"
+        },
+        {
+          "name": "Continue past programming",
+          "status": "pass",
+          "screenshot": "15-Continue_past_programming.png"
+        },
+        {
+          "name": "Section active: review",
+          "status": "pass",
+          "screenshot": "16-Section_active__review.png"
+        },
+        {
+          "name": "Review: radio name visible",
+          "status": "pass",
+          "screenshot": "17-Review__radio_name_visible.png"
+        },
+        {
+          "name": "Review: price is non-zero",
+          "status": "pass",
+          "screenshot": "18-Review__price_is_non-zero.png"
+        },
+        {
+          "name": "Continue past review",
+          "status": "pass",
+          "screenshot": "19-Continue_past_review.png"
+        },
+        {
+          "name": "Section active: quantity",
+          "status": "pass",
+          "screenshot": "20-Section_active__quantity.png"
+        },
+        {
+          "name": "Quantity: Add to Cart button enabled",
+          "status": "pass",
+          "screenshot": "21-Quantity__Add_to_Cart_button_enabled.png"
+        },
+        {
+          "name": "Price bar shows dollar amount",
+          "status": "pass",
+          "screenshot": "22-Price_bar_shows_dollar_amount.png"
+        },
+        {
+          "name": "No critical JavaScript errors",
+          "status": "pass",
+          "screenshot": "23-No_critical_JavaScript_errors.png"
+        }
+      ],
+      "jsErrors": []
+    },
+    {
+      "name": "Handheld - UV-5R Mini",
+      "viewport": "desktop",
+      "status": "pass",
+      "passed": 23,
+      "failed": 0,
+      "steps": [
+        {
+          "name": "Fresh load page",
+          "status": "pass",
+          "screenshot": "01-Fresh_load_page.png"
+        },
+        {
+          "name": "Skip email",
+          "status": "pass",
+          "screenshot": "02-Skip_email.png"
+        },
+        {
+          "name": "Select Direct path",
+          "status": "pass",
+          "screenshot": "03-Select_Direct_path.png"
+        },
+        {
+          "name": "Select category: Handheld",
+          "status": "pass",
+          "screenshot": "04-Select_category__Handheld.png"
+        },
+        {
+          "name": "Continue to radio selection",
+          "status": "pass",
+          "screenshot": "05-Continue_to_radio_selection.png"
+        },
+        {
+          "name": "Select radio: UV-5R Mini",
+          "status": "pass",
+          "screenshot": "06-Select_radio__UV-5R_Mini.png"
+        },
+        {
+          "name": "Verify mounting section is skipped",
+          "status": "pass",
+          "screenshot": "07-Verify_mounting_section_is_skipped.png"
+        },
+        {
+          "name": "Section active: antennas",
+          "status": "pass",
+          "screenshot": "08-Section_active__antennas.png"
+        },
+        {
+          "name": "Continue past antennas",
+          "status": "pass",
+          "screenshot": "09-Continue_past_antennas.png"
+        },
+        {
+          "name": "Section active: battery",
+          "status": "pass",
+          "screenshot": "10-Section_active__battery.png"
+        },
+        {
+          "name": "Continue past battery",
+          "status": "pass",
+          "screenshot": "11-Continue_past_battery.png"
+        },
+        {
+          "name": "Section active: accessories",
+          "status": "pass",
+          "screenshot": "12-Section_active__accessories.png"
+        },
+        {
+          "name": "Continue past accessories",
+          "status": "pass",
+          "screenshot": "13-Continue_past_accessories.png"
+        },
+        {
+          "name": "Section active: programming",
+          "status": "pass",
+          "screenshot": "14-Section_active__programming.png"
+        },
+        {
+          "name": "Continue past programming",
+          "status": "pass",
+          "screenshot": "15-Continue_past_programming.png"
+        },
+        {
+          "name": "Section active: review",
+          "status": "pass",
+          "screenshot": "16-Section_active__review.png"
+        },
+        {
+          "name": "Review: radio name visible",
+          "status": "pass",
+          "screenshot": "17-Review__radio_name_visible.png"
+        },
+        {
+          "name": "Review: price is non-zero",
+          "status": "pass",
+          "screenshot": "18-Review__price_is_non-zero.png"
+        },
+        {
+          "name": "Continue past review",
+          "status": "pass",
+          "screenshot": "19-Continue_past_review.png"
+        },
+        {
+          "name": "Section active: quantity",
+          "status": "pass",
+          "screenshot": "20-Section_active__quantity.png"
+        },
+        {
+          "name": "Quantity: Add to Cart button enabled",
+          "status": "pass",
+          "screenshot": "21-Quantity__Add_to_Cart_button_enabled.png"
+        },
+        {
+          "name": "Price bar shows dollar amount",
+          "status": "pass",
+          "screenshot": "22-Price_bar_shows_dollar_amount.png"
+        },
+        {
+          "name": "No critical JavaScript errors",
+          "status": "pass",
+          "screenshot": "23-No_critical_JavaScript_errors.png"
+        }
+      ],
+      "jsErrors": []
+    },
+    {
+      "name": "Handheld - UV-PRO",
+      "viewport": "desktop",
+      "status": "pass",
+      "passed": 24,
+      "failed": 0,
+      "steps": [
+        {
+          "name": "Fresh load page",
+          "status": "pass",
+          "screenshot": "01-Fresh_load_page.png"
+        },
+        {
+          "name": "Skip email",
+          "status": "pass",
+          "screenshot": "02-Skip_email.png"
+        },
+        {
+          "name": "Select Direct path",
+          "status": "pass",
+          "screenshot": "03-Select_Direct_path.png"
+        },
+        {
+          "name": "Select category: Handheld",
+          "status": "pass",
+          "screenshot": "04-Select_category__Handheld.png"
+        },
+        {
+          "name": "Continue to radio selection",
+          "status": "pass",
+          "screenshot": "05-Continue_to_radio_selection.png"
+        },
+        {
+          "name": "Select radio: UV-PRO",
+          "status": "pass",
+          "screenshot": "06-Select_radio__UV-PRO.png"
+        },
+        {
+          "name": "UV-PRO: handle color picker",
+          "status": "pass",
+          "screenshot": "07-UV-PRO__handle_color_picker.png"
+        },
+        {
+          "name": "Verify mounting section is skipped",
+          "status": "pass",
+          "screenshot": "08-Verify_mounting_section_is_skipped.png"
+        },
+        {
+          "name": "Section active: antennas",
+          "status": "pass",
+          "screenshot": "09-Section_active__antennas.png"
+        },
+        {
+          "name": "Continue past antennas",
+          "status": "pass",
+          "screenshot": "10-Continue_past_antennas.png"
+        },
+        {
+          "name": "Section active: battery",
+          "status": "pass",
+          "screenshot": "11-Section_active__battery.png"
+        },
+        {
+          "name": "Continue past battery",
+          "status": "pass",
+          "screenshot": "12-Continue_past_battery.png"
+        },
+        {
+          "name": "Section active: accessories",
+          "status": "pass",
+          "screenshot": "13-Section_active__accessories.png"
+        },
+        {
+          "name": "Continue past accessories",
+          "status": "pass",
+          "screenshot": "14-Continue_past_accessories.png"
+        },
+        {
+          "name": "Section active: programming",
+          "status": "pass",
+          "screenshot": "15-Section_active__programming.png"
+        },
+        {
+          "name": "Continue past programming",
+          "status": "pass",
+          "screenshot": "16-Continue_past_programming.png"
+        },
+        {
+          "name": "Section active: review",
+          "status": "pass",
+          "screenshot": "17-Section_active__review.png"
+        },
+        {
+          "name": "Review: radio name visible",
+          "status": "pass",
+          "screenshot": "18-Review__radio_name_visible.png"
+        },
+        {
+          "name": "Review: price is non-zero",
+          "status": "pass",
+          "screenshot": "19-Review__price_is_non-zero.png"
+        },
+        {
+          "name": "Continue past review",
+          "status": "pass",
+          "screenshot": "20-Continue_past_review.png"
+        },
+        {
+          "name": "Section active: quantity",
+          "status": "pass",
+          "screenshot": "21-Section_active__quantity.png"
+        },
+        {
+          "name": "Quantity: Add to Cart button enabled",
+          "status": "pass",
+          "screenshot": "22-Quantity__Add_to_Cart_button_enabled.png"
+        },
+        {
+          "name": "Price bar shows dollar amount",
+          "status": "pass",
+          "screenshot": "23-Price_bar_shows_dollar_amount.png"
+        },
+        {
+          "name": "No critical JavaScript errors",
+          "status": "pass",
+          "screenshot": "24-No_critical_JavaScript_errors.png"
+        }
+      ],
+      "jsErrors": []
+    },
+    {
+      "name": "Handheld - DMR 6X2 PRO",
+      "viewport": "desktop",
+      "status": "pass",
+      "passed": 23,
+      "failed": 0,
+      "steps": [
+        {
+          "name": "Fresh load page",
+          "status": "pass",
+          "screenshot": "01-Fresh_load_page.png"
+        },
+        {
+          "name": "Skip email",
+          "status": "pass",
+          "screenshot": "02-Skip_email.png"
+        },
+        {
+          "name": "Select Direct path",
+          "status": "pass",
+          "screenshot": "03-Select_Direct_path.png"
+        },
+        {
+          "name": "Select category: Handheld",
+          "status": "pass",
+          "screenshot": "04-Select_category__Handheld.png"
+        },
+        {
+          "name": "Continue to radio selection",
+          "status": "pass",
+          "screenshot": "05-Continue_to_radio_selection.png"
+        },
+        {
+          "name": "Select radio: DMR 6X2 PRO",
+          "status": "pass",
+          "screenshot": "06-Select_radio__DMR_6X2_PRO.png"
+        },
+        {
+          "name": "Verify mounting section is skipped",
+          "status": "pass",
+          "screenshot": "07-Verify_mounting_section_is_skipped.png"
+        },
+        {
+          "name": "Section active: antennas",
+          "status": "pass",
+          "screenshot": "08-Section_active__antennas.png"
+        },
+        {
+          "name": "Continue past antennas",
+          "status": "pass",
+          "screenshot": "09-Continue_past_antennas.png"
+        },
+        {
+          "name": "Section active: battery",
+          "status": "pass",
+          "screenshot": "10-Section_active__battery.png"
+        },
+        {
+          "name": "Continue past battery",
+          "status": "pass",
+          "screenshot": "11-Continue_past_battery.png"
+        },
+        {
+          "name": "Section active: accessories",
+          "status": "pass",
+          "screenshot": "12-Section_active__accessories.png"
+        },
+        {
+          "name": "Continue past accessories",
+          "status": "pass",
+          "screenshot": "13-Continue_past_accessories.png"
+        },
+        {
+          "name": "Section active: programming",
+          "status": "pass",
+          "screenshot": "14-Section_active__programming.png"
+        },
+        {
+          "name": "Continue past programming",
+          "status": "pass",
+          "screenshot": "15-Continue_past_programming.png"
+        },
+        {
+          "name": "Section active: review",
+          "status": "pass",
+          "screenshot": "16-Section_active__review.png"
+        },
+        {
+          "name": "Review: radio name visible",
+          "status": "pass",
+          "screenshot": "17-Review__radio_name_visible.png"
+        },
+        {
+          "name": "Review: price is non-zero",
+          "status": "pass",
+          "screenshot": "18-Review__price_is_non-zero.png"
+        },
+        {
+          "name": "Continue past review",
+          "status": "pass",
+          "screenshot": "19-Continue_past_review.png"
+        },
+        {
+          "name": "Section active: quantity",
+          "status": "pass",
+          "screenshot": "20-Section_active__quantity.png"
+        },
+        {
+          "name": "Quantity: Add to Cart button enabled",
+          "status": "pass",
+          "screenshot": "21-Quantity__Add_to_Cart_button_enabled.png"
+        },
+        {
+          "name": "Price bar shows dollar amount",
+          "status": "pass",
+          "screenshot": "22-Price_bar_shows_dollar_amount.png"
+        },
+        {
+          "name": "No critical JavaScript errors",
+          "status": "pass",
+          "screenshot": "23-No_critical_JavaScript_errors.png"
+        }
+      ],
+      "jsErrors": []
+    },
+    {
+      "name": "Handheld - DA-7X2",
+      "viewport": "desktop",
+      "status": "pass",
+      "passed": 23,
+      "failed": 0,
+      "steps": [
+        {
+          "name": "Fresh load page",
+          "status": "pass",
+          "screenshot": "01-Fresh_load_page.png"
+        },
+        {
+          "name": "Skip email",
+          "status": "pass",
+          "screenshot": "02-Skip_email.png"
+        },
+        {
+          "name": "Select Direct path",
+          "status": "pass",
+          "screenshot": "03-Select_Direct_path.png"
+        },
+        {
+          "name": "Select category: Handheld",
+          "status": "pass",
+          "screenshot": "04-Select_category__Handheld.png"
+        },
+        {
+          "name": "Continue to radio selection",
+          "status": "pass",
+          "screenshot": "05-Continue_to_radio_selection.png"
+        },
+        {
+          "name": "Select radio: DA-7X2",
+          "status": "pass",
+          "screenshot": "06-Select_radio__DA-7X2.png"
+        },
+        {
+          "name": "Verify mounting section is skipped",
+          "status": "pass",
+          "screenshot": "07-Verify_mounting_section_is_skipped.png"
+        },
+        {
+          "name": "Section active: antennas",
+          "status": "pass",
+          "screenshot": "08-Section_active__antennas.png"
+        },
+        {
+          "name": "Continue past antennas",
+          "status": "pass",
+          "screenshot": "09-Continue_past_antennas.png"
+        },
+        {
+          "name": "Section active: battery",
+          "status": "pass",
+          "screenshot": "10-Section_active__battery.png"
+        },
+        {
+          "name": "Continue past battery",
+          "status": "pass",
+          "screenshot": "11-Continue_past_battery.png"
+        },
+        {
+          "name": "Section active: accessories",
+          "status": "pass",
+          "screenshot": "12-Section_active__accessories.png"
+        },
+        {
+          "name": "Continue past accessories",
+          "status": "pass",
+          "screenshot": "13-Continue_past_accessories.png"
+        },
+        {
+          "name": "Section active: programming",
+          "status": "pass",
+          "screenshot": "14-Section_active__programming.png"
+        },
+        {
+          "name": "Continue past programming",
+          "status": "pass",
+          "screenshot": "15-Continue_past_programming.png"
+        },
+        {
+          "name": "Section active: review",
+          "status": "pass",
+          "screenshot": "16-Section_active__review.png"
+        },
+        {
+          "name": "Review: radio name visible",
+          "status": "pass",
+          "screenshot": "17-Review__radio_name_visible.png"
+        },
+        {
+          "name": "Review: price is non-zero",
+          "status": "pass",
+          "screenshot": "18-Review__price_is_non-zero.png"
+        },
+        {
+          "name": "Continue past review",
+          "status": "pass",
+          "screenshot": "19-Continue_past_review.png"
+        },
+        {
+          "name": "Section active: quantity",
+          "status": "pass",
+          "screenshot": "20-Section_active__quantity.png"
+        },
+        {
+          "name": "Quantity: Add to Cart button enabled",
+          "status": "pass",
+          "screenshot": "21-Quantity__Add_to_Cart_button_enabled.png"
+        },
+        {
+          "name": "Price bar shows dollar amount",
+          "status": "pass",
+          "screenshot": "22-Price_bar_shows_dollar_amount.png"
+        },
+        {
+          "name": "No critical JavaScript errors",
+          "status": "pass",
+          "screenshot": "23-No_critical_JavaScript_errors.png"
+        }
+      ],
+      "jsErrors": []
+    },
+    {
+      "name": "Vehicle / Mobile - UV-50PRO",
+      "viewport": "desktop",
+      "status": "pass",
+      "passed": 24,
+      "failed": 0,
+      "steps": [
+        {
+          "name": "Fresh load page",
+          "status": "pass",
+          "screenshot": "01-Fresh_load_page.png"
+        },
+        {
+          "name": "Skip email",
+          "status": "pass",
+          "screenshot": "02-Skip_email.png"
+        },
+        {
+          "name": "Select Direct path",
+          "status": "pass",
+          "screenshot": "03-Select_Direct_path.png"
+        },
+        {
+          "name": "Select category: Vehicle / Mobile",
+          "status": "pass",
+          "screenshot": "04-Select_category__Vehicle___Mobile.png"
+        },
+        {
+          "name": "Continue to radio selection",
+          "status": "pass",
+          "screenshot": "05-Continue_to_radio_selection.png"
+        },
+        {
+          "name": "Select radio: UV-50PRO",
+          "status": "pass",
+          "screenshot": "06-Select_radio__UV-50PRO.png"
+        },
+        {
+          "name": "Section active: mounting",
+          "status": "pass",
+          "screenshot": "07-Section_active__mounting.png"
+        },
+        {
+          "name": "Continue past mounting",
+          "status": "pass",
+          "screenshot": "08-Continue_past_mounting.png"
+        },
+        {
+          "name": "Section active: antennas",
+          "status": "pass",
+          "screenshot": "09-Section_active__antennas.png"
+        },
+        {
+          "name": "Continue past antennas",
+          "status": "pass",
+          "screenshot": "10-Continue_past_antennas.png"
+        },
+        {
+          "name": "Section active: battery",
+          "status": "pass",
+          "screenshot": "11-Section_active__battery.png"
+        },
+        {
+          "name": "Continue past battery",
+          "status": "pass",
+          "screenshot": "12-Continue_past_battery.png"
+        },
+        {
+          "name": "Section active: accessories",
+          "status": "pass",
+          "screenshot": "13-Section_active__accessories.png"
+        },
+        {
+          "name": "Continue past accessories",
+          "status": "pass",
+          "screenshot": "14-Continue_past_accessories.png"
+        },
+        {
+          "name": "Section active: programming",
+          "status": "pass",
+          "screenshot": "15-Section_active__programming.png"
+        },
+        {
+          "name": "Continue past programming",
+          "status": "pass",
+          "screenshot": "16-Continue_past_programming.png"
+        },
+        {
+          "name": "Section active: review",
+          "status": "pass",
+          "screenshot": "17-Section_active__review.png"
+        },
+        {
+          "name": "Review: radio name visible",
+          "status": "pass",
+          "screenshot": "18-Review__radio_name_visible.png"
+        },
+        {
+          "name": "Review: price is non-zero",
+          "status": "pass",
+          "screenshot": "19-Review__price_is_non-zero.png"
+        },
+        {
+          "name": "Continue past review",
+          "status": "pass",
+          "screenshot": "20-Continue_past_review.png"
+        },
+        {
+          "name": "Section active: quantity",
+          "status": "pass",
+          "screenshot": "21-Section_active__quantity.png"
+        },
+        {
+          "name": "Quantity: Add to Cart button enabled",
+          "status": "pass",
+          "screenshot": "22-Quantity__Add_to_Cart_button_enabled.png"
+        },
+        {
+          "name": "Price bar shows dollar amount",
+          "status": "pass",
+          "screenshot": "23-Price_bar_shows_dollar_amount.png"
+        },
+        {
+          "name": "No critical JavaScript errors",
+          "status": "pass",
+          "screenshot": "24-No_critical_JavaScript_errors.png"
+        }
+      ],
+      "jsErrors": []
+    },
+    {
+      "name": "Vehicle / Mobile - D578",
+      "viewport": "desktop",
+      "status": "pass",
+      "passed": 24,
+      "failed": 0,
+      "steps": [
+        {
+          "name": "Fresh load page",
+          "status": "pass",
+          "screenshot": "01-Fresh_load_page.png"
+        },
+        {
+          "name": "Skip email",
+          "status": "pass",
+          "screenshot": "02-Skip_email.png"
+        },
+        {
+          "name": "Select Direct path",
+          "status": "pass",
+          "screenshot": "03-Select_Direct_path.png"
+        },
+        {
+          "name": "Select category: Vehicle / Mobile",
+          "status": "pass",
+          "screenshot": "04-Select_category__Vehicle___Mobile.png"
+        },
+        {
+          "name": "Continue to radio selection",
+          "status": "pass",
+          "screenshot": "05-Continue_to_radio_selection.png"
+        },
+        {
+          "name": "Select radio: D578",
+          "status": "pass",
+          "screenshot": "06-Select_radio__D578.png"
+        },
+        {
+          "name": "Section active: mounting",
+          "status": "pass",
+          "screenshot": "07-Section_active__mounting.png"
+        },
+        {
+          "name": "Continue past mounting",
+          "status": "pass",
+          "screenshot": "08-Continue_past_mounting.png"
+        },
+        {
+          "name": "Section active: antennas",
+          "status": "pass",
+          "screenshot": "09-Section_active__antennas.png"
+        },
+        {
+          "name": "Continue past antennas",
+          "status": "pass",
+          "screenshot": "10-Continue_past_antennas.png"
+        },
+        {
+          "name": "Section active: battery",
+          "status": "pass",
+          "screenshot": "11-Section_active__battery.png"
+        },
+        {
+          "name": "Continue past battery",
+          "status": "pass",
+          "screenshot": "12-Continue_past_battery.png"
+        },
+        {
+          "name": "Section active: accessories",
+          "status": "pass",
+          "screenshot": "13-Section_active__accessories.png"
+        },
+        {
+          "name": "Continue past accessories",
+          "status": "pass",
+          "screenshot": "14-Continue_past_accessories.png"
+        },
+        {
+          "name": "Section active: programming",
+          "status": "pass",
+          "screenshot": "15-Section_active__programming.png"
+        },
+        {
+          "name": "Continue past programming",
+          "status": "pass",
+          "screenshot": "16-Continue_past_programming.png"
+        },
+        {
+          "name": "Section active: review",
+          "status": "pass",
+          "screenshot": "17-Section_active__review.png"
+        },
+        {
+          "name": "Review: radio name visible",
+          "status": "pass",
+          "screenshot": "18-Review__radio_name_visible.png"
+        },
+        {
+          "name": "Review: price is non-zero",
+          "status": "pass",
+          "screenshot": "19-Review__price_is_non-zero.png"
+        },
+        {
+          "name": "Continue past review",
+          "status": "pass",
+          "screenshot": "20-Continue_past_review.png"
+        },
+        {
+          "name": "Section active: quantity",
+          "status": "pass",
+          "screenshot": "21-Section_active__quantity.png"
+        },
+        {
+          "name": "Quantity: Add to Cart button enabled",
+          "status": "pass",
+          "screenshot": "22-Quantity__Add_to_Cart_button_enabled.png"
+        },
+        {
+          "name": "Price bar shows dollar amount",
+          "status": "pass",
+          "screenshot": "23-Price_bar_shows_dollar_amount.png"
+        },
+        {
+          "name": "No critical JavaScript errors",
+          "status": "pass",
+          "screenshot": "24-No_critical_JavaScript_errors.png"
+        }
+      ],
+      "jsErrors": []
+    },
+    {
+      "name": "Base Station - UV-50PRO (Base)",
+      "viewport": "desktop",
+      "status": "pass",
+      "passed": 24,
+      "failed": 0,
+      "steps": [
+        {
+          "name": "Fresh load page",
+          "status": "pass",
+          "screenshot": "01-Fresh_load_page.png"
+        },
+        {
+          "name": "Skip email",
+          "status": "pass",
+          "screenshot": "02-Skip_email.png"
+        },
+        {
+          "name": "Select Direct path",
+          "status": "pass",
+          "screenshot": "03-Select_Direct_path.png"
+        },
+        {
+          "name": "Select category: Base Station",
+          "status": "pass",
+          "screenshot": "04-Select_category__Base_Station.png"
+        },
+        {
+          "name": "Continue to radio selection",
+          "status": "pass",
+          "screenshot": "05-Continue_to_radio_selection.png"
+        },
+        {
+          "name": "Select radio: UV-50PRO (Base)",
+          "status": "pass",
+          "screenshot": "06-Select_radio__UV-50PRO__Base_.png"
+        },
+        {
+          "name": "Section active: mounting",
+          "status": "pass",
+          "screenshot": "07-Section_active__mounting.png"
+        },
+        {
+          "name": "Continue past mounting",
+          "status": "pass",
+          "screenshot": "08-Continue_past_mounting.png"
+        },
+        {
+          "name": "Section active: antennas",
+          "status": "pass",
+          "screenshot": "09-Section_active__antennas.png"
+        },
+        {
+          "name": "Continue past antennas",
+          "status": "pass",
+          "screenshot": "10-Continue_past_antennas.png"
+        },
+        {
+          "name": "Section active: battery",
+          "status": "pass",
+          "screenshot": "11-Section_active__battery.png"
+        },
+        {
+          "name": "Continue past battery",
+          "status": "pass",
+          "screenshot": "12-Continue_past_battery.png"
+        },
+        {
+          "name": "Section active: accessories",
+          "status": "pass",
+          "screenshot": "13-Section_active__accessories.png"
+        },
+        {
+          "name": "Continue past accessories",
+          "status": "pass",
+          "screenshot": "14-Continue_past_accessories.png"
+        },
+        {
+          "name": "Section active: programming",
+          "status": "pass",
+          "screenshot": "15-Section_active__programming.png"
+        },
+        {
+          "name": "Continue past programming",
+          "status": "pass",
+          "screenshot": "16-Continue_past_programming.png"
+        },
+        {
+          "name": "Section active: review",
+          "status": "pass",
+          "screenshot": "17-Section_active__review.png"
+        },
+        {
+          "name": "Review: radio name visible",
+          "status": "pass",
+          "screenshot": "18-Review__radio_name_visible.png"
+        },
+        {
+          "name": "Review: price is non-zero",
+          "status": "pass",
+          "screenshot": "19-Review__price_is_non-zero.png"
+        },
+        {
+          "name": "Continue past review",
+          "status": "pass",
+          "screenshot": "20-Continue_past_review.png"
+        },
+        {
+          "name": "Section active: quantity",
+          "status": "pass",
+          "screenshot": "21-Section_active__quantity.png"
+        },
+        {
+          "name": "Quantity: Add to Cart button enabled",
+          "status": "pass",
+          "screenshot": "22-Quantity__Add_to_Cart_button_enabled.png"
+        },
+        {
+          "name": "Price bar shows dollar amount",
+          "status": "pass",
+          "screenshot": "23-Price_bar_shows_dollar_amount.png"
+        },
+        {
+          "name": "No critical JavaScript errors",
+          "status": "pass",
+          "screenshot": "24-No_critical_JavaScript_errors.png"
+        }
+      ],
+      "jsErrors": []
+    },
+    {
+      "name": "Base Station - D578 (Base)",
+      "viewport": "desktop",
+      "status": "pass",
+      "passed": 24,
+      "failed": 0,
+      "steps": [
+        {
+          "name": "Fresh load page",
+          "status": "pass",
+          "screenshot": "01-Fresh_load_page.png"
+        },
+        {
+          "name": "Skip email",
+          "status": "pass",
+          "screenshot": "02-Skip_email.png"
+        },
+        {
+          "name": "Select Direct path",
+          "status": "pass",
+          "screenshot": "03-Select_Direct_path.png"
+        },
+        {
+          "name": "Select category: Base Station",
+          "status": "pass",
+          "screenshot": "04-Select_category__Base_Station.png"
+        },
+        {
+          "name": "Continue to radio selection",
+          "status": "pass",
+          "screenshot": "05-Continue_to_radio_selection.png"
+        },
+        {
+          "name": "Select radio: D578 (Base)",
+          "status": "pass",
+          "screenshot": "06-Select_radio__D578__Base_.png"
+        },
+        {
+          "name": "Section active: mounting",
+          "status": "pass",
+          "screenshot": "07-Section_active__mounting.png"
+        },
+        {
+          "name": "Continue past mounting",
+          "status": "pass",
+          "screenshot": "08-Continue_past_mounting.png"
+        },
+        {
+          "name": "Section active: antennas",
+          "status": "pass",
+          "screenshot": "09-Section_active__antennas.png"
+        },
+        {
+          "name": "Continue past antennas",
+          "status": "pass",
+          "screenshot": "10-Continue_past_antennas.png"
+        },
+        {
+          "name": "Section active: battery",
+          "status": "pass",
+          "screenshot": "11-Section_active__battery.png"
+        },
+        {
+          "name": "Continue past battery",
+          "status": "pass",
+          "screenshot": "12-Continue_past_battery.png"
+        },
+        {
+          "name": "Section active: accessories",
+          "status": "pass",
+          "screenshot": "13-Section_active__accessories.png"
+        },
+        {
+          "name": "Continue past accessories",
+          "status": "pass",
+          "screenshot": "14-Continue_past_accessories.png"
+        },
+        {
+          "name": "Section active: programming",
+          "status": "pass",
+          "screenshot": "15-Section_active__programming.png"
+        },
+        {
+          "name": "Continue past programming",
+          "status": "pass",
+          "screenshot": "16-Continue_past_programming.png"
+        },
+        {
+          "name": "Section active: review",
+          "status": "pass",
+          "screenshot": "17-Section_active__review.png"
+        },
+        {
+          "name": "Review: radio name visible",
+          "status": "pass",
+          "screenshot": "18-Review__radio_name_visible.png"
+        },
+        {
+          "name": "Review: price is non-zero",
+          "status": "pass",
+          "screenshot": "19-Review__price_is_non-zero.png"
+        },
+        {
+          "name": "Continue past review",
+          "status": "pass",
+          "screenshot": "20-Continue_past_review.png"
+        },
+        {
+          "name": "Section active: quantity",
+          "status": "pass",
+          "screenshot": "21-Section_active__quantity.png"
+        },
+        {
+          "name": "Quantity: Add to Cart button enabled",
+          "status": "pass",
+          "screenshot": "22-Quantity__Add_to_Cart_button_enabled.png"
+        },
+        {
+          "name": "Price bar shows dollar amount",
+          "status": "pass",
+          "screenshot": "23-Price_bar_shows_dollar_amount.png"
+        },
+        {
+          "name": "No critical JavaScript errors",
+          "status": "pass",
+          "screenshot": "24-No_critical_JavaScript_errors.png"
+        }
+      ],
+      "jsErrors": []
+    },
+    {
+      "name": "HF - Xiegu G90",
+      "viewport": "desktop",
+      "status": "pass",
+      "passed": 23,
+      "failed": 0,
+      "steps": [
+        {
+          "name": "Fresh load page",
+          "status": "pass",
+          "screenshot": "01-Fresh_load_page.png"
+        },
+        {
+          "name": "Skip email",
+          "status": "pass",
+          "screenshot": "02-Skip_email.png"
+        },
+        {
+          "name": "Select Direct path",
+          "status": "pass",
+          "screenshot": "03-Select_Direct_path.png"
+        },
+        {
+          "name": "Select category: HF",
+          "status": "pass",
+          "screenshot": "04-Select_category__HF.png"
+        },
+        {
+          "name": "Continue to radio selection",
+          "status": "pass",
+          "screenshot": "05-Continue_to_radio_selection.png"
+        },
+        {
+          "name": "Select radio: Xiegu G90",
+          "status": "pass",
+          "screenshot": "06-Select_radio__Xiegu_G90.png"
+        },
+        {
+          "name": "Verify mounting section is skipped",
+          "status": "pass",
+          "screenshot": "07-Verify_mounting_section_is_skipped.png"
+        },
+        {
+          "name": "Section active: antennas",
+          "status": "pass",
+          "screenshot": "08-Section_active__antennas.png"
+        },
+        {
+          "name": "Continue past antennas",
+          "status": "pass",
+          "screenshot": "09-Continue_past_antennas.png"
+        },
+        {
+          "name": "Section active: battery",
+          "status": "pass",
+          "screenshot": "10-Section_active__battery.png"
+        },
+        {
+          "name": "Continue past battery",
+          "status": "pass",
+          "screenshot": "11-Continue_past_battery.png"
+        },
+        {
+          "name": "Section active: accessories",
+          "status": "pass",
+          "screenshot": "12-Section_active__accessories.png"
+        },
+        {
+          "name": "Continue past accessories",
+          "status": "pass",
+          "screenshot": "13-Continue_past_accessories.png"
+        },
+        {
+          "name": "Section active: programming",
+          "status": "pass",
+          "screenshot": "14-Section_active__programming.png"
+        },
+        {
+          "name": "Continue past programming",
+          "status": "pass",
+          "screenshot": "15-Continue_past_programming.png"
+        },
+        {
+          "name": "Section active: review",
+          "status": "pass",
+          "screenshot": "16-Section_active__review.png"
+        },
+        {
+          "name": "Review: radio name visible",
+          "status": "pass",
+          "screenshot": "17-Review__radio_name_visible.png"
+        },
+        {
+          "name": "Review: price is non-zero",
+          "status": "pass",
+          "screenshot": "18-Review__price_is_non-zero.png"
+        },
+        {
+          "name": "Continue past review",
+          "status": "pass",
+          "screenshot": "19-Continue_past_review.png"
+        },
+        {
+          "name": "Section active: quantity",
+          "status": "pass",
+          "screenshot": "20-Section_active__quantity.png"
+        },
+        {
+          "name": "Quantity: Add to Cart button enabled",
+          "status": "pass",
+          "screenshot": "21-Quantity__Add_to_Cart_button_enabled.png"
+        },
+        {
+          "name": "Price bar shows dollar amount",
+          "status": "pass",
+          "screenshot": "22-Price_bar_shows_dollar_amount.png"
+        },
+        {
+          "name": "No critical JavaScript errors",
+          "status": "pass",
+          "screenshot": "23-No_critical_JavaScript_errors.png"
+        }
+      ],
+      "jsErrors": []
+    },
+    {
+      "name": "HF - Yaesu FT-891",
+      "viewport": "desktop",
+      "status": "pass",
+      "passed": 23,
+      "failed": 0,
+      "steps": [
+        {
+          "name": "Fresh load page",
+          "status": "pass",
+          "screenshot": "01-Fresh_load_page.png"
+        },
+        {
+          "name": "Skip email",
+          "status": "pass",
+          "screenshot": "02-Skip_email.png"
+        },
+        {
+          "name": "Select Direct path",
+          "status": "pass",
+          "screenshot": "03-Select_Direct_path.png"
+        },
+        {
+          "name": "Select category: HF",
+          "status": "pass",
+          "screenshot": "04-Select_category__HF.png"
+        },
+        {
+          "name": "Continue to radio selection",
+          "status": "pass",
+          "screenshot": "05-Continue_to_radio_selection.png"
+        },
+        {
+          "name": "Select radio: Yaesu FT-891",
+          "status": "pass",
+          "screenshot": "06-Select_radio__Yaesu_FT-891.png"
+        },
+        {
+          "name": "Verify mounting section is skipped",
+          "status": "pass",
+          "screenshot": "07-Verify_mounting_section_is_skipped.png"
+        },
+        {
+          "name": "Section active: antennas",
+          "status": "pass",
+          "screenshot": "08-Section_active__antennas.png"
+        },
+        {
+          "name": "Continue past antennas",
+          "status": "pass",
+          "screenshot": "09-Continue_past_antennas.png"
+        },
+        {
+          "name": "Section active: battery",
+          "status": "pass",
+          "screenshot": "10-Section_active__battery.png"
+        },
+        {
+          "name": "Continue past battery",
+          "status": "pass",
+          "screenshot": "11-Continue_past_battery.png"
+        },
+        {
+          "name": "Section active: accessories",
+          "status": "pass",
+          "screenshot": "12-Section_active__accessories.png"
+        },
+        {
+          "name": "Continue past accessories",
+          "status": "pass",
+          "screenshot": "13-Continue_past_accessories.png"
+        },
+        {
+          "name": "Section active: programming",
+          "status": "pass",
+          "screenshot": "14-Section_active__programming.png"
+        },
+        {
+          "name": "Continue past programming",
+          "status": "pass",
+          "screenshot": "15-Continue_past_programming.png"
+        },
+        {
+          "name": "Section active: review",
+          "status": "pass",
+          "screenshot": "16-Section_active__review.png"
+        },
+        {
+          "name": "Review: radio name visible",
+          "status": "pass",
+          "screenshot": "17-Review__radio_name_visible.png"
+        },
+        {
+          "name": "Review: price is non-zero",
+          "status": "pass",
+          "screenshot": "18-Review__price_is_non-zero.png"
+        },
+        {
+          "name": "Continue past review",
+          "status": "pass",
+          "screenshot": "19-Continue_past_review.png"
+        },
+        {
+          "name": "Section active: quantity",
+          "status": "pass",
+          "screenshot": "20-Section_active__quantity.png"
+        },
+        {
+          "name": "Quantity: Add to Cart button enabled",
+          "status": "pass",
+          "screenshot": "21-Quantity__Add_to_Cart_button_enabled.png"
+        },
+        {
+          "name": "Price bar shows dollar amount",
+          "status": "pass",
+          "screenshot": "22-Price_bar_shows_dollar_amount.png"
+        },
+        {
+          "name": "No critical JavaScript errors",
+          "status": "pass",
+          "screenshot": "23-No_critical_JavaScript_errors.png"
+        }
+      ],
+      "jsErrors": []
+    },
+    {
+      "name": "Scanner - SDS200",
+      "viewport": "desktop",
+      "status": "pass",
+      "passed": 21,
+      "failed": 0,
+      "steps": [
+        {
+          "name": "Fresh load page",
+          "status": "pass",
+          "screenshot": "01-Fresh_load_page.png"
+        },
+        {
+          "name": "Skip email",
+          "status": "pass",
+          "screenshot": "02-Skip_email.png"
+        },
+        {
+          "name": "Select Direct path",
+          "status": "pass",
+          "screenshot": "03-Select_Direct_path.png"
+        },
+        {
+          "name": "Select category: Scanner",
+          "status": "pass",
+          "screenshot": "04-Select_category__Scanner.png"
+        },
+        {
+          "name": "Continue to radio selection",
+          "status": "pass",
+          "screenshot": "05-Continue_to_radio_selection.png"
+        },
+        {
+          "name": "Select radio: SDS200",
+          "status": "pass",
+          "screenshot": "06-Select_radio__SDS200.png"
+        },
+        {
+          "name": "Verify mounting section is skipped",
+          "status": "pass",
+          "screenshot": "07-Verify_mounting_section_is_skipped.png"
+        },
+        {
+          "name": "Section active: antennas",
+          "status": "pass",
+          "screenshot": "08-Section_active__antennas.png"
+        },
+        {
+          "name": "Continue past antennas",
+          "status": "pass",
+          "screenshot": "09-Continue_past_antennas.png"
+        },
+        {
+          "name": "Section active: accessories",
+          "status": "pass",
+          "screenshot": "10-Section_active__accessories.png"
+        },
+        {
+          "name": "Continue past accessories",
+          "status": "pass",
+          "screenshot": "11-Continue_past_accessories.png"
+        },
+        {
+          "name": "Section active: programming",
+          "status": "pass",
+          "screenshot": "12-Section_active__programming.png"
+        },
+        {
+          "name": "Continue past programming",
+          "status": "pass",
+          "screenshot": "13-Continue_past_programming.png"
+        },
+        {
+          "name": "Section active: review",
+          "status": "pass",
+          "screenshot": "14-Section_active__review.png"
+        },
+        {
+          "name": "Review: radio name visible",
+          "status": "pass",
+          "screenshot": "15-Review__radio_name_visible.png"
+        },
+        {
+          "name": "Review: price is non-zero",
+          "status": "pass",
+          "screenshot": "16-Review__price_is_non-zero.png"
+        },
+        {
+          "name": "Continue past review",
+          "status": "pass",
+          "screenshot": "17-Continue_past_review.png"
+        },
+        {
+          "name": "Section active: quantity",
+          "status": "pass",
+          "screenshot": "18-Section_active__quantity.png"
+        },
+        {
+          "name": "Quantity: Add to Cart button enabled",
+          "status": "pass",
+          "screenshot": "19-Quantity__Add_to_Cart_button_enabled.png"
+        },
+        {
+          "name": "Price bar shows dollar amount",
+          "status": "pass",
+          "screenshot": "20-Price_bar_shows_dollar_amount.png"
+        },
+        {
+          "name": "No critical JavaScript errors",
+          "status": "pass",
+          "screenshot": "21-No_critical_JavaScript_errors.png"
+        }
+      ],
+      "jsErrors": []
+    },
+    {
+      "name": "Scanner - SDS100",
+      "viewport": "desktop",
+      "status": "pass",
+      "passed": 21,
+      "failed": 0,
+      "steps": [
+        {
+          "name": "Fresh load page",
+          "status": "pass",
+          "screenshot": "01-Fresh_load_page.png"
+        },
+        {
+          "name": "Skip email",
+          "status": "pass",
+          "screenshot": "02-Skip_email.png"
+        },
+        {
+          "name": "Select Direct path",
+          "status": "pass",
+          "screenshot": "03-Select_Direct_path.png"
+        },
+        {
+          "name": "Select category: Scanner",
+          "status": "pass",
+          "screenshot": "04-Select_category__Scanner.png"
+        },
+        {
+          "name": "Continue to radio selection",
+          "status": "pass",
+          "screenshot": "05-Continue_to_radio_selection.png"
+        },
+        {
+          "name": "Select radio: SDS100",
+          "status": "pass",
+          "screenshot": "06-Select_radio__SDS100.png"
+        },
+        {
+          "name": "Verify mounting section is skipped",
+          "status": "pass",
+          "screenshot": "07-Verify_mounting_section_is_skipped.png"
+        },
+        {
+          "name": "Section active: antennas",
+          "status": "pass",
+          "screenshot": "08-Section_active__antennas.png"
+        },
+        {
+          "name": "Continue past antennas",
+          "status": "pass",
+          "screenshot": "09-Continue_past_antennas.png"
+        },
+        {
+          "name": "Section active: accessories",
+          "status": "pass",
+          "screenshot": "10-Section_active__accessories.png"
+        },
+        {
+          "name": "Continue past accessories",
+          "status": "pass",
+          "screenshot": "11-Continue_past_accessories.png"
+        },
+        {
+          "name": "Section active: programming",
+          "status": "pass",
+          "screenshot": "12-Section_active__programming.png"
+        },
+        {
+          "name": "Continue past programming",
+          "status": "pass",
+          "screenshot": "13-Continue_past_programming.png"
+        },
+        {
+          "name": "Section active: review",
+          "status": "pass",
+          "screenshot": "14-Section_active__review.png"
+        },
+        {
+          "name": "Review: radio name visible",
+          "status": "pass",
+          "screenshot": "15-Review__radio_name_visible.png"
+        },
+        {
+          "name": "Review: price is non-zero",
+          "status": "pass",
+          "screenshot": "16-Review__price_is_non-zero.png"
+        },
+        {
+          "name": "Continue past review",
+          "status": "pass",
+          "screenshot": "17-Continue_past_review.png"
+        },
+        {
+          "name": "Section active: quantity",
+          "status": "pass",
+          "screenshot": "18-Section_active__quantity.png"
+        },
+        {
+          "name": "Quantity: Add to Cart button enabled",
+          "status": "pass",
+          "screenshot": "19-Quantity__Add_to_Cart_button_enabled.png"
+        },
+        {
+          "name": "Price bar shows dollar amount",
+          "status": "pass",
+          "screenshot": "20-Price_bar_shows_dollar_amount.png"
+        },
+        {
+          "name": "No critical JavaScript errors",
+          "status": "pass",
+          "screenshot": "21-No_critical_JavaScript_errors.png"
+        }
+      ],
+      "jsErrors": []
+    },
+    {
+      "name": "Scanner - SDR",
+      "viewport": "desktop",
+      "status": "pass",
+      "passed": 21,
+      "failed": 0,
+      "steps": [
+        {
+          "name": "Fresh load page",
+          "status": "pass",
+          "screenshot": "01-Fresh_load_page.png"
+        },
+        {
+          "name": "Skip email",
+          "status": "pass",
+          "screenshot": "02-Skip_email.png"
+        },
+        {
+          "name": "Select Direct path",
+          "status": "pass",
+          "screenshot": "03-Select_Direct_path.png"
+        },
+        {
+          "name": "Select category: Scanner",
+          "status": "pass",
+          "screenshot": "04-Select_category__Scanner.png"
+        },
+        {
+          "name": "Continue to radio selection",
+          "status": "pass",
+          "screenshot": "05-Continue_to_radio_selection.png"
+        },
+        {
+          "name": "Select radio: SDR",
+          "status": "pass",
+          "screenshot": "06-Select_radio__SDR.png"
+        },
+        {
+          "name": "Verify mounting section is skipped",
+          "status": "pass",
+          "screenshot": "07-Verify_mounting_section_is_skipped.png"
+        },
+        {
+          "name": "Section active: antennas",
+          "status": "pass",
+          "screenshot": "08-Section_active__antennas.png"
+        },
+        {
+          "name": "Continue past antennas",
+          "status": "pass",
+          "screenshot": "09-Continue_past_antennas.png"
+        },
+        {
+          "name": "Section active: accessories",
+          "status": "pass",
+          "screenshot": "10-Section_active__accessories.png"
+        },
+        {
+          "name": "Continue past accessories",
+          "status": "pass",
+          "screenshot": "11-Continue_past_accessories.png"
+        },
+        {
+          "name": "Section active: programming",
+          "status": "pass",
+          "screenshot": "12-Section_active__programming.png"
+        },
+        {
+          "name": "Continue past programming",
+          "status": "pass",
+          "screenshot": "13-Continue_past_programming.png"
+        },
+        {
+          "name": "Section active: review",
+          "status": "pass",
+          "screenshot": "14-Section_active__review.png"
+        },
+        {
+          "name": "Review: radio name visible",
+          "status": "pass",
+          "screenshot": "15-Review__radio_name_visible.png"
+        },
+        {
+          "name": "Review: price is non-zero",
+          "status": "pass",
+          "screenshot": "16-Review__price_is_non-zero.png"
+        },
+        {
+          "name": "Continue past review",
+          "status": "pass",
+          "screenshot": "17-Continue_past_review.png"
+        },
+        {
+          "name": "Section active: quantity",
+          "status": "pass",
+          "screenshot": "18-Section_active__quantity.png"
+        },
+        {
+          "name": "Quantity: Add to Cart button enabled",
+          "status": "pass",
+          "screenshot": "19-Quantity__Add_to_Cart_button_enabled.png"
+        },
+        {
+          "name": "Price bar shows dollar amount",
+          "status": "pass",
+          "screenshot": "20-Price_bar_shows_dollar_amount.png"
+        },
+        {
+          "name": "No critical JavaScript errors",
+          "status": "pass",
+          "screenshot": "21-No_critical_JavaScript_errors.png"
+        }
+      ],
+      "jsErrors": []
+    },
+    {
+      "name": "Scanner - SDS150",
+      "viewport": "desktop",
+      "status": "pass",
+      "passed": 21,
+      "failed": 0,
+      "steps": [
+        {
+          "name": "Fresh load page",
+          "status": "pass",
+          "screenshot": "01-Fresh_load_page.png"
+        },
+        {
+          "name": "Skip email",
+          "status": "pass",
+          "screenshot": "02-Skip_email.png"
+        },
+        {
+          "name": "Select Direct path",
+          "status": "pass",
+          "screenshot": "03-Select_Direct_path.png"
+        },
+        {
+          "name": "Select category: Scanner",
+          "status": "pass",
+          "screenshot": "04-Select_category__Scanner.png"
+        },
+        {
+          "name": "Continue to radio selection",
+          "status": "pass",
+          "screenshot": "05-Continue_to_radio_selection.png"
+        },
+        {
+          "name": "Select radio: SDS150",
+          "status": "pass",
+          "screenshot": "06-Select_radio__SDS150.png"
+        },
+        {
+          "name": "Verify mounting section is skipped",
+          "status": "pass",
+          "screenshot": "07-Verify_mounting_section_is_skipped.png"
+        },
+        {
+          "name": "Section active: antennas",
+          "status": "pass",
+          "screenshot": "08-Section_active__antennas.png"
+        },
+        {
+          "name": "Continue past antennas",
+          "status": "pass",
+          "screenshot": "09-Continue_past_antennas.png"
+        },
+        {
+          "name": "Section active: accessories",
+          "status": "pass",
+          "screenshot": "10-Section_active__accessories.png"
+        },
+        {
+          "name": "Continue past accessories",
+          "status": "pass",
+          "screenshot": "11-Continue_past_accessories.png"
+        },
+        {
+          "name": "Section active: programming",
+          "status": "pass",
+          "screenshot": "12-Section_active__programming.png"
+        },
+        {
+          "name": "Continue past programming",
+          "status": "pass",
+          "screenshot": "13-Continue_past_programming.png"
+        },
+        {
+          "name": "Section active: review",
+          "status": "pass",
+          "screenshot": "14-Section_active__review.png"
+        },
+        {
+          "name": "Review: radio name visible",
+          "status": "pass",
+          "screenshot": "15-Review__radio_name_visible.png"
+        },
+        {
+          "name": "Review: price is non-zero",
+          "status": "pass",
+          "screenshot": "16-Review__price_is_non-zero.png"
+        },
+        {
+          "name": "Continue past review",
+          "status": "pass",
+          "screenshot": "17-Continue_past_review.png"
+        },
+        {
+          "name": "Section active: quantity",
+          "status": "pass",
+          "screenshot": "18-Section_active__quantity.png"
+        },
+        {
+          "name": "Quantity: Add to Cart button enabled",
+          "status": "pass",
+          "screenshot": "19-Quantity__Add_to_Cart_button_enabled.png"
+        },
+        {
+          "name": "Price bar shows dollar amount",
+          "status": "pass",
+          "screenshot": "20-Price_bar_shows_dollar_amount.png"
+        },
+        {
+          "name": "No critical JavaScript errors",
+          "status": "pass",
+          "screenshot": "21-No_critical_JavaScript_errors.png"
+        }
+      ],
+      "jsErrors": []
+    }
+  ],
+  "summary": {
+    "total": 342,
+    "passed": 342,
+    "failed": 0,
+    "failureList": []
+  }
+}
