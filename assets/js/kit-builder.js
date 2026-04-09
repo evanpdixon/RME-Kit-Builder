@@ -4916,7 +4916,7 @@ function getPersonalizedReasons(radio) {
   if (needs.includes('encryption') && radio.tags.includes('commercial')) reasons.push('FCC Part 90 commercial certified, approved for business and commercial use');
   if (needs.includes('encryption') && radio.tags.includes('professional') && !radio.tags.includes('encryption')) reasons.push('Professional-grade radio, but does not support encryption');
   if (needs.includes('emergency') && radio.tags.includes('channels')) reasons.push('Lots of channels. Covers more repeaters for emergency readiness');
-  if (needs.includes('emergency') && radio.tags.includes('noaa')) reasons.push('Automatic NOAA weather alerts. Get warned before severe weather hits');
+  if (needs.includes('emergency') && radio.tags.includes('noaa')) reasons.push('Automatic NOAA Weather alerts. Get warned before severe weather hits');
   if (needs.includes('water') && radio.tags.includes('waterproof')) reasons.push('IP67 waterproof, fully submersible for the conditions you need');
   if (needs.includes('water') && !radio.tags.includes('waterproof') && radio.tags.includes('water-resistant')) reasons.push('IP54 water resistant. Rated for rain and splashes');
   if (needs.includes('outdoor') && radio.tags.includes('gps')) reasons.push('Built-in GPS for position tracking in the field');
