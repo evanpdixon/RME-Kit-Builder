@@ -2088,7 +2088,7 @@
     }
     // Same AJAX call but no redirect on success
     window._kbsSuppressCartRedirect = false;
-    if (typeof rmeKitBuilder === 'undefined' || !rmeKitBuilder.ajaxUrl) return;
+    if (typeof rmeKitBuilder === 'undefined' || !rmeKitBuilder.ajaxUrl) return Promise.resolve();
     var normalized = [];
     items.forEach(function(item) {
       if (item.id) {
@@ -2097,11 +2097,11 @@
         else normalized.push({ id: item.id, qty: item.qty || 1 });
       }
     });
-    if (normalized.length === 0) return;
-    fetch(rmeKitBuilder.ajaxUrl + '?action=rme_kb_add_to_cart&nonce=' + rmeKitBuilder.nonce, {
+    if (normalized.length === 0) return Promise.resolve();
+    return fetch(rmeKitBuilder.ajaxUrl + '?action=rme_kb_add_to_cart&nonce=' + rmeKitBuilder.nonce, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ items: normalized, kitName: kitName || '' })
+      body: JSON.stringify({ items: normalized, kitName: kitName || '', discount: window._kbsDiscount || null })
     })
     .then(function(r) { return r.json(); })
     .then(function(data) {
