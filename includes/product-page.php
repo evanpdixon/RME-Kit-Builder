@@ -47,7 +47,24 @@ function rme_kb_get_product_radio_key( $product_id ) {
 }
 
 /**
- * Add "Build a Kit" CTA button on radio product pages.
+ * Hide the default WooCommerce add-to-cart form on kit builder products.
+ * This also prevents WOOSPPO/product-options plugins from rendering
+ * since they hook into the add-to-cart area.
+ */
+function rme_kb_hide_add_to_cart() {
+    if ( ! is_product() ) return;
+
+    global $product;
+    if ( ! $product ) return;
+    if ( ! rme_kb_get_product_radio_key( $product->get_id() ) ) return;
+
+    remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_add_to_cart', 30 );
+}
+add_action( 'woocommerce_before_single_product', 'rme_kb_hide_add_to_cart' );
+
+/**
+ * Add "Build Your Kit" CTA button on radio product pages.
+ * This is the primary purchase path for kit-builder-enabled products.
  */
 function rme_kb_product_page_cta() {
     if ( ! is_product() ) return;
@@ -66,12 +83,11 @@ function rme_kb_product_page_cta() {
     if ( $radio['category'] !== 'handheld' ) {
         $hash_parts[] = 'cat=' . urlencode( $radio['category'] );
     }
-    $hash_parts[] = 'sec=antennas';
     $url = $kb_url . '#' . implode( '&', $hash_parts );
 
     echo '<div class="rme-kb-product-cta" style="margin:20px 0;padding:16px 20px;background:#1a1a1a;border:1px solid #333;border-radius:8px;text-align:center">';
-    echo '<p style="color:#c4a83a;font-size:14px;margin:0 0 12px">Want a complete kit? We\'ll add the right antenna, battery, accessories, and custom programming.</p>';
-    echo '<a href="' . esc_url( $url ) . '" style="display:inline-block;padding:14px 36px;background:#fdd351;color:#0a0a0a;font-family:inherit;font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:1px;border-radius:6px;text-decoration:none">Build a Kit with This Radio</a>';
+    echo '<p style="color:#c4a83a;font-size:14px;margin:0 0 12px">Choose your antenna, battery, accessories, and custom programming.</p>';
+    echo '<a href="' . esc_url( $url ) . '" style="display:inline-block;padding:14px 36px;background:#fdd351;color:#0a0a0a;font-family:inherit;font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:1px;border-radius:6px;text-decoration:none">Build Your Kit</a>';
     echo '</div>';
 }
-add_action( 'woocommerce_single_product_summary', 'rme_kb_product_page_cta', 35 );
+add_action( 'woocommerce_single_product_summary', 'rme_kb_product_page_cta', 25 );
