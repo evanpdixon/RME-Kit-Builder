@@ -13,16 +13,23 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * Parsed from the JS data at build time. Falls back to config option.
  */
 function rme_kb_get_radio_map() {
-    $config = get_option( 'rme_kb_config', rme_kb_default_config() );
+    $defaults = rme_kb_default_config();
+    $config = get_option( 'rme_kb_config', $defaults );
 
-    $map = array();
+    // Merge in default lineups if stored config lacks them
     $lineups = array(
         'radioLineup'        => 'handheld',
         'mobileRadioLineup'  => 'mobile',
         'hfRadioLineup'      => 'hf',
         'scannerRadioLineup' => 'scanner',
     );
+    foreach ( $lineups as $lineup_key => $category ) {
+        if ( empty( $config[ $lineup_key ] ) && ! empty( $defaults[ $lineup_key ] ) ) {
+            $config[ $lineup_key ] = $defaults[ $lineup_key ];
+        }
+    }
 
+    $map = array();
     foreach ( $lineups as $lineup_key => $category ) {
         if ( empty( $config[ $lineup_key ] ) ) continue;
         foreach ( $config[ $lineup_key ] as $radio ) {

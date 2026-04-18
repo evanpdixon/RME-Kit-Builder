@@ -1,5 +1,26 @@
 {
   "productPageEnabled": true,
   "siteUrl": "https://radiomadeeasy.com",
-  "notes": "This config is editable via WP Admin > Kit Builder. Export from staging, import to production."
+  "notes": "This config is editable via WP Admin > Kit Builder. Export from staging, import to production.",
+  "radioLineup": [
+    { "key": "uv5r", "name": "UV-5R Essentials Kit", "id": 106 },
+    { "key": "uv5r-mini", "name": "UV-5R Mini Essentials Kit", "id": 8438 },
+    { "key": "uv-pro", "name": "UV-PRO Essentials Kit", "id": 7862 },
+    { "key": "dmr-6x2", "name": "DMR 6X2 PRO Essentials Kit", "id": 2931 },
+    { "key": "da-7x2", "name": "DA-7X2 Essentials Kit", "id": 9050 }
+  ],
+  "mobileRadioLineup": [
+    { "key": "uv50pro", "name": "UV-50PRO Essentials Kit", "id": 8487 },
+    { "key": "d578", "name": "DMR D578 Mobile Radio Kit", "id": 4157 }
+  ],
+  "hfRadioLineup": [
+    { "key": "g90", "name": "Xiegu G90 Mobile Radio Kit", "id": 3654 },
+    { "key": "ft891", "name": "Yaesu FT-891 Mobile Radio Kit", "id": 720 }
+  ],
+  "scannerRadioLineup": [
+    { "key": "sds200", "name": "Uniden SDS200 Digital Scanner", "id": 7512 },
+    { "key": "sds100", "name": "Uniden SDS100 Handheld Digital Scanner", "id": 6721 },
+    { "key": "sdr-kit", "name": "SDR Essentials Kit", "id": 3723 },
+    { "key": "sds150", "name": "Uniden SDS150 Digital Scanner", "id": 8978 }
+  ]
 }
