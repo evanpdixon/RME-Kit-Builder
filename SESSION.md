@@ -28,6 +28,36 @@ Status: completed
 - Kit builder only purchase path (no bare radio purchases from product pages)
 - Same-tab navigation (current behavior preserved)
 - Email capture kept for lead gen
+- Product add-ons feature built into rme-theme (replaces WOOSPPO for non-kit products)
+- Three Radio Kit: reduce to carrying case only, move to accessories (manual, separate task)
+
+## Production Deployment Checklist
+All changes are on staging12 only. Production requires:
+
+### Pre-deploy: Create missing products in production WP admin
+- [ ] Create "Lightning to 3.5mm Adapter" product ($9, category: Individual Accessories)
+- [ ] Create "USB-C to 3.5mm Adapter" product ($9, category: Individual Accessories)
+- [ ] Note their product IDs for APRS cable (1177) add-on mapping
+
+### Deploy code (follows standard production deploy procedure)
+- [ ] Backup production database
+- [ ] Deploy rme-kit-builder plugin (git pull on production)
+- [ ] Deploy rme-theme (upload functions.php, style.css, inc/product-addons.php)
+- [ ] Flush cache
+
+### Post-deploy: Configure products
+- [ ] Run add-on population script with production product IDs
+  - All 23 product mappings from staging
+  - APRS cable (1177) mapped to the new Lightning/USB-C adapter product IDs
+- [ ] Deactivate WOOSPPO plugin: `wp plugin deactivate extra-custom-product-options-for-woocommerce`
+- [ ] Run store tester to verify
+- [ ] Manual spot-check: product page checkboxes, kit builder flow, cart items
+
+### Excluded products (handle manually)
+- SUT Comms Wizard (8227): hidden, complex selects, not simple checkboxes
+- Three Radio Kit (824): reduce to carrying case only per separate decision
+- VX6R Kit (577): out of stock, hidden
+- UV-5R Minus Radio Kit (573): hidden
 
 ## Resume Instructions
 Follow the approved plan at C:\Users\rmeadmin\.claude\plans\sequential-leaping-book.md
