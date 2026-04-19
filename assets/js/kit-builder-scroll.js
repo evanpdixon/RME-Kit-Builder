@@ -2445,17 +2445,26 @@
   // ── Product Page Mode ─────────────────────────
   // When loaded on a WC product page, skip interview/radio and start
   // with email → accessories flow for the pre-selected radio
-  function initProductPageMode() {
-    if (typeof rmeKitBuilderProduct === 'undefined' || !rmeKitBuilderProduct.productPageMode) return false;
-
-    var radioKey = rmeKitBuilderProduct.productRadioKey;
+  function initProductPageMode(hashRadioKey, hashCat) {
+    var radioKey;
+    if (hashRadioKey) {
+      // Called from product page link (from=product in URL hash)
+      radioKey = hashRadioKey;
+    } else if (typeof rmeKitBuilderProduct !== 'undefined' && rmeKitBuilderProduct.productPageMode) {
+      // Called when kit builder is embedded on a product page
+      radioKey = rmeKitBuilderProduct.productRadioKey;
+    } else {
+      return false;
+    }
     if (!radioKey) return false;
 
     // Detect which category this radio belongs to
-    var detectedCat = 'handheld';
-    if (typeof mobileRadioLineup !== 'undefined' && mobileRadioLineup.find(function(r) { return r.key === radioKey; })) detectedCat = 'mobile';
-    else if (typeof hfRadioLineup !== 'undefined' && hfRadioLineup.find(function(r) { return r.key === radioKey; })) detectedCat = 'hf';
-    else if (typeof scannerRadioLineup !== 'undefined' && scannerRadioLineup.find(function(r) { return r.key === radioKey; })) detectedCat = 'scanner';
+    var detectedCat = hashCat || 'handheld';
+    if (!hashCat) {
+      if (typeof mobileRadioLineup !== 'undefined' && mobileRadioLineup.find(function(r) { return r.key === radioKey; })) detectedCat = 'mobile';
+      else if (typeof hfRadioLineup !== 'undefined' && hfRadioLineup.find(function(r) { return r.key === radioKey; })) detectedCat = 'hf';
+      else if (typeof scannerRadioLineup !== 'undefined' && scannerRadioLineup.find(function(r) { return r.key === radioKey; })) detectedCat = 'scanner';
+    }
 
     kbsCurrentCategory = detectedCat;
     kbsAnswers['usage'] = [detectedCat === 'mobile' ? 'vehicle' : detectedCat];
@@ -2943,9 +2952,12 @@
 
     // Check for saved state in URL hash
     var savedState = restoreFromHash();
-    if (savedState && !savedState.from) {
-      // Only show resume prompt for genuine saved sessions, not product page links.
-      // Product page links include from=product and should start fresh.
+    if (savedState && savedState.from === 'product' && savedState.radio) {
+      // Product page link: skip resume prompt, init product page mode
+      // directly with the radio from the URL hash
+      initProductPageMode(savedState.radio, savedState.cat);
+    } else if (savedState && !savedState.from) {
+      // Genuine saved session: show resume prompt
       // Pre-apply state silently so the prompt can show radio name
       // (actual restoration happens on user confirmation)
       var tempLineups = [].concat(
