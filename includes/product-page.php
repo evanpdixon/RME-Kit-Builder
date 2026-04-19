@@ -90,6 +90,7 @@ function rme_kb_product_page_cta() {
     if ( $radio['category'] !== 'handheld' ) {
         $hash_parts[] = 'cat=' . urlencode( $radio['category'] );
     }
+    $hash_parts[] = 'from=product';
     $url = $kb_url . '#' . implode( '&', $hash_parts );
 
     echo '<div class="rme-kb-product-cta" style="margin:20px 0;padding:16px 20px;background:#1a1a1a;border:1px solid #333;border-radius:8px;text-align:center">';

@@ -2943,7 +2943,9 @@
 
     // Check for saved state in URL hash
     var savedState = restoreFromHash();
-    if (savedState) {
+    if (savedState && !savedState.from) {
+      // Only show resume prompt for genuine saved sessions, not product page links.
+      // Product page links include from=product and should start fresh.
       // Pre-apply state silently so the prompt can show radio name
       // (actual restoration happens on user confirmation)
       var tempLineups = [].concat(
